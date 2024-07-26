@@ -17,7 +17,7 @@ The model is trained on the CMAPSS Jet Engine Simulated Data provided by NASA.
 
 1. Clone the repository: 
 ```bash    
-git clone https://github.com/your-username/remaining_useful_life_prediction.git
+git clone https://github.com/ilinii/remaining_useful_life_prediction.git
 cd remaining_useful_life_prediction
 ```
 2. Install the required packages:
@@ -47,7 +47,7 @@ This script loads the pre-trained model and makes predictions for a specific eng
 
 ## Contributor
 
-Université de Lorraine
+Ilias Abdouni, Université de Lorraine
 
 ## License
 
