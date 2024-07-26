@@ -28,7 +28,7 @@ pip install -r requirements.txt
 The CMAPSS Jet Engine Simulated Data can be downloaded from:
 https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about_data
 
-After downloading, place the dataset files in a `Datasets/Cmapss/` directory within the project folder.
+After downloading, place the dataset files in a `Datasets/CMAPSS/` directory within the project folder.
 
 ## Usage
 
@@ -38,8 +38,10 @@ After downloading, place the dataset files in a `Datasets/Cmapss/` directory wit
 ```bash
    python src/main.py
    ```
+This script loads the pre-trained model and prompts the user to enter a specific engine index.
+If no input is provided, it defaults to engine index 57 (press Enter to use the default).
 
-This script loads the pre-trained model and makes predictions for a specific engine (default is engine index 57).
+3. The script will output the estimated Remaining Useful Life (RUL) for the selected engine.
 
 ## Deployment
 
