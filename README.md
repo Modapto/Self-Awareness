@@ -64,6 +64,7 @@ The response from the requests will look like this:
 ```json
    {
 	"RUL_prediction": "113.60893",
+   "Engine_index": "12",
 	"UNIX_timestamp": "1724759975"
    }
    ```

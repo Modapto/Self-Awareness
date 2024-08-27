@@ -56,6 +56,7 @@ def selfAwarenessProcess():
         # return payload
         return jsonify({
             "RUL_prediction": str(rul_prediction),
+            "engine_index": str(engine_index),
             "UNIX_timestamp": str(current_timestamp)
         }), 200
         
@@ -84,6 +85,7 @@ def selfAwarenessProcessV2():
             # return payload
             return jsonify({
                 "RUL_prediction": str(rul_prediction),
+                "engine_index": str(engine_index),
                 "UNIX_timestamp": str(current_timestamp)
             }), 200
     
