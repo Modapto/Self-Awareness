@@ -31,18 +31,43 @@ docker run -dp 127.0.0.1:8568:8568 prognostics_modapto
 
 ## Usage
 
-1. Ensure the CMAPSS dataset is placed in the correct directory.
+Requests must include field "engine_index" as querystring argument. See the following examples.
+In these examples, it is assumed that you are testing from where you have deployed the image, hence the address is "localhost".
+If the container is in a remote machine, replace "localhost" with the IP address of that machine.
 
-2. Make predictions:
+1. Via CLI:
 ```bash
-   python src/main.py
+   curl --request GET \
+  --url 'http://localhost:8568/analysis?engine_index=12'
    ```
+
+2. Via Python script:
+```python
+   import requests
+
+   url = "http://localhost:8568/analysis"
+
+   querystring = {"engine_index":"12"}
+
+   payload = ""
+
+   response = requests.request("GET", url, data=payload, params=querystring)
+
+   print(response.text)
+   ```
+   
 This script loads the pre-trained model and prompts the user to enter a specific engine index.
 If no input is provided, it defaults to engine index 57 (press Enter to use the default).
 
-3. The script will output the estimated Remaining Useful Life (RUL) for the selected engine.
+3. Response:
 
-## Deployment
+The response from the requests will look like this:
+```json
+   {
+	"RUL_prediction": "113.60893",
+	"UNIX_timestamp": "1724759975"
+   }
+   ```
 
 -- 
 
