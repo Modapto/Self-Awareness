@@ -21,6 +21,8 @@ COPY --from=builder /venv /venv
 
 # Copy only the necessary application files
 COPY ./src /home/app/src
+COPY ./models /home/app/models
+COPY ./Datasets /home/app/Datasets
 
 # Ensure the virtual environment's binaries are used
 ENV PATH="/venv/bin:$PATH"

@@ -33,7 +33,7 @@ def selfAwarenessProcess():
     
     x_test, _ = loadData("4")
     best_model = Model().to(device)
-    best_model.load_state_dict(torch.load('models/best_model_FD004.pth', map_location=device))
+    best_model.load_state_dict(torch.load('../models/best_model_FD004.pth', map_location=device))
     best_model.eval()
 
     min_engine_index = 1
@@ -67,8 +67,8 @@ def selfAwarenessProcessV2():
     engine_index = int(request.args.get('engine_index'))
     
     # Check if 'index' is provided
-    if engine_index is None or engine_index <= min_engine_index or engine_index >= max_engine_index:
-        return jsonify({"error": f"Missing 'engine_index' parameter or engine index out of limits ({min_engine_index},{max_engine_index})"}), 400
+    if engine_index is None:
+        return jsonify({"error": f"Missing 'engine_index' parameter "}), 400
     
     else:
         rul_prediction = process(engine_index)
@@ -77,11 +77,15 @@ def selfAwarenessProcessV2():
         # Get the current UNIX timestamp
         current_timestamp = int(time.time())
         
-        # return payload
-        return jsonify({
-            "RUL_prediction": str(rul_prediction),
-            "UNIX_timestamp": str(current_timestamp)
-        }), 200
+        if rul_prediction == "error":
+            return jsonify({"error": f"'engine_index' out of max bounds, try a lower value "}), 400
+        
+        else:
+            # return payload
+            return jsonify({
+                "RUL_prediction": str(rul_prediction),
+                "UNIX_timestamp": str(current_timestamp)
+            }), 200
     
 # -------------------------------------------------------------------------------------------------------------- #
 if __name__ == "__main__":
