@@ -14,11 +14,14 @@ def process(engine_index):
     
     x_test, _ = loadData("4")
     best_model = Model().to(device)
-    best_model.load_state_dict(torch.load('models/best_model_FD004.pth'))
+    best_model.load_state_dict(torch.load('../models/best_model_FD004.pth', map_location=device))
     best_model.eval()
 
     min_engine_index = 1
     max_engine_index = len(x_test)
+    
+    if engine_index > max_engine_index:
+        return "error"
     
     with torch.no_grad():
         y_pred = best_model(x_test[engine_index].float())

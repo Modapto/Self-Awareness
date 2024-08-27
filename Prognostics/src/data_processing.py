@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import torch
+from logs import extended_logger
+
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -11,9 +13,17 @@ def import_(nb):
     sensor_names = ['sig_{}'.format(i) for i in range(1, 22)]
     col_names = index_names + setting_names + sensor_names
 
-    train = pd.read_csv(f'./Datasets/Cmapss/train_FD00{nb}.txt', sep='\s+', header=None, names=col_names)
-    x_test = pd.read_csv(f'./Datasets/Cmapss/test_FD00{nb}.txt', sep='\s+', header=None, names=col_names)
-    y_test = pd.read_csv(f'./Datasets/Cmapss/RUL_FD00{nb}.txt', sep='\s+', header=None, names=['RUL'])
+    '''train_file =  f"train_FD00{nb}.txt"
+    x_test_file = f"test_FD00{nb}.txt"
+    y_test_file = f"RUL_FD00{nb}.txt"
+
+    train = pd.read_csv("../Datasets/CMAPSS/" + train_file, sep='\s+', header=None, names=col_names)
+    x_test = pd.read_csv("../Datasets/CMAPSS/" + x_test_file, sep='\s+', header=None, names=col_names)
+    y_test = pd.read_csv("../Datasets/CMAPSS/" + y_test_file, sep='\s+', header=None, names=['RUL'])'''
+    
+    train = pd.read_csv(f'../Datasets/CMAPSS/train_FD00{nb}.txt', sep='\s+', header=None, names=col_names)
+    x_test = pd.read_csv(f'../Datasets/CMAPSS/test_FD00{nb}.txt', sep='\s+', header=None, names=col_names)
+    y_test = pd.read_csv(f'../Datasets/CMAPSS/RUL_FD00{nb}.txt', sep='\s+', header=None, names=['RUL'])
 
     test_last_element = pd.concat([x_test.groupby('ID').last().reset_index(), y_test], axis=1)
     test = x_test.merge(test_last_element, left_on=col_names, right_on=col_names, how='left')
