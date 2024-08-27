@@ -9,9 +9,8 @@ The model is trained on the CMAPSS Jet Engine Simulated Data provided by NASA.
 ## Table of Contents
 1. [Installation](#installation)
 2. [Usage](#usage)
-3. [Deployment](#deployment)
-4. [Contributor](#contributor)
-5. [License](#license)
+3. [Contributor](#contributor)
+4. [License](#license)
 
 ## Installation
 
@@ -55,7 +54,7 @@ If the container is in a remote machine, replace "localhost" with the IP address
 
    print(response.text)
    ```
-   
+
 This script loads the pre-trained model and prompts the user to enter a specific engine index.
 If no input is provided, it defaults to engine index 57 (press Enter to use the default).
 
