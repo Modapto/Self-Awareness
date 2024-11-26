@@ -2,6 +2,8 @@ import torch
 from data_processing import loadData, norm_
 from model import Model
 from flask import Flask, request, Response, jsonify
+from flask_swagger import swagger
+from flask_swagger_ui import get_swaggerui_blueprint
 import requests
 import json
 from waitress import serve
@@ -22,11 +24,39 @@ pretty     = False
 
 app = Flask(__name__)
 
-
 # -------------------------------------------------------------------------------------------------------------- #
 
 @app.route('/analysis', methods=['GET'])
 def selfAwarenessProcess():
+    """
+    Endpoint to predict the Remaining Useful Life (RUL) for a given engine index.
+    ---
+    tags:
+      - Analysis
+    parameters:
+      - name: engine_index
+        in: query
+        type: integer
+        required: true
+        description: Index of the engine to analyze.
+    responses:
+      200:
+        description: Successfully retrieved RUL prediction.
+        schema:
+          type: object
+          properties:
+            RUL_prediction:
+              type: string
+              description: Predicted Remaining Useful Life.
+            engine_index:
+              type: string
+              description: Engine index used for the prediction.
+            UNIX_timestamp:
+              type: string
+              description: Timestamp of the prediction.
+      400:
+        description: Missing or invalid engine index.
+    """
     
     # Extract 'index' from query parameters
     engine_index = int(request.args.get('engine_index'))
@@ -63,6 +93,35 @@ def selfAwarenessProcess():
 
 @app.route('/analysis/v2', methods=['GET'])
 def selfAwarenessProcessV2():
+    """
+    Endpoint to predict the Remaining Useful Life (RUL) for a given engine index using an alternative method.
+    ---
+    tags:
+      - Analysis
+    parameters:
+      - name: engine_index
+        in: query
+        type: integer
+        required: true
+        description: Index of the engine to analyze.
+    responses:
+      200:
+        description: Successfully retrieved RUL prediction.
+        schema:
+          type: object
+          properties:
+            RUL_prediction:
+              type: string
+              description: Predicted Remaining Useful Life.
+            engine_index:
+              type: string
+              description: Engine index used for the prediction.
+            UNIX_timestamp:
+              type: string
+              description: Timestamp of the prediction.
+      400:
+        description: Missing or invalid engine index, or index out of bounds.
+    """
     
     # Extract 'index' from query parameters
     engine_index = int(request.args.get('engine_index'))
@@ -88,7 +147,36 @@ def selfAwarenessProcessV2():
                 "engine_index": str(engine_index),
                 "UNIX_timestamp": str(current_timestamp)
             }), 200
-    
+
+  # Swagger documentation route
+@app.route('/swagger')
+def get_swagger():
+    """
+    Generates the Swagger specification for this API.
+    ---
+    tags:
+      - Documentation
+    responses:
+      200:
+        description: Swagger specification in JSON format.
+    """
+    swag = swagger(app)
+    swag['info']['version'] = "1.0"
+    swag['info']['title'] = "Prognostics"
+    return jsonify(swag)
+
+# Swagger UI route
+SWAGGER_URL = '/swagger-ui'
+API_URL = '/swagger'
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Prognostics"
+    }
+)
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
 # -------------------------------------------------------------------------------------------------------------- #
 if __name__ == "__main__":
     app.run(host=host, port=port)
