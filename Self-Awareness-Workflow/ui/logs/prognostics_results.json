@@ -1,0 +1,665 @@
+[
+  {
+    "timestamp": 1734018341.0510342,
+    "simulation_run": 1,
+    "current_index": 172,
+    "total_length": 960,
+    "remaining_samples": 788,
+    "percentage_remaining": 82.08333333333333,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.36768305301666,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.0
+  },
+  {
+    "timestamp": 1734018843.4380665,
+    "simulation_run": 1,
+    "current_index": 175,
+    "total_length": 960,
+    "remaining_samples": 785,
+    "percentage_remaining": 81.77083333333334,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 56,
+      "remaining_samples": 247
+    },
+    "estimated_rul": 127.21137081080013,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.1563122422165341
+  },
+  {
+    "timestamp": 1734018850.3952463,
+    "simulation_run": 1,
+    "current_index": 175,
+    "total_length": 960,
+    "remaining_samples": 785,
+    "percentage_remaining": 81.77083333333334,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 56,
+      "remaining_samples": 247
+    },
+    "estimated_rul": 127.20943826085991,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.1582447921567493
+  },
+  {
+    "timestamp": 1734018858.1975977,
+    "simulation_run": 1,
+    "current_index": 175,
+    "total_length": 960,
+    "remaining_samples": 785,
+    "percentage_remaining": 81.77083333333334,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 56,
+      "remaining_samples": 247
+    },
+    "estimated_rul": 127.20727094100582,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.16041211201084984
+  },
+  {
+    "timestamp": 1734018865.9238195,
+    "simulation_run": 1,
+    "current_index": 175,
+    "total_length": 960,
+    "remaining_samples": 785,
+    "percentage_remaining": 81.77083333333334,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 56,
+      "remaining_samples": 247
+    },
+    "estimated_rul": 127.20512476828364,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.16255828473303052
+  },
+  {
+    "timestamp": 1734019180.2748082,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.36768305301666,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.0
+  },
+  {
+    "timestamp": 1734019187.8523128,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.11570018682215,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2519828661945131
+  },
+  {
+    "timestamp": 1734019194.7226954,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.11379174722566,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.25389130579100716
+  },
+  {
+    "timestamp": 1734019205.9991517,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.11065939823787,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2570236547787984
+  },
+  {
+    "timestamp": 1734019209.288411,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.10974571512806,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2579373378886117
+  },
+  {
+    "timestamp": 1734019218.7102168,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.10712854683399,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2605545061826706
+  },
+  {
+    "timestamp": 1734019219.8397932,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.10681477559937,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2608682774172889
+  },
+  {
+    "timestamp": 1734019220.7578623,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.1065597563982,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2611232966184616
+  },
+  {
+    "timestamp": 1734019230.8696923,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.10375091473261,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.26393213828404744
+  },
+  {
+    "timestamp": 1734019259.5895164,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.0957731858227,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2719098671939638
+  },
+  {
+    "timestamp": 1734019266.1020823,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.09396413975291,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.27371891326374476
+  },
+  {
+    "timestamp": 1734019277.556059,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.0907824795776,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.27690057343906826
+  },
+  {
+    "timestamp": 1734019281.0323043,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08981685585445,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.27786619716220434
+  },
+  {
+    "timestamp": 1734019284.0171785,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08898772411877,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.27869532889790005
+  },
+  {
+    "timestamp": 1734019284.7838018,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.0887747732136,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.27890827980306415
+  },
+  {
+    "timestamp": 1734019285.4201589,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.0885980073611,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.27908504565556846
+  },
+  {
+    "timestamp": 1734019286.2721055,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.0883613555299,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2793216974867715
+  },
+  {
+    "timestamp": 1734019286.7801664,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08822022749318,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.27946282552348245
+  },
+  {
+    "timestamp": 1734019287.4321845,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08803911136256,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.27964394165409934
+  },
+  {
+    "timestamp": 1734019288.0577128,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08786535349157,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2798176995250914
+  },
+  {
+    "timestamp": 1734019288.7084925,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08768458134598,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2799984716706806
+  },
+  {
+    "timestamp": 1734019289.2481403,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08753467917442,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2801483738422394
+  },
+  {
+    "timestamp": 1734019289.901715,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08735313064523,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.28032992237144044
+  },
+  {
+    "timestamp": 1734019290.4680326,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08719582021236,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2804872328042984
+  },
+  {
+    "timestamp": 1734019291.209403,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08698988397916,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.280693169037501
+  },
+  {
+    "timestamp": 1734019292.00603,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08676859868898,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2809144543276893
+  },
+  {
+    "timestamp": 1734019292.6117747,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08660033630001,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.2810827167166604
+  },
+  {
+    "timestamp": 1734019302.527454,
+    "simulation_run": 1,
+    "current_index": 173,
+    "total_length": 960,
+    "remaining_samples": 787,
+    "percentage_remaining": 81.97916666666667,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.08384598096212,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.28383707205454506
+  },
+  {
+    "timestamp": 1734089022.308126,
+    "simulation_run": 1,
+    "current_index": 172,
+    "total_length": 960,
+    "remaining_samples": 788,
+    "percentage_remaining": 82.08333333333333,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 127.36768305301666,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 0.0
+  },
+  {
+    "timestamp": 1734089051.3105369,
+    "simulation_run": 1,
+    "current_index": 172,
+    "total_length": 960,
+    "remaining_samples": 788,
+    "percentage_remaining": 82.08333333333333,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 107.70918401347267,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 19.658499039544
+  },
+  {
+    "timestamp": 1734089062.6679964,
+    "simulation_run": 1,
+    "current_index": 172,
+    "total_length": 960,
+    "remaining_samples": 788,
+    "percentage_remaining": 82.08333333333333,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 107.70602916359901,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 19.66165388941765
+  },
+  {
+    "timestamp": 1734089064.2708163,
+    "simulation_run": 1,
+    "current_index": 172,
+    "total_length": 960,
+    "remaining_samples": 788,
+    "percentage_remaining": 82.08333333333333,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 107.70558393584358,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 19.66209911717309
+  },
+  {
+    "timestamp": 1734089080.2748778,
+    "simulation_run": 1,
+    "current_index": 172,
+    "total_length": 960,
+    "remaining_samples": 788,
+    "percentage_remaining": 82.08333333333333,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 107.70113836321566,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 19.666544689801004
+  },
+  {
+    "timestamp": 1734089091.8481798,
+    "simulation_run": 1,
+    "current_index": 172,
+    "total_length": 960,
+    "remaining_samples": 788,
+    "percentage_remaining": 82.08333333333333,
+    "cmapss_reference": {
+      "trajectory_index": 48,
+      "total_length": 303,
+      "position_used": 55,
+      "remaining_samples": 248
+    },
+    "estimated_rul": 107.69792355709606,
+    "base_rul": 127.36768305301666,
+    "time_since_anomaly": 19.669759495920605
+  }
+]
