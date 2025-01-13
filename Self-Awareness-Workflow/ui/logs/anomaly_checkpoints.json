@@ -1,0 +1,37 @@
+[
+  {
+    "timestamp": 1734018280.7139945,
+    "window_start": 152,
+    "window_end": 172,
+    "first_anomaly_index": 161,
+    "confidence": 50.0
+  },
+  {
+    "timestamp": 1734018726.9237237,
+    "window_start": 155,
+    "window_end": 175,
+    "first_anomaly_index": 161,
+    "confidence": 65.0
+  },
+  {
+    "timestamp": 1734019126.886562,
+    "window_start": 153,
+    "window_end": 173,
+    "first_anomaly_index": 161,
+    "confidence": 55.00000000000001
+  },
+  {
+    "timestamp": 1734088864.021906,
+    "window_start": 155,
+    "window_end": 175,
+    "first_anomaly_index": 161,
+    "confidence": 65.0
+  },
+  {
+    "timestamp": 1734088963.430343,
+    "window_start": 152,
+    "window_end": 172,
+    "first_anomaly_index": 161,
+    "confidence": 50.0
+  }
+]

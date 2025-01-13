@@ -1,0 +1,1034 @@
+[
+  {
+    "timestamp": "2024-12-12T16:45:34.910173",
+    "simulation_run": 1,
+    "window_interval": {
+      "start": 112,
+      "end": 172
+    },
+    "diagnosis": {
+      "fault_type": "1",
+      "confidence": 1.0
+    },
+    "sample_predictions": {
+      "112": {
+        "prediction": 0,
+        "probability": 0.0004677614488173276
+      },
+      "113": {
+        "prediction": 0,
+        "probability": 6.327298615360633e-05
+      },
+      "114": {
+        "prediction": 0,
+        "probability": 0.0009107404621317983
+      },
+      "115": {
+        "prediction": 0,
+        "probability": 0.0002898909733630717
+      },
+      "116": {
+        "prediction": 0,
+        "probability": 0.00014653911057393998
+      },
+      "117": {
+        "prediction": 0,
+        "probability": 6.078990554669872e-05
+      },
+      "118": {
+        "prediction": 0,
+        "probability": 0.0005886660073883832
+      },
+      "119": {
+        "prediction": 0,
+        "probability": 0.0017733367858454585
+      },
+      "120": {
+        "prediction": 0,
+        "probability": 0.002021610736846924
+      },
+      "121": {
+        "prediction": 0,
+        "probability": 0.003703996306285262
+      },
+      "122": {
+        "prediction": 0,
+        "probability": 0.004831849131733179
+      },
+      "123": {
+        "prediction": 0,
+        "probability": 0.006422736216336489
+      },
+      "124": {
+        "prediction": 0,
+        "probability": 0.007659961003810167
+      },
+      "125": {
+        "prediction": 0,
+        "probability": 0.011570483446121216
+      },
+      "126": {
+        "prediction": 0,
+        "probability": 0.008041631430387497
+      },
+      "127": {
+        "prediction": 0,
+        "probability": 0.059950221329927444
+      },
+      "128": {
+        "prediction": 0,
+        "probability": 0.008467033505439758
+      },
+      "129": {
+        "prediction": 0,
+        "probability": 0.04061410203576088
+      },
+      "130": {
+        "prediction": 0,
+        "probability": 0.006797245237976313
+      },
+      "131": {
+        "prediction": 0,
+        "probability": 0.009556001052260399
+      },
+      "132": {
+        "prediction": 0,
+        "probability": 0.00850670039653778
+      },
+      "133": {
+        "prediction": 0,
+        "probability": 0.0212920643389225
+      },
+      "134": {
+        "prediction": 0,
+        "probability": 0.005612457636743784
+      },
+      "135": {
+        "prediction": 0,
+        "probability": 0.0059366775676608086
+      },
+      "136": {
+        "prediction": 0,
+        "probability": 0.003420848399400711
+      },
+      "137": {
+        "prediction": 0,
+        "probability": 0.0037712245248258114
+      },
+      "138": {
+        "prediction": 0,
+        "probability": 5.8685258409241214e-05
+      },
+      "139": {
+        "prediction": 0,
+        "probability": 0.001419390202499926
+      },
+      "140": {
+        "prediction": 0,
+        "probability": 0.0033639592584222555
+      },
+      "141": {
+        "prediction": 0,
+        "probability": 0.00030640282784588635
+      },
+      "142": {
+        "prediction": 0,
+        "probability": 1.9299357063573552e-06
+      },
+      "143": {
+        "prediction": 0,
+        "probability": 0.00011186184565303847
+      },
+      "144": {
+        "prediction": 0,
+        "probability": 5.0761289458023384e-05
+      },
+      "145": {
+        "prediction": 0,
+        "probability": 0.00015173455176409334
+      },
+      "146": {
+        "prediction": 0,
+        "probability": 0.0002630727249197662
+      },
+      "147": {
+        "prediction": 0,
+        "probability": 0.0013241053093224764
+      },
+      "148": {
+        "prediction": 0,
+        "probability": 0.018348511308431625
+      },
+      "149": {
+        "prediction": 0,
+        "probability": 0.004292177967727184
+      },
+      "150": {
+        "prediction": 0,
+        "probability": 0.01589437946677208
+      },
+      "151": {
+        "prediction": 0,
+        "probability": 0.0025246257428079844
+      },
+      "152": {
+        "prediction": 0,
+        "probability": 0.0132247693836689
+      },
+      "153": {
+        "prediction": 0,
+        "probability": 0.007702510338276625
+      },
+      "154": {
+        "prediction": 0,
+        "probability": 0.006934663746505976
+      },
+      "155": {
+        "prediction": 0,
+        "probability": 0.009564814157783985
+      },
+      "156": {
+        "prediction": 0,
+        "probability": 0.04388950765132904
+      },
+      "157": {
+        "prediction": 0,
+        "probability": 0.008609481155872345
+      },
+      "158": {
+        "prediction": 0,
+        "probability": 0.03643026202917099
+      },
+      "159": {
+        "prediction": 0,
+        "probability": 0.0013361107558012009
+      },
+      "160": {
+        "prediction": 0,
+        "probability": 0.005274829920381308
+      },
+      "161": {
+        "prediction": 0,
+        "probability": 0.026163669303059578
+      },
+      "162": {
+        "prediction": 1,
+        "probability": 0.9987491369247437
+      },
+      "163": {
+        "prediction": 1,
+        "probability": 0.9999997615814209
+      },
+      "164": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "165": {
+        "prediction": 1,
+        "probability": 0.9999985694885254
+      },
+      "166": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "167": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "168": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "169": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "170": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "171": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "172": {
+        "prediction": 1,
+        "probability": 1.0
+      }
+    }
+  },
+  {
+    "timestamp": "2024-12-12T16:53:01.735341",
+    "simulation_run": 1,
+    "window_interval": {
+      "start": 115,
+      "end": 175
+    },
+    "diagnosis": {
+      "fault_type": "1",
+      "confidence": 1.0
+    },
+    "sample_predictions": {
+      "115": {
+        "prediction": 0,
+        "probability": 0.0002898909733630717
+      },
+      "116": {
+        "prediction": 0,
+        "probability": 0.00014653911057393998
+      },
+      "117": {
+        "prediction": 0,
+        "probability": 6.078990554669872e-05
+      },
+      "118": {
+        "prediction": 0,
+        "probability": 0.0005886660073883832
+      },
+      "119": {
+        "prediction": 0,
+        "probability": 0.0017733367858454585
+      },
+      "120": {
+        "prediction": 0,
+        "probability": 0.002021610736846924
+      },
+      "121": {
+        "prediction": 0,
+        "probability": 0.003703996306285262
+      },
+      "122": {
+        "prediction": 0,
+        "probability": 0.004831849131733179
+      },
+      "123": {
+        "prediction": 0,
+        "probability": 0.006422736216336489
+      },
+      "124": {
+        "prediction": 0,
+        "probability": 0.007659961003810167
+      },
+      "125": {
+        "prediction": 0,
+        "probability": 0.011570483446121216
+      },
+      "126": {
+        "prediction": 0,
+        "probability": 0.008041631430387497
+      },
+      "127": {
+        "prediction": 0,
+        "probability": 0.059950221329927444
+      },
+      "128": {
+        "prediction": 0,
+        "probability": 0.008467033505439758
+      },
+      "129": {
+        "prediction": 0,
+        "probability": 0.04061410203576088
+      },
+      "130": {
+        "prediction": 0,
+        "probability": 0.006797245237976313
+      },
+      "131": {
+        "prediction": 0,
+        "probability": 0.009556001052260399
+      },
+      "132": {
+        "prediction": 0,
+        "probability": 0.00850670039653778
+      },
+      "133": {
+        "prediction": 0,
+        "probability": 0.0212920643389225
+      },
+      "134": {
+        "prediction": 0,
+        "probability": 0.005612457636743784
+      },
+      "135": {
+        "prediction": 0,
+        "probability": 0.0059366775676608086
+      },
+      "136": {
+        "prediction": 0,
+        "probability": 0.003420848399400711
+      },
+      "137": {
+        "prediction": 0,
+        "probability": 0.0037712245248258114
+      },
+      "138": {
+        "prediction": 0,
+        "probability": 5.8685258409241214e-05
+      },
+      "139": {
+        "prediction": 0,
+        "probability": 0.001419390202499926
+      },
+      "140": {
+        "prediction": 0,
+        "probability": 0.0033639592584222555
+      },
+      "141": {
+        "prediction": 0,
+        "probability": 0.00030640282784588635
+      },
+      "142": {
+        "prediction": 0,
+        "probability": 1.9299357063573552e-06
+      },
+      "143": {
+        "prediction": 0,
+        "probability": 0.00011186184565303847
+      },
+      "144": {
+        "prediction": 0,
+        "probability": 5.0761289458023384e-05
+      },
+      "145": {
+        "prediction": 0,
+        "probability": 0.00015173455176409334
+      },
+      "146": {
+        "prediction": 0,
+        "probability": 0.0002630727249197662
+      },
+      "147": {
+        "prediction": 0,
+        "probability": 0.0013241053093224764
+      },
+      "148": {
+        "prediction": 0,
+        "probability": 0.018348511308431625
+      },
+      "149": {
+        "prediction": 0,
+        "probability": 0.004292177967727184
+      },
+      "150": {
+        "prediction": 0,
+        "probability": 0.01589437946677208
+      },
+      "151": {
+        "prediction": 0,
+        "probability": 0.0025246257428079844
+      },
+      "152": {
+        "prediction": 0,
+        "probability": 0.0132247693836689
+      },
+      "153": {
+        "prediction": 0,
+        "probability": 0.007702510338276625
+      },
+      "154": {
+        "prediction": 0,
+        "probability": 0.006934663746505976
+      },
+      "155": {
+        "prediction": 0,
+        "probability": 0.009564814157783985
+      },
+      "156": {
+        "prediction": 0,
+        "probability": 0.04388950765132904
+      },
+      "157": {
+        "prediction": 0,
+        "probability": 0.008609481155872345
+      },
+      "158": {
+        "prediction": 0,
+        "probability": 0.03643026202917099
+      },
+      "159": {
+        "prediction": 0,
+        "probability": 0.0013361107558012009
+      },
+      "160": {
+        "prediction": 0,
+        "probability": 0.005274829920381308
+      },
+      "161": {
+        "prediction": 0,
+        "probability": 0.026163669303059578
+      },
+      "162": {
+        "prediction": 1,
+        "probability": 0.9987491369247437
+      },
+      "163": {
+        "prediction": 1,
+        "probability": 0.9999997615814209
+      },
+      "164": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "165": {
+        "prediction": 1,
+        "probability": 0.9999985694885254
+      },
+      "166": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "167": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "168": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "169": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "170": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "171": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "172": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "173": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "174": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "175": {
+        "prediction": 1,
+        "probability": 1.0
+      }
+    }
+  },
+  {
+    "timestamp": "2024-12-12T16:59:40.168051",
+    "simulation_run": 1,
+    "window_interval": {
+      "start": 113,
+      "end": 173
+    },
+    "diagnosis": {
+      "fault_type": "1",
+      "confidence": 1.0
+    },
+    "sample_predictions": {
+      "113": {
+        "prediction": 0,
+        "probability": 6.327298615360633e-05
+      },
+      "114": {
+        "prediction": 0,
+        "probability": 0.0009107404621317983
+      },
+      "115": {
+        "prediction": 0,
+        "probability": 0.0002898909733630717
+      },
+      "116": {
+        "prediction": 0,
+        "probability": 0.00014653911057393998
+      },
+      "117": {
+        "prediction": 0,
+        "probability": 6.078990554669872e-05
+      },
+      "118": {
+        "prediction": 0,
+        "probability": 0.0005886660073883832
+      },
+      "119": {
+        "prediction": 0,
+        "probability": 0.0017733367858454585
+      },
+      "120": {
+        "prediction": 0,
+        "probability": 0.002021610736846924
+      },
+      "121": {
+        "prediction": 0,
+        "probability": 0.003703996306285262
+      },
+      "122": {
+        "prediction": 0,
+        "probability": 0.004831849131733179
+      },
+      "123": {
+        "prediction": 0,
+        "probability": 0.006422736216336489
+      },
+      "124": {
+        "prediction": 0,
+        "probability": 0.007659961003810167
+      },
+      "125": {
+        "prediction": 0,
+        "probability": 0.011570483446121216
+      },
+      "126": {
+        "prediction": 0,
+        "probability": 0.008041631430387497
+      },
+      "127": {
+        "prediction": 0,
+        "probability": 0.059950221329927444
+      },
+      "128": {
+        "prediction": 0,
+        "probability": 0.008467033505439758
+      },
+      "129": {
+        "prediction": 0,
+        "probability": 0.04061410203576088
+      },
+      "130": {
+        "prediction": 0,
+        "probability": 0.006797245237976313
+      },
+      "131": {
+        "prediction": 0,
+        "probability": 0.009556001052260399
+      },
+      "132": {
+        "prediction": 0,
+        "probability": 0.00850670039653778
+      },
+      "133": {
+        "prediction": 0,
+        "probability": 0.0212920643389225
+      },
+      "134": {
+        "prediction": 0,
+        "probability": 0.005612457636743784
+      },
+      "135": {
+        "prediction": 0,
+        "probability": 0.0059366775676608086
+      },
+      "136": {
+        "prediction": 0,
+        "probability": 0.003420848399400711
+      },
+      "137": {
+        "prediction": 0,
+        "probability": 0.0037712245248258114
+      },
+      "138": {
+        "prediction": 0,
+        "probability": 5.8685258409241214e-05
+      },
+      "139": {
+        "prediction": 0,
+        "probability": 0.001419390202499926
+      },
+      "140": {
+        "prediction": 0,
+        "probability": 0.0033639592584222555
+      },
+      "141": {
+        "prediction": 0,
+        "probability": 0.00030640282784588635
+      },
+      "142": {
+        "prediction": 0,
+        "probability": 1.9299357063573552e-06
+      },
+      "143": {
+        "prediction": 0,
+        "probability": 0.00011186184565303847
+      },
+      "144": {
+        "prediction": 0,
+        "probability": 5.0761289458023384e-05
+      },
+      "145": {
+        "prediction": 0,
+        "probability": 0.00015173455176409334
+      },
+      "146": {
+        "prediction": 0,
+        "probability": 0.0002630727249197662
+      },
+      "147": {
+        "prediction": 0,
+        "probability": 0.0013241053093224764
+      },
+      "148": {
+        "prediction": 0,
+        "probability": 0.018348511308431625
+      },
+      "149": {
+        "prediction": 0,
+        "probability": 0.004292177967727184
+      },
+      "150": {
+        "prediction": 0,
+        "probability": 0.01589437946677208
+      },
+      "151": {
+        "prediction": 0,
+        "probability": 0.0025246257428079844
+      },
+      "152": {
+        "prediction": 0,
+        "probability": 0.0132247693836689
+      },
+      "153": {
+        "prediction": 0,
+        "probability": 0.007702510338276625
+      },
+      "154": {
+        "prediction": 0,
+        "probability": 0.006934663746505976
+      },
+      "155": {
+        "prediction": 0,
+        "probability": 0.009564814157783985
+      },
+      "156": {
+        "prediction": 0,
+        "probability": 0.04388950765132904
+      },
+      "157": {
+        "prediction": 0,
+        "probability": 0.008609481155872345
+      },
+      "158": {
+        "prediction": 0,
+        "probability": 0.03643026202917099
+      },
+      "159": {
+        "prediction": 0,
+        "probability": 0.0013361107558012009
+      },
+      "160": {
+        "prediction": 0,
+        "probability": 0.005274829920381308
+      },
+      "161": {
+        "prediction": 0,
+        "probability": 0.026163669303059578
+      },
+      "162": {
+        "prediction": 1,
+        "probability": 0.9987491369247437
+      },
+      "163": {
+        "prediction": 1,
+        "probability": 0.9999997615814209
+      },
+      "164": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "165": {
+        "prediction": 1,
+        "probability": 0.9999985694885254
+      },
+      "166": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "167": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "168": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "169": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "170": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "171": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "172": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "173": {
+        "prediction": 1,
+        "probability": 1.0
+      }
+    }
+  },
+  {
+    "timestamp": "2024-12-13T12:23:36.006905",
+    "simulation_run": 1,
+    "window_interval": {
+      "start": 112,
+      "end": 172
+    },
+    "diagnosis": {
+      "fault_type": "1",
+      "confidence": 1.0
+    },
+    "sample_predictions": {
+      "112": {
+        "prediction": 0,
+        "probability": 0.0004677614488173276
+      },
+      "113": {
+        "prediction": 0,
+        "probability": 6.327298615360633e-05
+      },
+      "114": {
+        "prediction": 0,
+        "probability": 0.0009107404621317983
+      },
+      "115": {
+        "prediction": 0,
+        "probability": 0.0002898909733630717
+      },
+      "116": {
+        "prediction": 0,
+        "probability": 0.00014653911057393998
+      },
+      "117": {
+        "prediction": 0,
+        "probability": 6.078990554669872e-05
+      },
+      "118": {
+        "prediction": 0,
+        "probability": 0.0005886660073883832
+      },
+      "119": {
+        "prediction": 0,
+        "probability": 0.0017733367858454585
+      },
+      "120": {
+        "prediction": 0,
+        "probability": 0.002021610736846924
+      },
+      "121": {
+        "prediction": 0,
+        "probability": 0.003703996306285262
+      },
+      "122": {
+        "prediction": 0,
+        "probability": 0.004831849131733179
+      },
+      "123": {
+        "prediction": 0,
+        "probability": 0.006422736216336489
+      },
+      "124": {
+        "prediction": 0,
+        "probability": 0.007659961003810167
+      },
+      "125": {
+        "prediction": 0,
+        "probability": 0.011570483446121216
+      },
+      "126": {
+        "prediction": 0,
+        "probability": 0.008041631430387497
+      },
+      "127": {
+        "prediction": 0,
+        "probability": 0.059950221329927444
+      },
+      "128": {
+        "prediction": 0,
+        "probability": 0.008467033505439758
+      },
+      "129": {
+        "prediction": 0,
+        "probability": 0.04061410203576088
+      },
+      "130": {
+        "prediction": 0,
+        "probability": 0.006797245237976313
+      },
+      "131": {
+        "prediction": 0,
+        "probability": 0.009556001052260399
+      },
+      "132": {
+        "prediction": 0,
+        "probability": 0.00850670039653778
+      },
+      "133": {
+        "prediction": 0,
+        "probability": 0.0212920643389225
+      },
+      "134": {
+        "prediction": 0,
+        "probability": 0.005612457636743784
+      },
+      "135": {
+        "prediction": 0,
+        "probability": 0.0059366775676608086
+      },
+      "136": {
+        "prediction": 0,
+        "probability": 0.003420848399400711
+      },
+      "137": {
+        "prediction": 0,
+        "probability": 0.0037712245248258114
+      },
+      "138": {
+        "prediction": 0,
+        "probability": 5.8685258409241214e-05
+      },
+      "139": {
+        "prediction": 0,
+        "probability": 0.001419390202499926
+      },
+      "140": {
+        "prediction": 0,
+        "probability": 0.0033639592584222555
+      },
+      "141": {
+        "prediction": 0,
+        "probability": 0.00030640282784588635
+      },
+      "142": {
+        "prediction": 0,
+        "probability": 1.9299357063573552e-06
+      },
+      "143": {
+        "prediction": 0,
+        "probability": 0.00011186184565303847
+      },
+      "144": {
+        "prediction": 0,
+        "probability": 5.0761289458023384e-05
+      },
+      "145": {
+        "prediction": 0,
+        "probability": 0.00015173455176409334
+      },
+      "146": {
+        "prediction": 0,
+        "probability": 0.0002630727249197662
+      },
+      "147": {
+        "prediction": 0,
+        "probability": 0.0013241053093224764
+      },
+      "148": {
+        "prediction": 0,
+        "probability": 0.018348511308431625
+      },
+      "149": {
+        "prediction": 0,
+        "probability": 0.004292177967727184
+      },
+      "150": {
+        "prediction": 0,
+        "probability": 0.01589437946677208
+      },
+      "151": {
+        "prediction": 0,
+        "probability": 0.0025246257428079844
+      },
+      "152": {
+        "prediction": 0,
+        "probability": 0.0132247693836689
+      },
+      "153": {
+        "prediction": 0,
+        "probability": 0.007702510338276625
+      },
+      "154": {
+        "prediction": 0,
+        "probability": 0.006934663746505976
+      },
+      "155": {
+        "prediction": 0,
+        "probability": 0.009564814157783985
+      },
+      "156": {
+        "prediction": 0,
+        "probability": 0.04388950765132904
+      },
+      "157": {
+        "prediction": 0,
+        "probability": 0.008609481155872345
+      },
+      "158": {
+        "prediction": 0,
+        "probability": 0.03643026202917099
+      },
+      "159": {
+        "prediction": 0,
+        "probability": 0.0013361107558012009
+      },
+      "160": {
+        "prediction": 0,
+        "probability": 0.005274829920381308
+      },
+      "161": {
+        "prediction": 0,
+        "probability": 0.026163669303059578
+      },
+      "162": {
+        "prediction": 1,
+        "probability": 0.9987491369247437
+      },
+      "163": {
+        "prediction": 1,
+        "probability": 0.9999997615814209
+      },
+      "164": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "165": {
+        "prediction": 1,
+        "probability": 0.9999985694885254
+      },
+      "166": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "167": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "168": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "169": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "170": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "171": {
+        "prediction": 1,
+        "probability": 1.0
+      },
+      "172": {
+        "prediction": 1,
+        "probability": 1.0
+      }
+    }
+  }
+]
