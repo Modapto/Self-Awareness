@@ -2,3 +2,9 @@ pandas==2.1.4
 numpy==1.26.2
 scikit-learn==1.4.0
 torch==2.1.2
+flask==3.0.3
+requests==2.32.3
+waitress==3.0.0
+python-dotenv==1.0.1
+flask_swagger
+flask_swagger_ui

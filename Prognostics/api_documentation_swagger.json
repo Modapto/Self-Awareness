@@ -1,0 +1,112 @@
+{
+    "definitions": {
+  
+    },
+    "info": {
+      "title": "Prognostics",
+      "version": "1.0"
+    },
+    "paths": {
+      "/analysis": {
+        "get": {
+          "description": "",
+          "parameters": [
+            {
+              "description": "Index of the engine to analyze.",
+              "in": "query",
+              "name": "engine_index",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully retrieved RUL prediction.",
+              "schema": {
+                "properties": {
+                  "RUL_prediction": {
+                    "description": "Predicted Remaining Useful Life.",
+                    "type": "string"
+                  },
+                  "UNIX_timestamp": {
+                    "description": "Timestamp of the prediction.",
+                    "type": "string"
+                  },
+                  "engine_index": {
+                    "description": "Engine index used for the prediction.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "400": {
+              "description": "Missing or invalid engine index."
+            }
+          },
+          "summary": "Endpoint to predict the Remaining Useful Life (RUL) for a given engine index.",
+          "tags": [
+            "Analysis"
+          ]
+        }
+      },
+      "/analysis/v2": {
+        "get": {
+          "description": "",
+          "parameters": [
+            {
+              "description": "Index of the engine to analyze.",
+              "in": "query",
+              "name": "engine_index",
+              "required": true,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully retrieved RUL prediction.",
+              "schema": {
+                "properties": {
+                  "RUL_prediction": {
+                    "description": "Predicted Remaining Useful Life.",
+                    "type": "string"
+                  },
+                  "UNIX_timestamp": {
+                    "description": "Timestamp of the prediction.",
+                    "type": "string"
+                  },
+                  "engine_index": {
+                    "description": "Engine index used for the prediction.",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "400": {
+              "description": "Missing or invalid engine index, or index out of bounds."
+            }
+          },
+          "summary": "Endpoint to predict the Remaining Useful Life (RUL) for a given engine index using an alternative method.",
+          "tags": [
+            "Analysis"
+          ]
+        }
+      },
+      "/swagger": {
+        "get": {
+          "description": "",
+          "responses": {
+            "200": {
+              "description": "Swagger specification in JSON format."
+            }
+          },
+          "summary": "Generates the Swagger specification for this API.",
+          "tags": [
+            "Documentation"
+          ]
+        }
+      }
+    },
+    "swagger": "2.0"
+  }
