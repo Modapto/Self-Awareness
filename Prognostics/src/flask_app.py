@@ -26,7 +26,7 @@ app = Flask(__name__)
 
 # -------------------------------------------------------------------------------------------------------------- #
 
-@app.route('/analysis', methods=['GET'])
+@app.route('/prognostics/analysis', methods=['GET'])
 def selfAwarenessProcess():
     """
     Endpoint to predict the Remaining Useful Life (RUL) for a given engine index.
@@ -91,7 +91,7 @@ def selfAwarenessProcess():
         }), 200
         
 
-@app.route('/analysis/v2', methods=['GET'])
+@app.route('/prognostics/analysis/v2', methods=['GET'])
 def selfAwarenessProcessV2():
     """
     Endpoint to predict the Remaining Useful Life (RUL) for a given engine index using an alternative method.
@@ -149,7 +149,7 @@ def selfAwarenessProcessV2():
             }), 200
 
   # Swagger documentation route
-@app.route('/swagger')
+@app.route('/prognostics/swagger')
 def get_swagger():
     """
     Generates the Swagger specification for this API.
