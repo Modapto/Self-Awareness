@@ -1,0 +1,62 @@
+[
+  {
+    "timestamp": 1733831023.7601984,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 65.0
+  },
+  {
+    "timestamp": 1733831024.6460068,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 0.0
+  },
+  {
+    "timestamp": 1733831333.4772859,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 65.0
+  },
+  {
+    "timestamp": 1733831334.2661836,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 0.0
+  },
+  {
+    "timestamp": 1733831634.502965,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 65.0
+  },
+  {
+    "timestamp": 1733831635.3773422,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 0.0
+  },
+  {
+    "timestamp": 1733835467.8328924,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 65.0
+  },
+  {
+    "timestamp": 1733835469.3793788,
+    "window_start": 160,
+    "window_end": 180,
+    "confidence": 0.0
+  },
+  {
+    "timestamp": 1733835799.5688136,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 65.0
+  },
+  {
+    "timestamp": 1733835800.4017363,
+    "window_start": 155,
+    "window_end": 175,
+    "confidence": 0.0
+  }
+]
