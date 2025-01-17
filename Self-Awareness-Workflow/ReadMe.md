@@ -62,7 +62,13 @@ cd Self-Awareness-Workflow
 pip install -r requirements.txt
 ```
 
-3. Download the CMAPSS and TEP datasets and place it in the `Datasets` directory.
+3. Download and prepare the datasets:
+
+   a. The CMAPSS dataset already exists in the `Datasets` directory.
+   
+   b. Download the TEP dataset from Kaggle:
+      - Visit: https://www.kaggle.com/datasets/averkij/tennessee-eastman-process-simulation-dataset
+      - Download all `*.rData` 4 files and place them in `Self-Awareness-Workflow/Datasets/TEP` directory
 
 ## Usage
 
@@ -110,7 +116,8 @@ https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about
 
 ### 2. Tennessee Eastman Process (TEP) Dataset
 The TEP dataset simulates a chemical process and provides a benchmark platform for process monitoring and control. The dataset can be found at:
-https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/6C3JR1
+- Kaggle: https://www.kaggle.com/datasets/averkij/tennessee-eastman-process-simulation-dataset
+- Harvard Dataverse: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/6C3JR1
 
 ## Contributing
 
