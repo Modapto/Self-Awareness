@@ -206,8 +206,8 @@ def load_and_prepare_data(fault_free_path: str, faulty_path: str, fault_num: int
 
 def main():
     # Configuration
-    FAULT_FREE_PATH = '../Detection/Dataset/TEP/TEP_FaultFree_Training.RData'
-    FAULTY_PATH = '../Detection/Dataset/TEP/TEP_Faulty_Testing.RData'
+    FAULT_FREE_PATH = './Datasets/TEP/TEP_FaultFree_Training.RData'
+    FAULTY_PATH = './Datasets/TEP/TEP_Faulty_Testing.RData'
     FAULT_NUM = 1
     SIM_RUN = 1
     INITIAL_SAMPLES = random.randint(60, 140)

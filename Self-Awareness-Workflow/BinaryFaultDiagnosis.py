@@ -27,14 +27,14 @@ if torch.cuda.is_available():
 def import_data(fault_number):
     """Import data for binary classification (normal vs specific fault)"""
     # Read normal data
-    normal_train_data = pyreadr.read_r('../../../Detection/Dataset/TEP/TEP_FaultFree_Training.RData')['fault_free_training']
-    normal_test_data = pyreadr.read_r('../../../Detection/Dataset/TEP/TEP_FaultFree_Testing.RData')['fault_free_testing']
+    normal_train_data = pyreadr.read_r('../Datasets/TEP/TEP_FaultFree_Training.RData')['fault_free_training']
+    normal_test_data = pyreadr.read_r('../Datasets/TEP/TEP_FaultFree_Testing.RData')['fault_free_testing']
 
     normal_train_data['faultNumber'] = 0
     normal_test_data['faultNumber'] = 0
 
     # Read faulty data for specific fault
-    faulty_train_data = pyreadr.read_r('../../../Detection/Dataset/TEP/TEP_Faulty_Training.RData')['faulty_training']
+    faulty_train_data = pyreadr.read_r('../Datasets/TEP/TEP_Faulty_Training.RData')['faulty_training']
     faulty_train_data = faulty_train_data[faulty_train_data['faultNumber'] == fault_number].reset_index(drop=True)
 
     # Update labels (0 for normal, 1 for fault) with transition point
@@ -42,7 +42,7 @@ def import_data(fault_number):
     faulty_train_data.loc[faulty_train_data['sample'] < 20, 'faultNumber'] = 0
 
     # Read and process test data
-    faulty_test_data = pyreadr.read_r('../../../Detection/Dataset/TEP/TEP_Faulty_Testing.RData')['faulty_testing']
+    faulty_test_data = pyreadr.read_r('../Datasets/TEP/TEP_Faulty_Testing.RData')['faulty_testing']
     faulty_test_data = faulty_test_data[faulty_test_data['faultNumber'] == fault_number].reset_index(drop=True)
 
     # Update test labels with different transition point

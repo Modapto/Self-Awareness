@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
-from ..OnlineAnomalyDetction import OnlineAnomalyDetectorV2, DataCollector, load_and_prepare_data
+from OnlineAnomalyDetction import OnlineAnomalyDetectorV2, DataCollector, load_and_prepare_data
 from logger import SystemLogger
 import joblib
 from pathlib import Path
@@ -7,7 +7,7 @@ import time
 import random
 
 class MonitoringWorker(QThread):
-    """Worker thread for running the anomaly detection monitoring"""
+    """Worker thread fbor running the anomaly detection monitoring"""
     anomaly_detected = pyqtSignal(int, int)  # Emits (window_end, first_anomaly_index)
     diagnostic_ready = pyqtSignal(str, float)  # Emits fault type and confidence
     error_occurred = pyqtSignal(str)  # Emits error message
@@ -35,7 +35,7 @@ class MonitoringWorker(QThread):
             }
 
             # Run diagnosis
-            from ..OnlineFaultDiagnosis import OnlineFaultDiagnoser
+            from OnlineFaultDiagnosis import OnlineFaultDiagnoser
             diagnoser = OnlineFaultDiagnoser()
             fault_type, confidence, _ = diagnoser.diagnose_fault(
                 anomaly_data['simulation_run'],
@@ -138,8 +138,8 @@ class SystemController(QObject):
             if not (model_path.exists() and scaler_path.exists()):
                 # Train new model if needed
                 X_train, _ = load_and_prepare_data(
-                    '../../../Detection/Dataset/TEP/TEP_FaultFree_Training.RData',
-                    '../../../Detection/Dataset/TEP/TEP_Faulty_Testing.RData',
+                    '../Datasets/TEP/TEP_FaultFree_Training.RData',
+                    '../Datasets/TEP/TEP_Faulty_Testing.RData',
                     1, 1
                 )
                 self.train_model(X_train, model_path, scaler_path)
@@ -187,8 +187,8 @@ class SystemController(QObject):
         try:
             # Load simulation data
             _, sim_data = load_and_prepare_data(
-                '../../../Detection/Dataset/TEP/TEP_FaultFree_Training.RData',
-                '../../../Detection/Dataset/TEP/TEP_Faulty_Testing.RData',
+                '../Datasets/TEP/TEP_FaultFree_Training.RData',
+                '../Datasets/TEP/TEP_Faulty_Testing.RData',
                 1, 1
             )
 
@@ -241,7 +241,7 @@ class SystemController(QObject):
             }
 
             # Run prognosis
-            from ..OnlinePrognostics import OnlinePrognostics
+            from OnlinePrognostics import OnlinePrognostics
             prognostics = OnlinePrognostics()
             result = prognostics.estimate_rul(
                 current_index=anomaly_data['window_end'],
