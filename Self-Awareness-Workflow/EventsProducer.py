@@ -12,7 +12,8 @@ class EventsProducer:
         self.producer = KafkaProducer(
             bootstrap_servers=bootstrap_servers,
             client_id='self-awareness-producer',
-            value_serializer=lambda v: json.dumps(v).encode('utf-8') # Serialize JSON
+            value_serializer=lambda v: json.dumps(v).encode('utf-8'), # Serialize JSON
+            auto_create_topics=False # Do not create topics automatically
         )
 
     def validate_event_data(self, event_data):
