@@ -16,8 +16,9 @@ The application provides real-time monitoring and analysis capabilities through 
 4. [Usage](#usage)
 5. [Components](#components)
 6. [Dataset](#dataset)
-7. [Contributing](#contributing)
-8. [License](#license)
+7. [Events](#events)
+8. [Contributing](#contributing)
+9. [License](#license)
 
 ## Features
 
@@ -118,6 +119,40 @@ https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about
 The TEP dataset simulates a chemical process and provides a benchmark platform for process monitoring and control. The dataset can be found at:
 - Kaggle: https://www.kaggle.com/datasets/averkij/tennessee-eastman-process-simulation-dataset
 - Harvard Dataverse: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/6C3JR1
+
+## Events
+
+For Detection and Diagnosis tools some events must be generated to inform operators about the faults. To create a new event you can simple do the following:
+
+   ```sh
+   # Set the Topics
+   self-awareness-diagnosis-topic = 'self-awareness-diagnosis'
+   self-awareness-detection-topic = 'self-awareness-detection'
+
+   # Initialize the producer
+   producer = EventsProducer('kafka.modapto.atc.gr:9092')
+
+   # Example event data - Must be configured for each case
+   event_data = {
+      "description": "System performance anomaly detected", # Description of failt
+      "productionModule": "[This will be based according to DT connected info]",
+      "pilot": "SEW",
+      "timestamp": "2024-01-24T15:30:45",  # ISO 8601 format - Can be omitted, as it is generated automatically
+      "priority": "HIGH", # LOW, MID, HIGH
+      "eventType": "System Anomaly", # Can be whatever you want
+      "sourceComponent": "Diagnosis", # Or Detection
+      "smartService": "Self-Awareness",
+      "topic": "systemself-awareness-diagnosis", # Or self-awareness-detection
+      "results": { }  # Optional (null if not available) - Can have some results to show to Operators
+   }
+
+   # Produce event to a topic
+   producer.produce_event('[topic based on detection or diagnosis]', event_data)
+   print(f"Event regarding [tool] published successfully!") # Optional
+
+   # Close connection at the end of the process of Self-Awareness - NOTE: Only for components that don't run constantly
+   producer.close()
+   ```
 
 ## Contributing
 

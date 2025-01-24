@@ -8,3 +8,4 @@ scikit-learn==1.5.1
 torch==2.1.2
 tqdm==4.66.5
 pickle==4.0
+kafka-python
