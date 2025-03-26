@@ -23,7 +23,7 @@ class EventsProducer:
         :param event_data: Dictionary containing event details
         :raises ValueError: If required fields are missing or invalid
         """
-        required_fields = ['productionModule', 'pilot', 'priority', 'description', 'timestamp', 'topic', 'eventType']
+        required_fields = ['productionModule', 'priority', 'description', 'timestamp', 'topic', 'eventType']
         
         # Check required fields
         for field in required_fields:
@@ -52,14 +52,9 @@ class EventsProducer:
         if 'priority' in event_data:
             event_data['priority'] = event_data['priority'].upper()
 
-        if 'pilot' in event_data:
-            event_data['pilot'] = event_data['pilot'].upper()
-        
         # Validate event data
         validated_event = self.validate_event_data(event_data)
-
        
-        
         # Convert to JSON string
         event_json = json.dumps(validated_event)
         
