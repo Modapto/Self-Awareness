@@ -136,13 +136,12 @@ For Detection and Diagnosis tools some events must be generated to inform operat
    event_data = {
       "description": "System performance anomaly detected", # Description of failt
       "productionModule": "[This will be based according to DT connected info]",
-      "pilot": "SEW",
       "timestamp": "2024-01-24T15:30:45",  # ISO 8601 format - Can be omitted, as it is generated automatically
       "priority": "HIGH", # LOW, MID, HIGH
-      "eventType": "System Anomaly", # Can be whatever you want
-      "sourceComponent": "Diagnosis", # Or Detection
-      "smartService": "Self-Awareness",
-      "topic": "systemself-awareness-diagnosis", # Or self-awareness-detection
+      "eventType": "Anomaly Detected | Anomaly Diagnosed", # Depending on the case
+      "sourceComponent": "Diagnosis", # Or Detection or generally Self-Awareness
+      "smartService": "Self-Awareness", # or will be given by DT
+      "topic": "self-awareness-diagnosis", # Or self-awareness-detection
       "results": { }  # Optional (null if not available) - Can have some results to show to Operators
    }
 
