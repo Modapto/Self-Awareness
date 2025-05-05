@@ -11,6 +11,7 @@ This system monitors tool wear using a Manufacturing Execution System (MES) arch
 - [Detailed Workflow](#detailed-workflow)
 - [File Formats](#file-formats)
 - [Usage Examples](#usage-examples)
+- [API Integration](#api-integration)
 
 ## Overview
 
@@ -488,6 +489,149 @@ Terminal 2 (Client):
 MesClient.exe 127.0.0.1
 ```
 Then follow the interactive prompts (1 for PING, 2 for GETREG, etc.)
+
+## API Integration
+
+### API Wrapper
+The API wrapper serves as the integration point between the Wear Monitoring System and MODAPTO. It handles:
+
+- Conversion between JSON and CSV formats
+- Processing of wear monitoring data
+- Event notifications for threshold exceedances
+- Result packaging in JSON format
+
+### Expected Input Format
+The API wrapper expects JSON input in the following format:
+
+```json
+{
+  "parameters": {
+    "threshold": 16.0,
+    "interval_minutes": 5,
+    "model_path": "quadratic_model.json",
+    "module": "CRF-ILTAR"
+  },
+  "data": [
+    {
+      "Header byte (0xfe)": "0xfe",
+      "Saw Event Type": 1,
+      "RFID Station ID": 6,
+      "Timestamp 8bytes": 1743258259,
+      "KH Type": 2,
+      "KH Unique ID": 123456
+    },
+    {
+      "Header byte (0xfe)": "0xfe",
+      "Saw Event Type": 2,
+      "RFID Station ID": 6,
+      "Timestamp 8bytes": 1743258287,
+      "KH Type": 2,
+      "KH Unique ID": 123456
+    }
+  ]
+}
+```
+
+#### Parameter Details
+
+- `threshold` (float): Force threshold for wear notifications (default: 16.0)
+- `interval_minutes` (int): Time interval in minutes for grouping events (default: 5)
+- `model_path` (string): Path to the model JSON file (default: "quadratic_model.json")
+- `module` (string): Production module identifier (default: "CRF-ILTAR")
+
+#### Data Format
+The `data` array contains events in JSON format, with each event having the following fields:
+
+- `Header byte (0xfe)`: Event header (always "0xfe")
+- `Saw Event Type`: Event type (1 for insertion, 2 for extraction)
+- `RFID Station ID`: Station identifier (integer)
+- `Timestamp 8bytes`: Unix timestamp in seconds
+- `KH Type`: Kit Holder type (integer)
+- `KH Unique ID`: Unique identifier for the Kit Holder (integer)
+
+### Expected Output Format
+The API wrapper returns JSON output in the following format:
+
+```json
+{
+  "metadata": {
+    "created_at": "2025-04-22T12:00:00.000000",
+    "threshold": 16.0,
+    "interval_minutes": 5,
+    "model_path": "quadratic_model.json",
+    "events_file": "temporary_file.csv"
+  },
+  "windows": [
+    {
+      "time_window": "2025-04-22T12:00:00",
+      "insertions": {
+        "count": 10,
+        "total": 150,
+        "first_index": 140,
+        "last_index": 149
+      },
+      "force": {
+        "predicted": 15.5,
+        "exceeds_threshold": false
+      },
+      "kh": {
+        "type": 2,
+        "id": 123456
+      }
+    }
+  ]
+}
+```
+
+#### Output Details
+
+- `metadata`: Contains processing parameters and timestamps
+- `windows`: Array of time windows with:
+  - `time_window`: ISO timestamp of the window
+  - `insertions`: Details about insertions in this window
+  - `force`: Predicted force and threshold status
+  - `kh`: Kit Holder information
+
+### Integration with MODAPTO
+The CRF Wear Monitoring System integrates with MODAPTO through:
+
+1. **JSON Input/Output**: The system accepts JSON input and returns JSON output, compatible with MODAPTO's data exchange format.
+2. **Event Notifications**: Threshold exceedances generate events via the EventsProducer, which publishes to Kafka topics monitored by MODAPTO.
+3. **API Invocation**: The system can be invoked as a standalone service or integrated through Python.
+
+### Event Notification Format
+When wear thresholds are exceeded, the system publishes events in the following format:
+
+```json
+{
+  "description": "Tool wear threshold exceeded. Force: 16.50",
+  "module": "CRF-ILTAR",
+  "priority": "MEDIUM",
+  "eventType": "Tool Wear Alert",
+  "pilot": "ILTAR-CRF",
+  "timestamp": "2025-04-22T12:00:00",
+  "topic": "self-awareness-diagnosis",
+  "smartService": "Self-Awareness",
+  "results": {
+    "time_window": "2025-04-22T12:00:00",
+    "force": 16.5,
+    "threshold": 16.0,
+    "kh_info": {
+      "type": 2,
+      "id": 123456
+    }
+  }
+}
+```
+
+### Integration Flow
+
+1. User triggers the Smart Service from the MODAPTO dashboard
+2. Input parameters and data are packaged as JSON
+3. The API wrapper processes the request
+4. Wear threshold exceedances generate events published to Kafka
+5. Final results are returned in JSON format
+6. Results are displayed in the MODAPTO UI
 
 Deployment
 --
