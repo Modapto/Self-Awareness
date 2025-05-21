@@ -89,23 +89,174 @@ python ui/app.py
      - Displays the Remaining Useful Life (RUL) prediction
      - Shows timestamp of the last prognostic analysis
 
-## Components
+## Component Specifications
 
-### 1. Anomaly Detection
-- Real-time monitoring of sensors data
-- Automatic anomaly detection with index identification
-- Continuous status monitoring
-- Serves as the trigger for diagnostic analysis
+The following section details the specific Python classes, input structures, and output formats for each component.
 
-### 2. Diagnostic Results
-- Automatically triggered upon anomaly detection
-- Provides fault diagnosis with confidence scoring
+### Anomaly Detection 
 
-### 3. Prognostic Analysis
-- On-demand Remaining Useful Life (RUL) prediction
-- Manual activation through "Run Prognosis" button
-- Timestamp tracking of analysis runs
-- Clear display of remaining useful life in hours
+**Python Class**: `OnlineAnomalyDetectorV2` in `OnlineAnomalyDetction.py`
+
+**Called**: Automatically, continuously during system operation after clicking "Start System" button
+
+**Initialization**:
+```python
+detector = OnlineAnomalyDetectorV2(
+    model,           # Trained Isolation Forest model
+    scaler,          # StandardScaler for data normalization
+    window_size=20,  # Size of the analysis window (int)
+    anomaly_threshold=0.5  # Threshold for anomaly detection (float)
+)
+```
+
+**Main Function**: `process_window()`
+
+**Input**:
+```python
+# Input parameters
+window_data: pd.DataFrame  # DataFrame containing sensor readings for the current window
+window_start: int          # Starting index of the window
+window_end: int            # Ending index of the window
+```
+
+**Output**:
+```python
+# Return values as tuple(bool, float)
+(
+    is_window_anomalous,  # Boolean indicating if anomaly was detected
+    anomaly_percentage     # Float (0-1) representing confidence of anomaly
+)
+
+# Additional output via get_first_anomaly_index()
+first_anomaly_index  # Integer representing the index of the first anomaly point
+```
+
+**Integration Example**:
+```python
+# Example of how to integrate anomaly detection
+from OnlineAnomalyDetction import OnlineAnomalyDetectorV2
+
+# Initialize detector
+detector = OnlineAnomalyDetectorV2(model, scaler)
+
+# Process a window of data
+is_anomaly, confidence = detector.process_window(
+    window_data,
+    window_start,
+    window_end
+)
+
+# Get the index of first anomalous point if anomaly detected
+if is_anomaly:
+    first_anomaly_index = detector.get_first_anomaly_index()
+    print(f"Anomaly detected at index {first_anomaly_index} with {confidence*100:.2f}% confidence")
+```
+
+### Fault Diagnosis 
+
+**Python Class**: `OnlineFaultDiagnoser` in `OnlineFaultDiagnosis.py`
+
+**Called**: Automatically triggered when an anomaly is detected
+
+**Entry Point Function**: `diagnose_after_anomaly(anomaly_data)` 
+
+**Input**:
+```python
+# Input dictionary structure
+anomaly_data = {
+    'simulation_run': int,  # ID of the simulation run
+    'window_end': int       # Last sample in anomaly window
+}
+```
+
+**Output**:
+```python
+# Return values from diagnoser.diagnose_fault()
+(
+    fault_type,     # Integer (1) or string ("Normal") indicating the type of fault
+    confidence,     # Float (0-1) representing confidence in the diagnosis
+    predictions     # Dictionary mapping sample indices to prediction details
+)
+
+# predictions format
+{
+    sample_index: {       # Integer index of the sample
+        'prediction': int,  # 1 for fault, 0 for normal
+        'probability': float  # Probability of the prediction (0-1)
+    }
+}
+```
+
+**Integration Example**:
+```python
+# Example of how to integrate fault diagnosis
+from OnlineFaultDiagnosis import diagnose_after_anomaly
+
+# After anomaly detection
+anomaly_data = {
+    'simulation_run': 1,
+    'window_end': 150  # Last sample index in anomaly window
+}
+
+# Call the diagnosis function
+diagnose_after_anomaly(anomaly_data)  # Results are logged and printed
+```
+
+### Prognostics 
+
+**Python Class**: `OnlinePrognostics` in `OnlinePrognostics.py`
+
+**Called**: 
+- Automatically triggered when an anomaly is detected
+- Manually when user clicks "Run Prognosis" button in the UI
+
+**Entry Point Function**: `diagnose_and_prognose(anomaly_data)`
+
+**Input**:
+```python
+# Input dictionary structure
+anomaly_data = {
+    'simulation_run': int,  # ID of the simulation run
+    'window_end': int       # Last sample in anomaly window
+}
+```
+
+**Output**:
+```python
+# Return dictionary from estimate_rul()
+{
+    'timestamp': float,        # Unix timestamp of the analysis
+    'simulation_run': int,     # Simulation run ID
+    'current_index': int,      # Current sample index
+    'total_length': int,       # Total simulation length
+    'remaining_samples': int,  # Number of samples remaining
+    'percentage_remaining': float,  # Percentage of run remaining
+    'cmapss_reference': {      # Reference to CMAPSS model mapping
+        'trajectory_index': int,    # Index of reference trajectory
+        'total_length': int,        # Total length of reference
+        'position_used': int,       # Position in reference trajectory
+        'remaining_samples': int    # Samples remaining in reference
+    },
+    'estimated_rul': float,    # Estimated Remaining Useful Life in hours
+    'base_rul': float,         # Initial RUL estimate
+    'time_since_anomaly': float  # Hours since first anomaly
+}
+```
+
+**Integration Example**:
+```python
+# Example of how to integrate prognostics
+from OnlinePrognostics import diagnose_and_prognose
+
+# After anomaly detection and diagnosis
+anomaly_data = {
+    'simulation_run': 1,
+    'window_end': 150  # Last sample index in anomaly window
+}
+
+# Call the prognostics function
+diagnose_and_prognose(anomaly_data)  # Results are logged and printed
+```
 
 ## Datasets
 
