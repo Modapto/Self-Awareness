@@ -97,7 +97,7 @@ The following section details the specific Python classes, input structures, and
 
 **Python Class**: `OnlineAnomalyDetectorV2` in `OnlineAnomalyDetction.py`
 
-**Called**: Automatically, continuously during system operation after clicking "Start System" button
+**Called**: Manually triggered during system operation after clicking "Start System" button
 
 **Initialization**:
 ```python
@@ -207,8 +207,7 @@ diagnose_after_anomaly(anomaly_data)  # Results are logged and printed
 **Python Class**: `OnlinePrognostics` in `OnlinePrognostics.py`
 
 **Called**: 
-- Automatically triggered when an anomaly is detected
-- Manually when user clicks "Run Prognosis" button in the UI
+- Manually triggered when user clicks "Run Prognosis" button in the UI
 
 **Entry Point Function**: `diagnose_and_prognose(anomaly_data)`
 
