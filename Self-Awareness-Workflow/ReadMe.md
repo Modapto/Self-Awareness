@@ -3,6 +3,7 @@
 ## Overview
 
 This is a comprehensive desktop application that implements three key components for system health monitoring:
+
 - Anomaly Detection
 - Fault Diagnostics
 - Prognostics (Remaining Useful Life Prediction)
@@ -16,9 +17,10 @@ The application provides real-time monitoring and analysis capabilities through 
 4. [Usage](#usage)
 5. [Components](#components)
 6. [Dataset](#dataset)
-7. [Events](#events)
-8. [Contributing](#contributing)
-9. [License](#license)
+7. [API](#api)
+8. [Events](#events)
+9. [Contributing](#contributing)
+10. [License](#license)
 
 ## Features
 
@@ -29,7 +31,7 @@ The application provides real-time monitoring and analysis capabilities through 
 
 ## Project Structure
 
-```
+```sh
 simulator/Self-Awareness-Workflow/
 ├── Datasets/                  # Dataset storage
 ├── events/                   # Event logging
@@ -53,12 +55,14 @@ simulator/Self-Awareness-Workflow/
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/Modapto/Self-Awareness-Workflow.git
 cd Self-Awareness-Workflow
 ```
 
 2. Install required dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -66,7 +70,6 @@ pip install -r requirements.txt
 3. Download and prepare the datasets:
 
    a. The CMAPSS dataset already exists in the `Datasets` directory.
-   
    b. Download the TEP dataset from Kaggle:
       - Visit: https://www.kaggle.com/datasets/averkij/tennessee-eastman-process-simulation-dataset
       - Download all `*.rData` 4 files and place them in `Self-Awareness-Workflow/Datasets/TEP` directory
@@ -74,6 +77,7 @@ pip install -r requirements.txt
 ## Usage
 
 1. Start the application:
+
 ```bash
 python ui/app.py
 ```
@@ -93,13 +97,14 @@ python ui/app.py
 
 The following section details the specific Python classes, input structures, and output formats for each component.
 
-### Anomaly Detection 
+### Anomaly Detection
 
 **Python Class**: `OnlineAnomalyDetectorV2` in `OnlineAnomalyDetction.py`
 
 **Called**: Manually triggered during system operation after clicking "Start System" button
 
 **Initialization**:
+
 ```python
 detector = OnlineAnomalyDetectorV2(
     model,           # Trained Isolation Forest model
@@ -112,6 +117,7 @@ detector = OnlineAnomalyDetectorV2(
 **Main Function**: `process_window()`
 
 **Input**:
+
 ```python
 # Input parameters
 window_data: pd.DataFrame  # DataFrame containing sensor readings for the current window
@@ -120,6 +126,7 @@ window_end: int            # Ending index of the window
 ```
 
 **Output**:
+
 ```python
 # Return values as tuple(bool, float)
 (
@@ -132,6 +139,7 @@ first_anomaly_index  # Integer representing the index of the first anomaly point
 ```
 
 **Integration Example**:
+
 ```python
 # Example of how to integrate anomaly detection
 from OnlineAnomalyDetction import OnlineAnomalyDetectorV2
@@ -152,15 +160,16 @@ if is_anomaly:
     print(f"Anomaly detected at index {first_anomaly_index} with {confidence*100:.2f}% confidence")
 ```
 
-### Fault Diagnosis 
+### Fault Diagnosis
 
 **Python Class**: `OnlineFaultDiagnoser` in `OnlineFaultDiagnosis.py`
 
 **Called**: Automatically triggered when an anomaly is detected
 
-**Entry Point Function**: `diagnose_after_anomaly(anomaly_data)` 
+**Entry Point Function**: `diagnose_after_anomaly(anomaly_data)`
 
 **Input**:
+
 ```python
 # Input dictionary structure
 anomaly_data = {
@@ -170,6 +179,7 @@ anomaly_data = {
 ```
 
 **Output**:
+
 ```python
 # Return values from diagnoser.diagnose_fault()
 (
@@ -188,6 +198,7 @@ anomaly_data = {
 ```
 
 **Integration Example**:
+
 ```python
 # Example of how to integrate fault diagnosis
 from OnlineFaultDiagnosis import diagnose_after_anomaly
@@ -202,16 +213,18 @@ anomaly_data = {
 diagnose_after_anomaly(anomaly_data)  # Results are logged and printed
 ```
 
-### Prognostics 
+### Prognostics
 
 **Python Class**: `OnlinePrognostics` in `OnlinePrognostics.py`
 
-**Called**: 
+**Called**:
+
 - Manually triggered when user clicks "Run Prognosis" button in the UI
 
 **Entry Point Function**: `diagnose_and_prognose(anomaly_data)`
 
 **Input**:
+
 ```python
 # Input dictionary structure
 anomaly_data = {
@@ -221,6 +234,7 @@ anomaly_data = {
 ```
 
 **Output**:
+
 ```python
 # Return dictionary from estimate_rul()
 {
@@ -243,6 +257,7 @@ anomaly_data = {
 ```
 
 **Integration Example**:
+
 ```python
 # Example of how to integrate prognostics
 from OnlinePrognostics import diagnose_and_prognose
@@ -262,13 +277,27 @@ diagnose_and_prognose(anomaly_data)  # Results are logged and printed
 This project uses two datasets:
 
 ### 1. CMAPSS Jet Engine Dataset
+
 The NASA Commercial Modular Aero-Propulsion System Simulation (CMAPSS) dataset can be downloaded from:
 https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about_data
 
 ### 2. Tennessee Eastman Process (TEP) Dataset
+
 The TEP dataset simulates a chemical process and provides a benchmark platform for process monitoring and control. The dataset can be found at:
 - Kaggle: https://www.kaggle.com/datasets/averkij/tennessee-eastman-process-simulation-dataset
 - Harvard Dataverse: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/6C3JR1
+
+## API
+
+The deployed web service requires on input as defined below the ***SWAGGER_SERVER_URL***, which points to the URL of the deployed service for the Swagger Documentation.
+
+The service exposes two endpoints under the **8001** port:
+
+- **/anomally-detection (POST):** Receives the dataframe in Base64 encoding about the Sensor Readings to analyze them and a specified timewindow (start and end) and invokes asynchrounously the detection process via the ***process_window()*** function. The API received the request if all input data are validated, it returns a success message about the submission of the request.
+
+- **/prognostics (POST):** Receives the simulation run index and the window end to start the prognosis about the RUL in the specified simulation. It handles asynchrounously the request and returns a success message when the process is successfully invoked and the data are validated.
+
+- **/health (GET):** Implements a health check for the Web Service for monitoring purposes.
 
 ## Events
 
@@ -278,6 +307,7 @@ For Detection and Diagnosis tools some events must be generated to inform operat
    # Set the Topics
    self-awareness-diagnosis-topic = 'self-awareness-diagnosis'
    self-awareness-detection-topic = 'self-awareness-detection'
+   self-awareness-prognostics-topic = 'self-awareness-prognostics'
 
    # Initialize the producer
    producer = EventsProducer('kafka.modapto.atc.gr:9092') # Or equivalent, must be provided as environmental variable
@@ -289,10 +319,10 @@ For Detection and Diagnosis tools some events must be generated to inform operat
       "timestamp": "2024-01-24T15:30:45",  # ISO 8601 format - Can be omitted, as it is generated automatically
       "priority": "High", # Low, Mid, High
       "eventType": "System Anomaly", # Can be whatever you want
-      "sourceComponent": "Diagnosis", # Or Detection
+      "sourceComponent": "Diagnosis", # Or Detection or Prognostics
       "smartService": "Self-Awareness",
       "topic": "self-awareness-diagnosis", # Or self-awareness-detection
-      "results": { }  # Optional (null if not available) - Can have some results to show to Operators
+      "results": {Object}  # Optional (null if not available) - Can have some results to show to Operators
    }
 
    # Produce event to a topic
@@ -314,7 +344,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Dataset Citations
 
 ### CMAPSS Dataset
+
 A. Saxena, K. Goebel, D. Simon, and N. Eklund, 'Damage Propagation Modeling for Aircraft Engine Run-to-Failure Simulation', in the Proceedings of the 1st International Conference on Prognostics and Health Management (PHM08), Denver CO, Oct 2008.
 
 ### TEP Dataset
+
 Downs, J.J., Vogel, E.F. A plant-wide industrial process control problem. Computers & Chemical Engineering 17, 245-255 (1993). https://doi.org/10.1016/0098-1354(93)80018-I
