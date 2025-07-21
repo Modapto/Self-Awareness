@@ -317,7 +317,7 @@ For Detection and Diagnosis tools some events must be generated to inform operat
       "description": "System performance anomaly detected", # Description of failt
       "module": "[This will be based according to DT connected info]",
       "timestamp": "2024-01-24T15:30:45",  # ISO 8601 format - Can be omitted, as it is generated automatically
-      "priority": "High", # Low, Mid, High
+      "priority": "HIGH", # LOW, MID, HIGH
       "eventType": "System Anomaly", # Can be whatever you want
       "sourceComponent": "Diagnosis", # Or Detection or Prognostics
       "smartService": "Self-Awareness",
