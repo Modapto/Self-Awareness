@@ -1,0 +1,802 @@
+[
+  {
+    "Stage": "CELL_01",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_100",
+    "Module": "AE1",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE1_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_01",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_100",
+    "Module": "AE2",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE2_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_01",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_100",
+    "Module": "AE3",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE3_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_01",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_100",
+    "Module": "AE4",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE4_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_01",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_100",
+    "Module": "AE5",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE5_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_01",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_100",
+    "Module": "AE6",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE6_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_01",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_100",
+    "Module": "AE7",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE7_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_01",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_100",
+    "Module": "AE8",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE8_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_02",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_200",
+    "Module": "AE1",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE1_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_02",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_200",
+    "Module": "AE2",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE2_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_02",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_200",
+    "Module": "AE3",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE3_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_02",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_200",
+    "Module": "AE4",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE4_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_02",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_200",
+    "Module": "AE5",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE5_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_02",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_200",
+    "Module": "AE6",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE6_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_02",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_200",
+    "Module": "AE7",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE7_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_02",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_200",
+    "Module": "AE8",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE8_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_03",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_300",
+    "Module": "AE1",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE1_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_03",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_300",
+    "Module": "AE2",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE2_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_03",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_300",
+    "Module": "AE3",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE3_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_03",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_300",
+    "Module": "AE4",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE4_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_03",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_300",
+    "Module": "AE5",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE5_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_03",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_300",
+    "Module": "AE6",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE6_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_03",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_300",
+    "Module": "AE7",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE7_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_03",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_300",
+    "Module": "AE8",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE8_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_04",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_400",
+    "Module": "AE1",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE1_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_04",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_400",
+    "Module": "AE2",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE2_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_04",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_400",
+    "Module": "AE3",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE3_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_04",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_400",
+    "Module": "AE4",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE4_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_04",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_400",
+    "Module": "AE5",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE5_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_04",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_400",
+    "Module": "AE6",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE6_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_04",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_400",
+    "Module": "AE7",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE7_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_04",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_400",
+    "Module": "AE8",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE8_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_500",
+    "Module": "AE1",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE1_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_500",
+    "Module": "AE2",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE2_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_500",
+    "Module": "AE3",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE3_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_500",
+    "Module": "AE4",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE4_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_500",
+    "Module": "AE5",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE5_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_500",
+    "Module": "AE6",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE6_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_500",
+    "Module": "AE7",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE7_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Prémontage HUB REDG",
+    "Plc": "plc_500",
+    "Module": "AE8",
+    "subElement": "ROOT",
+    "Component": "Ecr_AE8_L_Haut_xAxis",
+    "Property": [
+      {
+        "Name": "puissance",
+        "Low_thre": 100,
+        "High_thre": 500
+      },
+      {
+        "Name": "Move",
+        "Low_thre": 10,
+        "High_thre": 50
+      }
+    ]
+  }
+]
