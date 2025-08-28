@@ -42,7 +42,6 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: ./Self-Awareness-1
-        file: Dockerfile
         push: true
         tags: ghcr.io/modapto/${{ env.DOCKER_IMAGE_SA_1 }}:latest
         cache-from: type=gha
