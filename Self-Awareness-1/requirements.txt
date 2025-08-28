@@ -2,3 +2,12 @@ pandas==2.1.4
 requests==2.31.0
 urllib3==2.1.0
 kafka-python==2.2.4
+# FastAPI and web framework dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+# Additional web dependencies
+python-multipart==0.0.6
+aiofiles==23.2.1
+# Logging and monitoring
+structlog==23.2.0

@@ -6,20 +6,43 @@ import requests
 import urllib3
 from io import StringIO
 from kafka import KafkaProducer
+import logging
+
+# Configure logging (console only)
+def get_log_level():
+    """Get log level from environment variable, default to INFO"""
+    log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
+    level_mapping = {
+        'DEBUG': logging.DEBUG,
+        'INFO': logging.INFO,
+        'WARNING': logging.WARNING,
+        'ERROR': logging.ERROR,
+        'CRITICAL': logging.CRITICAL
+    }
+    return level_mapping.get(log_level, logging.INFO)
+
+logging.basicConfig(
+    level=get_log_level(),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Disable SSL warnings for internal network
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # InfluxDB Configuration
-INFLUXDB_URL = "http://frbrmmodapto-ppi:8086"
-INFLUXDB_TOKEN = "kARL-fQQPO4TQM-ZjNhvVxpmDzVij_GHiljv0dnc719tkP2wpOHrWWUqmsc12zkRKTdcEWVY0c8NIw-nGJIHyA=="
-INFLUXDB_ORG_ID = "0ad195e61f21f83f"
-BUCKET_NAME = "HUB"
+INFLUXDB_URL = os.getenv("INFLUXDB_URL", "http://frbrmmodapto-ppi:8086")
+INFLUXDB_TOKEN = os.getenv("INFLUXDB_TOKEN", "influxdb-token-placeholder")
+INFLUXDB_ORG_ID = os.getenv("INFLUXDB_ORG_ID", "0ad195e61f21f83f")
+BUCKET_NAME = os.getenv("BUCKET_NAME", "HUB")
+SEUIL_DURATION = 15 # Threshold in seconds to filter out long durations
 
 # Kafka Configuration
-KAFKA_BOOTSTRAP_SERVERS = "localhost:9093"
-KAFKA_TOPIC = "self-awareness-1"
-
+KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
+KAFKA_TOPIC = "smart-service-event"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # EventsProducer Class for Message Bus Integration
@@ -32,7 +55,7 @@ class EventsProducer:
         """
         self.producer = KafkaProducer(
             bootstrap_servers=bootstrap_servers,
-            client_id='sa1-producer',
+            client_id='self-awaraness-1',
             value_serializer=lambda v: json.dumps(v).encode('utf-8'),
         )
 
@@ -43,13 +66,17 @@ class EventsProducer:
         :param event_data: Dictionary containing event details
         :raises ValueError: If required fields are missing or invalid
         """
-        required_fields = ['productionModule', 'pilot', 'description', 'timestamp', 'topic', 'eventType']
+        required_fields = ['module', 'priority', 'description', 'timestamp', 'topic', 'eventType', 'sourceComponent', 'smartService']
 
         # Check required fields
         for field in required_fields:
             if field not in event_data or not event_data[field]:
                 raise ValueError(f"Missing required field: {field}")
 
+         # Validate priority
+        if event_data.get('priority') not in ['LOW', 'MID', 'HIGH']:
+            raise ValueError("Invalid priority. Must be LOW, MID, or HIGH")
+        
         return event_data
 
     def produce_event(self, topic, event_data):
@@ -61,11 +88,11 @@ class EventsProducer:
         """
         # Add timestamp if not provided
         if 'timestamp' not in event_data:
-            event_data['timestamp'] = datetime.utcnow().isoformat()
+            event_data['timestamp'] = datetime.now().isoformat(utc=True)
 
-        # Make some fields uppercase
-        if 'pilot' in event_data:
-            event_data['pilot'] = event_data['pilot'].upper()
+        # Make priority uppercase
+        if 'priority' in event_data:
+            event_data['priority'] = event_data['priority'].upper()
 
         # Validate event data
         validated_event = self.validate_event_data(event_data)
@@ -77,11 +104,11 @@ class EventsProducer:
             # Flush to ensure message is sent
             self.producer.flush()
 
-            print(f"   Event sent to Message Bus: {event_data.get('eventType', 'Unknown')}")
+            logger.info(f"Event sent to Message Bus: {event_data.get('eventType', 'Unknown')}")
             return True
 
         except Exception as e:
-            print(f"   Failed to send event to Message Bus: {str(e)}")
+            logger.error(f"Failed to send event to Message Bus: {str(e)}")
             return False
 
     def close(self):
@@ -167,7 +194,7 @@ def generate_pkb_name(tag_name, components_data):
         return f"HUB_REDG_CELL_05_{plc}_Unknown_{component}"
 
     except Exception as e:
-        print(f"Error generating PKB name for {tag_name}: {e}")
+        logger.error(f"Error generating PKB name for {tag_name}: {e}")
         return f"HUB_Unknown_{tag_name.replace(':', '_').replace('.', '_')}"
 
 
@@ -183,12 +210,13 @@ def send_components_config_to_pkb(producer, components_data, start_date, end_dat
         start_date: Processing start date
         end_date: Processing end date
     """
-    print("\n Sending components configuration to PKB...")
+    logger.info("Sending components configuration to PKB...")
 
     event_data = {
         "description": "SA1 components configuration for monitoring",
-        "productionModule": "HUB_SA1_Configuration",
-        "pilot": "SEW",
+        "module": "HUB_SA1_Configuration",
+        "priority": "MID",
+        "timestamp": datetime.now().isoformat(utc=True),
         "eventType": "SA1 Input Configuration",
         "sourceComponent": "SA1",
         "smartService": "Self-Awareness",
@@ -206,9 +234,9 @@ def send_components_config_to_pkb(producer, components_data, start_date, end_dat
 
     success = producer.produce_event(KAFKA_TOPIC, event_data)
     if success:
-        print(f"   Components configuration sent to PKB")
+        logger.info("Components configuration sent to PKB")
     else:
-        print(f"   Failed to send components configuration to PKB")
+        logger.error("Failed to send components configuration to PKB")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -227,8 +255,9 @@ def send_sa1_results_to_pkb(producer, tag_name, record, components_data):
 
     event_data = {
         "description": f"SA1 execution time KPI computed for {record['Component']}",
-        "productionModule": pkb_name,
-        "pilot": "SEW",
+        "module": pkb_name,
+        "priority": "MID",
+        "timestamp": datetime.now().isoformat(utc=True),
         "eventType": "SA1 KPI Results",
         "sourceComponent": "SA1",
         "smartService": "Self-Awareness",
@@ -238,9 +267,9 @@ def send_sa1_results_to_pkb(producer, tag_name, record, components_data):
 
     success = producer.produce_event(KAFKA_TOPIC, event_data)
     if success:
-        print(f"   SA1 results sent to PKB for {record['Component']}")
+        logger.info(f"SA1 results sent to PKB for {record['Component']}")
     else:
-        print(f"   Failed to send SA1 results to PKB for {record['Component']}")
+        logger.error(f"Failed to send SA1 results to PKB for {record['Component']}")
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -266,7 +295,7 @@ def load_sensor_data_from_influxdb(tag_name, start_date, end_date):
         variable_clean = variable_part[1:] if variable_part.startswith(".") else variable_part
 
     except Exception as e:
-        print(f"Error parsing tag {tag_name}: {e}")
+        logger.error(f"Error parsing tag {tag_name}: {e}")
         return pd.DataFrame(columns=['tick', 'tag', 'valeur'])
 
     # Convert dates to RFC3339 format for InfluxDB
@@ -276,8 +305,8 @@ def load_sensor_data_from_influxdb(tag_name, start_date, end_date):
     start_rfc3339 = start_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
     end_rfc3339 = end_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    print(f"Querying InfluxDB for tag: {tag_name}")
-    print(f"Time range: {start_rfc3339} to {end_rfc3339}")
+    logger.info(f"Querying InfluxDB for tag: {tag_name}")
+    logger.debug(f"Time range: {start_rfc3339} to {end_rfc3339}")
 
     # Flux query to get specific PLC and Variable data
     flux_query = f'''
@@ -317,17 +346,17 @@ def load_sensor_data_from_influxdb(tag_name, start_date, end_date):
                     df['valeur'] = pd.to_numeric(df['value'], errors='coerce')
 
                     result_df = df[['tick', 'tag', 'valeur']].dropna()
-                    print(f"  ↪ Retrieved {len(result_df)} data points")
+                    logger.info(f"  ↪ Retrieved {len(result_df)} data points")
                     return result_df
 
-            print(f"No data found for tag: {tag_name}")
+            logger.warning(f"No data found for tag: {tag_name}")
             return pd.DataFrame(columns=['tick', 'tag', 'valeur'])
         else:
-            print(f"InfluxDB query failed: {response.status_code} - {response.text}")
+            logger.error(f"InfluxDB query failed: {response.status_code} - {response.text}")
             return pd.DataFrame(columns=['tick', 'tag', 'valeur'])
 
     except Exception as e:
-        print(f"Error querying InfluxDB for tag {tag_name}: {e}")
+        logger.error(f"Error querying InfluxDB for tag {tag_name}: {e}")
         return pd.DataFrame(columns=['tick', 'tag', 'valeur'])
 
 
@@ -371,9 +400,9 @@ def calculate_durations(df, seuil_duration=15):
     # Filter out durations above the threshold (expressed in seconds)
     df_result = pd.DataFrame(intervals)
     if not df_result.empty:
-        print(f"  Total before filtering: {len(df_result)}")
+        logger.debug(f"  Total before filtering: {len(df_result)}")
         df_result = df_result[df_result["duration"] <= pd.to_timedelta(seuil_duration, unit="s")]
-        print(f"  Remaining after duration filter ({seuil_duration}s): {len(df_result)}")
+        logger.debug(f"  Remaining after duration filter ({seuil_duration}s): {len(df_result)}")
 
     return df_result
 
@@ -396,17 +425,17 @@ def test_influxdb_connection():
 
         if response.status_code == 200:
             buckets = response.json()
-            print(" InfluxDB connection successful!")
-            print("Available buckets:")
+            logger.info("InfluxDB connection successful!")
+            logger.info("Available buckets:")
             for bucket in buckets.get('buckets', []):
-                print(f"  - {bucket['name']} (ID: {bucket['id']})")
+                logger.info(f"  - {bucket['name']} (ID: {bucket['id']})")
             return True
         else:
-            print(f" InfluxDB connection failed: {response.status_code}")
+            logger.error(f"InfluxDB connection failed: {response.status_code}")
             return False
 
     except Exception as e:
-        print(f" Error connecting to InfluxDB: {e}")
+        logger.error(f"Error connecting to InfluxDB: {e}")
         return False
 
 
@@ -416,12 +445,185 @@ def test_kafka_connection():
     """Test if Kafka is accessible."""
     try:
         producer = EventsProducer(KAFKA_BOOTSTRAP_SERVERS)
-        print(" Kafka connection successful!")
+        logger.info("Kafka connection successful!")
         producer.close()
         return True
     except Exception as e:
-        print(f" Error connecting to Kafka: {e}")
+        logger.error(f"Error connecting to Kafka: {e}")
         return False
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Async Function for handling the Self-Awareness-1 algorithmic processing
+def async_self_awareness_monitoring_kpis(components, smart_service, module, start_date, end_date):
+    """
+    Main async function to handle Self-Awareness-1 monitoring KPIs processing
+    
+    Args:
+        components: List of component dictionaries with PLC, Component, Property data
+        smart_service: Smart service ID
+        module: Module ID  
+        start_date: Analysis start datetime
+        end_date: Analysis end datetime
+        
+    Returns:
+        dict: Event data for Kafka publishing
+    """
+    try:
+        # Convert datetime objects to string format expected by the algorithm
+        start_date_str = start_date.strftime("%d-%m-%Y %H:%M:%S") if hasattr(start_date, 'strftime') else str(start_date)
+        end_date_str = end_date.strftime("%d-%m-%Y %H:%M:%S") if hasattr(end_date, 'strftime') else str(end_date)
+        
+        logger.info(f"Starting Self-Awareness-1 KPI processing...")
+        logger.info(f"Time range: {start_date_str} to {end_date_str}")
+        logger.info(f"Processing {len(components)} components")
+        
+        # Test connections first
+        logger.info("Testing connections...")
+        if not test_influxdb_connection():
+            error_msg = "Cannot proceed without InfluxDB connection. Please check configuration."
+            logger.error(error_msg)
+            return {
+                "description": f"SA1 processing failed: {error_msg}",
+                "module": module,
+                "priority": "HIGH", 
+                "timestamp": datetime.now().isoformat(),
+                "eventType": "SA1 Processing Error",
+                "sourceComponent": "SA1",
+                "smartService": smart_service,
+                "topic": "smart-service-event",
+                "results": None
+            }
+
+        if not test_kafka_connection():
+            logger.warning("Kafka connection failed. PKB events will not be sent.")
+            use_kafka = False
+        else:
+            use_kafka = True
+
+        # Generate tags from component data
+        tags = generate_tags_from_json(components)
+        logger.info(f"Generated {len(tags)} tags for processing")
+
+        # Initialize Kafka producer if available
+        producer = None
+        if use_kafka:
+            try:
+                producer = EventsProducer(KAFKA_BOOTSTRAP_SERVERS)
+                logger.info("Kafka producer initialized successfully")
+
+                # Send components configuration to PKB (once per run)
+                send_components_config_to_pkb(producer, components, start_date_str, end_date_str)
+
+            except Exception as e:
+                logger.error(f"Failed to initialize Kafka producer: {e}")
+                use_kafka = False
+
+        # Process each tag
+        processed_count = 0
+        results_summary = []
+        
+        for tag_name in tags:
+            logger.info(f"Processing tag: {tag_name}")
+            try:
+                # Load data from InfluxDB
+                df = load_sensor_data_from_influxdb(tag_name, start_date_str, end_date_str)
+
+                if df.empty:
+                    logger.warning("   No data found.")
+                    continue
+
+                # Parse tag into its components
+                try:
+                    parts = tag_name.split(":.g_IO.")[1].split(".STATE.")
+                    ligne = tag_name.split(":")[0]
+                    component = parts[0]
+                    variable = parts[1]
+                except Exception as e:
+                    logger.error(f"Failed to parse tag: {tag_name}, Error: {e}")
+                    continue
+
+                # Compute durations between 1-to-0 transitions
+                result_df = calculate_durations(df, seuil_duration=SEUIL_DURATION)
+                durations = result_df['duration'].dt.total_seconds().tolist() if not result_df.empty else []
+
+                # Create record (enhanced with InfluxDB metadata)
+                record = {
+                    "Ligne": ligne,
+                    "Component": component,
+                    "Variable": variable,
+                    "Starting_date": start_date_str,
+                    "Ending_date": end_date_str,
+                    "Data_source": "InfluxDB",
+                    "Bucket": BUCKET_NAME,
+                    "Data_list": durations
+                }
+
+                # Send SA1 results to PKB via Message Bus
+                if use_kafka and producer:
+                    send_sa1_results_to_pkb(producer, tag_name, record, components)
+
+                processed_count += 1
+                results_summary.append({
+                    "tag": tag_name,
+                    "component": component,
+                    "variable": variable,
+                    "durations_count": len(durations),
+                })
+
+            except Exception as e:
+                logger.error(f"Error processing tag {tag_name}: {e}")
+                results_summary.append({
+                    "tag": tag_name,
+                    "error": str(e)
+                })
+
+        # Close Kafka producer
+        if producer:
+            producer.close()
+            logger.info("Kafka producer closed")
+
+        logger.info(f"Successfully processed {processed_count} tags")
+        if use_kafka:
+            logger.info(f"Events sent to PKB via Message Bus (topic: {KAFKA_TOPIC})")
+
+        # Return success event data
+        return {
+            "description": f"SA1 KPI processing completed successfully. Processed {processed_count} tags.",
+            "module": module,
+            "priority": "MID",
+            "timestamp": datetime.now().isoformat(),
+            "eventType": "SA1 Processing Success",
+            "sourceComponent": "SA1", 
+            "smartService": smart_service,
+            "topic": "smart-service-event",
+            "results": {
+                "processed_count": processed_count,
+                "total_tags": len(tags),
+                "processing_period": {
+                    "start_date": start_date_str,
+                    "end_date": end_date_str
+                },
+                "summary": results_summary
+            }
+        }
+        
+    except Exception as e:
+        error_msg = f"Critical error in SA1 processing: {str(e)}"
+        logger.error(error_msg)
+        
+        # Return error event data
+        return {
+            "description": error_msg,
+            "module": module,
+            "priority": "HIGH",
+            "timestamp": datetime.now().isoformat(), 
+            "eventType": "SA1 Processing Error",
+            "sourceComponent": "SA1",
+            "smartService": smart_service,
+            "topic": "smart-service-event",
+            "results": None
+        }
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -430,13 +632,13 @@ def main():
     SEUIL_DURATION = 15  # Threshold in seconds to filter out long durations
 
     # Test connections first
-    print(" Testing connections...")
+    logger.info("Testing connections...")
     if not test_influxdb_connection():
-        print("Cannot proceed without InfluxDB connection. Please check configuration.")
+        logger.error("Cannot proceed without InfluxDB connection. Please check configuration.")
         return
 
     if not test_kafka_connection():
-        print("Warning: Kafka connection failed. PKB events will not be sent.")
+        logger.warning("Kafka connection failed. PKB events will not be sent.")
         use_kafka = False
     else:
         use_kafka = True
@@ -452,7 +654,7 @@ def main():
     # Load tag list from JSON definition
     components_file = "components_list.json"
     if not os.path.exists(components_file):
-        print(f" Components file not found: {components_file}")
+        logger.error(f"Components file not found: {components_file}")
         return
 
     # Load components data for PKB integration
@@ -460,32 +662,32 @@ def main():
         components_data = json.load(f)
 
     tags = generate_tags_from_json(components_file)
-    print(f" Processing {len(tags)} tags from {components_file}")
+    logger.info(f"Processing {len(tags)} tags from {components_file}")
 
     # Initialize Kafka producer if available
     producer = None
     if use_kafka:
         try:
             producer = EventsProducer(KAFKA_BOOTSTRAP_SERVERS)
-            print(" Kafka producer initialized successfully")
+            logger.info("Kafka producer initialized successfully")
 
             # Send components configuration to PKB (once per run)
             send_components_config_to_pkb(producer, components_data, start_date, end_date)
 
         except Exception as e:
-            print(f" Failed to initialize Kafka producer: {e}")
+            logger.error(f"Failed to initialize Kafka producer: {e}")
             use_kafka = False
 
     # Process each tag
     processed_count = 0
     for tag_name in tags:
-        print(f"\n Processing tag: {tag_name}")
+        logger.info(f"Processing tag: {tag_name}")
         try:
             # Load data from InfluxDB
             df = load_sensor_data_from_influxdb(tag_name, start_date, end_date)
 
             if df.empty:
-                print("  ↪ No data found.")
+                logger.warning("  ↪ No data found.")
                 continue
 
             # Parse tag into its components (same as original)
@@ -495,7 +697,7 @@ def main():
                 component = parts[0]
                 variable = parts[1]
             except Exception as e:
-                print(f"Failed to parse tag: {tag_name}, Error: {e}")
+                logger.error(f"Failed to parse tag: {tag_name}, Error: {e}")
                 continue
 
             # Compute durations between 1-to-0 transitions (same as original)
@@ -520,7 +722,7 @@ def main():
 
             with open(json_filename, "w", encoding="utf-8") as f:
                 json.dump(record, f, ensure_ascii=False, indent=2)
-                print(f"  ↪ Saved JSON file: {json_filename}")
+                logger.info(f"  ↪ Saved JSON file: {json_filename}")
 
             # OUTPUT 2: Send SA1 results to PKB via Message Bus - ADD THIS
             if use_kafka and producer:
@@ -529,21 +731,22 @@ def main():
             processed_count += 1
 
         except Exception as e:
-            print(f" Error processing tag {tag_name}: {e}")
+            logger.error(f"Error processing tag {tag_name}: {e}")
 
     # Close Kafka producer
     if producer:
         producer.close()
-        print("\n📤 Kafka producer closed")
+        logger.info("Kafka producer closed")
 
-    print(f"\n Successfully processed {processed_count} tags")
-    print(f" JSON files saved to: {json_output_dir}")
+    logger.info(f"Successfully processed {processed_count} tags")
+    logger.info(f"JSON files saved to: {json_output_dir}")
     if use_kafka:
-        print(f" Events sent to PKB via Message Bus (topic: {KAFKA_TOPIC})")
+        logger.info(f"Events sent to PKB via Message Bus (topic: {KAFKA_TOPIC})")
 
 
-if __name__ == "__main__":
-    main()
+# Called via API
+# if __name__ == "__main__":
+#     main()
 
 # to start kafka
 #  .\bin\windows\zookeeper-serever-start.bat .\config\zookeeper.properties
