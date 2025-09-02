@@ -200,7 +200,7 @@ def generate_pkb_name(tag_name, components_data):
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Send components configuration to Message Bus
-def send_components_config_to_pkb(producer, components_data, start_date, end_date):
+def send_components_config_to_pkb(producer, components_data, start_date, end_date, input_module, smart_service_id):
     """
     Send components configuration as event to PKB via Message Bus
 
@@ -209,17 +209,19 @@ def send_components_config_to_pkb(producer, components_data, start_date, end_dat
         components_data: Components configuration data
         start_date: Processing start date
         end_date: Processing end date
+        input_module: Input module identifier
+        smart_service_id: Smart service identifier
     """
     logger.info("Sending components configuration to PKB...")
 
     event_data = {
-        "description": "SA1 components configuration for monitoring",
-        "module": "HUB_SA1_Configuration",
+        "description": "Self-Awareness Monitoring and Storing KPIs components configuration for monitoring",
+        "module": input_module,
         "priority": "MID",
         "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
-        "eventType": "SA1 Input Configuration",
-        "sourceComponent": "SA1",
-        "smartService": "Self-Awareness",
+        "eventType": "Self-Awareness Monitoring and Storing KPIs Input Configuration",
+        "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
+        "smartService": smart_service_id,
         "topic": KAFKA_TOPIC,
         "results": {
             "type": "components_configuration",
@@ -241,7 +243,7 @@ def send_components_config_to_pkb(producer, components_data, start_date, end_dat
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Send SA1 results to Message Bus
-def send_sa1_results_to_pkb(producer, tag_name, record, components_data):
+def send_sa1_results_to_pkb(producer, tag_name, record, components_data, input_module, smart_service_id):
     """
     Send SA1 results as event to PKB via Message Bus
 
@@ -250,17 +252,21 @@ def send_sa1_results_to_pkb(producer, tag_name, record, components_data):
         tag_name: Component tag name
         record: SA1 processing results
         components_data: Components configuration data
+        input_module: Input module identifier (used as base for PKB naming)
+        smart_service_id: Smart service identifier
     """
-    pkb_name = generate_pkb_name(tag_name, components_data)
+    # Use input_module as base for PKB naming instead of the hardcoded generation
+    # Keep the PKB name generation for backwards compatibility but allow override
+    pkb_name = generate_pkb_name(tag_name, components_data) if input_module.startswith("HUB_") else input_module
 
     event_data = {
-        "description": f"SA1 execution time KPI computed for {record['Component']}",
-        "module": pkb_name,
+        "description": f"Self-Awareness Monitoring and Storing KPIs execution time KPI computed for {record['Component']}",
+        "module": input_module,
         "priority": "MID",
         "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
-        "eventType": "SA1 KPI Results",
-        "sourceComponent": "SA1",
-        "smartService": "Self-Awareness",
+        "eventType": "Self-Awareness Monitoring and Storing KPIs KPI Results",
+        "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
+        "smartService": smart_service_id,
         "topic": KAFKA_TOPIC,
         "results": record
     }
@@ -484,12 +490,12 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
             error_msg = "Cannot proceed without InfluxDB connection. Please check configuration."
             logger.error(error_msg)
             return {
-                "description": f"SA1 processing failed: {error_msg}",
+                "description": f"Self-Awareness Monitoring and Storing KPIs processing failed: {error_msg}",
                 "module": module,
                 "priority": "HIGH", 
                 "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
-                "eventType": "SA1 Processing Error",
-                "sourceComponent": "SA1",
+                "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Error",
+                "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
                 "smartService": smart_service,
                 "topic": "smart-service-event",
                 "results": None
@@ -513,7 +519,7 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
                 logger.info("Kafka producer initialized successfully")
 
                 # Send components configuration to PKB (once per run)
-                send_components_config_to_pkb(producer, components, start_date_str, end_date_str)
+                send_components_config_to_pkb(producer, components, start_date_str, end_date_str, module, smart_service)
 
             except Exception as e:
                 logger.error(f"Failed to initialize Kafka producer: {e}")
@@ -561,7 +567,7 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
 
                 # Send SA1 results to PKB via Message Bus
                 if use_kafka and producer:
-                    send_sa1_results_to_pkb(producer, tag_name, record, components)
+                    send_sa1_results_to_pkb(producer, tag_name, record, components, module, smart_service)
 
                 processed_count += 1
                 results_summary.append({
@@ -589,12 +595,12 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
 
         # Return success event data
         return {
-            "description": f"SA1 KPI processing completed successfully. Processed {processed_count} tags.",
+            "description": f"Self-Awareness Monitoring and Storing KPIs KPI processing completed successfully. Processed {processed_count} tags.",
             "module": module,
             "priority": "MID",
             "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
-            "eventType": "SA1 Processing Success",
-            "sourceComponent": "SA1", 
+            "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Success",
+            "sourceComponent": "Self-Awareness Monitoring and Storing KPIs", 
             "smartService": smart_service,
             "topic": "smart-service-event",
             "results": {
@@ -618,8 +624,8 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
             "module": module,
             "priority": "HIGH",
             "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
-            "eventType": "SA1 Processing Error",
-            "sourceComponent": "SA1",
+            "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Error",
+            "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
             "smartService": smart_service,
             "topic": "smart-service-event",
             "results": None
@@ -628,7 +634,14 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Main script to process all tags and export results to individual JSON files per tag + Message Bus
-def main():
+def main(input_module="HUB_SA1_Configuration", smart_service_id="Self-Awareness"):
+    """
+    Main processing function for SA1
+    
+    Args:
+        input_module: Input module identifier (default: "HUB_SA1_Configuration")
+        smart_service_id: Smart service identifier (default: "Self-Awareness")
+    """
     SEUIL_DURATION = 15  # Threshold in seconds to filter out long durations
 
     # Test connections first
@@ -672,7 +685,7 @@ def main():
             logger.info("Kafka producer initialized successfully")
 
             # Send components configuration to PKB (once per run)
-            send_components_config_to_pkb(producer, components_data, start_date, end_date)
+            send_components_config_to_pkb(producer, components_data, start_date, end_date, input_module, smart_service_id)
 
         except Exception as e:
             logger.error(f"Failed to initialize Kafka producer: {e}")
@@ -726,7 +739,7 @@ def main():
 
             # OUTPUT 2: Send SA1 results to PKB via Message Bus - ADD THIS
             if use_kafka and producer:
-                send_sa1_results_to_pkb(producer, tag_name, record, components_data)
+                send_sa1_results_to_pkb(producer, tag_name, record, components_data, input_module, smart_service_id)
 
             processed_count += 1
 
