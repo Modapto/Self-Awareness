@@ -1,0 +1,20 @@
+{
+  "Ligne": "plc_300",
+  "Component": "Ecr_AE3_L_Haut",
+  "Variable": "xAxis_Move",
+  "Starting_date": "07-07-2025 00:00:00",
+  "Ending_date": "08-07-2025 23:59:59",
+  "Data_source": "InfluxDB",
+  "Bucket": "HUB",
+  "Data_list": [
+    2.1130197,
+    0.0408285,
+    6.1405548,
+    5.5715832,
+    13.9337449,
+    0.0771487,
+    0.9678227,
+    1.5506351,
+    0.6810536
+  ]
+}
