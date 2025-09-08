@@ -1,2 +1,14 @@
 SA4KH - Self Awareness for Kit holder/chunks/*
 SA4KH - Self Awareness for Kit holder/2yearevents.csv
+.idea/
+CRF/*
+Detection/*
+Diagnosis/*
+OnlineTEPMonitor.zip
+OnlineTEPMonitor/*
+Prognostics/*
+Self-Awareness-Workflow.zip
+Self-Awareness-Workflow/*
+TEPMonitor/*
+db.json
+db_orchestrator.json
