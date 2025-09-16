@@ -100,7 +100,7 @@ The SA1 Self-Awareness Service is a health monitoring system for industrial prod
 
 **Event Schema Requirements:**
 
-- `productionModule`: Production module id
+- `module`: Production module id
 - `pilot`: Pilot id (typically "SEW")
 - `description`: Event description
 - `eventType`: Type of event being published
@@ -158,7 +158,7 @@ The SA1 Self-Awareness Service is a health monitoring system for industrial prod
 ```json
 {
   "description": "SA1 execution time KPI computed for Ecr_AE1_L_Haut",
-  "productionModule": "HUB_REDG_CELL_05_plc_100_AE1_Ecr_AE1_L_Haut",
+  "module": "HUB_REDG_CELL_05_plc_100_AE1_Ecr_AE1_L_Haut",
   "pilot": "SEW",
   "eventType": "SA1 KPI Results",
   "sourceComponent": "SA1",
@@ -177,13 +177,14 @@ The SA1 Self-Awareness Service is a health monitoring system for industrial prod
   }
 }
 ```
+
 Additional Setup Event: The service also sends a one-time configuration event ("SA1 Input Configuration") at the beginning of each execution, containing the components configuration and processing parameters.
 
 ## Execution Example
 
 ### Console Output
 
-```
+```sh
  Testing connections...
  InfluxDB connection successful!
  Kafka connection successful!
@@ -233,17 +234,20 @@ Time range: 2025-07-07T00:00:00Z to 2025-07-08T23:59:59Z
 ### Configuration Parameters
 
 **Time Range Configuration:**
+
 ```python
 start_date = "07-07-2025 00:00:00"  # Analysis start time
 end_date = "08-07-2025 23:59:59"    # Analysis end time
 ```
 
 **Duration Filtering:**
+
 ```python
 SEUIL_DURATION = 15  # Maximum duration threshold in seconds
 ```
 
 **Output Directory:**
+
 ```python
 json_output_dir = os.path.join(os.getcwd(), "JSON_hist_data")
 ```
@@ -253,7 +257,8 @@ json_output_dir = os.path.join(os.getcwd(), "JSON_hist_data")
 ### Tag Generation
 
 Components are processed by generating sensor tags in the format:
-```
+
+```sh
 {PLC}:.g_IO.{Component}.STATE.{Variable}
 ```
 
@@ -262,7 +267,8 @@ Example: `plc_100:.g_IO.Ecr_AE1_L_Haut.STATE.xAxis_Move`
 ### PKB Naming Convention
 
 For Kafka events, component names are formatted as:
-```
+
+```sh
 HUB_REDG_CELL_05_{PLC}_{Module}_{Component}
 ```
 
@@ -283,9 +289,155 @@ def calculate_durations(df, seuil_duration=15):
     """
 ```
 
+## API Interface
+
+### Overview
+
+The SA1 service provides a REST API interface built with FastAPI, enabling remote execution and monitoring capabilities. The API uses Base64-encoded JSON for secure data transmission and provides comprehensive health monitoring.
+
+### API Endpoints
+
+#### 1. Self-Awareness KPI Processing
+
+**Endpoint:** `POST /monitor/kpis`  
+**Description:** Initiates SA1 processing for component KPI monitoring and analysis  
+**Content-Type:** `application/json`
+
+**Request Format:**
+
+```json
+{
+  "request": "base64_encoded_json_data"
+}
+```
+
+**Base64 Decoded Payload Structure:**
+
+```json
+{
+  "components": [
+    {
+      "Module": "AE1",
+      "Plc": "plc_100", 
+      "Stage": "CELL_01",
+      "Cell": "Prémontage HUB REDG",
+      "subElement": "ROOT",
+      "Component": "Ecr_AE1_L_Haut_xAxis",
+      "Property": [
+        {
+          "Name": "puissance",
+          "Low_thre": 100,
+          "High_thre": 500
+        }
+      ]
+    }
+  ],
+  "start_date": "07-01-2025 00:00:00",
+  "end_date": "07-01-2025 23:59:59", 
+  "smartServiceId": "SA1_SERVICE",
+  "moduleId": "HUB_MODULE_01"
+}
+```
+
+#### 2. Health Check
+
+**Endpoint:** `GET /health`  
+**Description:** Provides comprehensive health status of the SA1 service and its dependencies  
+**Content-Type:** `application/json`
+
+**Response Format:**
+
+```json
+{
+  "status": "healthy|degraded",
+  "services": {
+    "influxdb": {
+      "status": "healthy|unhealthy",
+      "connection": true|false,
+      "error": "error_message_if_any"
+    },
+    "kafka": {
+      "status": "healthy|unhealthy", 
+      "connection": true|false,
+      "error": "error_message_if_any"
+    },
+    "sa1_algorithm": {
+      "status": "healthy|unhealthy",
+      "import": true|false,
+      "callable": true|false,
+      "error": "error_message_if_any"
+    },
+    "events_producer": {
+      "status": "healthy|unhealthy",
+      "import": true|false,
+      "class_available": true|false,
+      "error": "error_message_if_any"
+    },
+    "api": {
+      "status": "healthy",
+      "connection": true
+    }
+  },
+  "message": "Self Awareness 1 API is running - Status: healthy",
+  "timestamp": "2025-01-28T10:30:45.123Z"
+}
+```
+
+### Environment Configuration
+
+**Required Environment Variables:**
+
+```bash
+# InfluxDB Configuration
+INFLUXDB_URL=http://localhost:8086
+INFLUXDB_TOKEN=your_influxdb_token
+INFLUXDB_ORG_ID=your_org_id
+BUCKET_NAME=HUB
+
+# Kafka Configuration  
+KAFKA_BOOTSTRAP_SERVERS=localhost:9092
+
+# API Configuration
+CORS_DOMAINS=http://localhost:8094,http://localhost:3000
+SWAGGER_SERVER_URL=http://localhost:8000
+
+# Logging Configuration
+LOG_LEVEL=INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+```
+
+### API Usage Flow
+
+1. **Health Check**: Verify service status with `GET /health`
+2. **Prepare Data**: Create component configuration and time range parameters
+3. **Encode Request**: Base64 encode the JSON payload
+4. **Submit Processing**: Send POST request to `/monitor/kpis`
+5. **Monitor Results**: Check Kafka topics for processing results and events
+
+### Asynchronous Processing
+
+The SA1 API operates asynchronously:
+
+- API calls return immediately with task confirmation
+- Actual processing runs in background thread pool
+- Results are published to Kafka message bus
+- JSON files are generated in local storage for additional analysis
+
+### Error Handling
+
+**HTTP Status Codes:**
+
+- `200`: Success - Task initiated successfully
+- `400`: Bad Request - Invalid Base64 data or missing fields
+- `422`: Validation Error - Invalid request format or data validation failure
+- `500`: Internal Server Error - Critical processing failure
+
 ## Dependencies
 
 **Required Python Packages:**
+
+- `fastapi`: Web framework for building APIs
+- `uvicorn`: ASGI server for running FastAPI applications
+- `pydantic`: Data validation using Python type annotations
 - `pandas`: Data manipulation and analysis
 - `requests`: HTTP requests for InfluxDB API
 - `kafka-python`: Kafka client for event publishing
@@ -293,5 +445,6 @@ def calculate_durations(df, seuil_duration=15):
 - `json`: JSON serialization/deserialization
 - `datetime`: Date and time handling
 - `os`: Operating system interface
-
-
+- `logging`: Python logging framework
+- `asyncio`: Asynchronous programming support
+- `base64`: Base64 encoding/decoding

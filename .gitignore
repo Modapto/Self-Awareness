@@ -12,3 +12,9 @@ Self-Awareness-Workflow/*
 TEPMonitor/*
 db.json
 db_orchestrator.json
+/Self-Awareness-1/credentials.txt
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
