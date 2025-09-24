@@ -6,12 +6,11 @@ from EventsProducer import EventsProducer
 
 
 class CRFApiWrapper:
-    """API wrapper """
 
     def __init__(self, kafka_server="kafka.modapto.atc.gr:9092"):
         """Initialize the API wrapper with Kafka connection"""
         self.events_producer = EventsProducer(kafka_server)
-        self.topic = 'self-awareness-diagnosis'  # Default topic
+        self.topic = 'self-awareness-wear-detection'
 
     def process_request(self, json_input):
         """
@@ -36,14 +35,13 @@ class CRFApiWrapper:
             dict: Results in JSON format
         """
         try:
-            # Extract parameters
             params = json_input.get('parameters', {})
             threshold = params.get('threshold', 16.0)
             interval_minutes = params.get('interval_minutes', 5)
             model_path = params.get('model_path', 'quadratic_model.json')
             module = params.get('module', 'CRF-ILTAR')
 
-            # Convert JSON data to temporary CSV
+            # Convert JSON data to CSV
             temp_csv = None
             if 'data' in json_input and json_input['data']:
                 temp_csv = self._json_to_csv(json_input['data'])
@@ -59,15 +57,18 @@ class CRFApiWrapper:
                 interval_minutes
             )
 
-            # Send notifications for threshold exceeded events
-            self._publish_wear_notifications(results, module)
+            notifications = self._create_notifications(results, json_input['data'])
+
+            if notifications:
+                self._write_notifications_file(notifications)
+                self._publish_wear_notifications(notifications, module)
 
             # Clean up temporary file
             if os.path.exists(temp_csv):
                 os.remove(temp_csv)
 
-            # Return the results as JSON
-            return results
+            # No JSON response - only Kafka events and notifications file
+            return None
 
         except Exception as e:
             return {
@@ -75,7 +76,6 @@ class CRFApiWrapper:
             }
 
     def _json_to_csv(self, json_data):
-        """Convert JSON array to CSV file"""
         try:
             df = pd.DataFrame(json_data)
 
@@ -84,7 +84,6 @@ class CRFApiWrapper:
             temp_file_path = temp_file.name
             temp_file.close()
 
-            # Write to CSV with semicolon separator
             df.to_csv(temp_file_path, sep=';', index=False)
 
             print(f"Converted JSON data to CSV: {temp_file_path}")
@@ -94,45 +93,91 @@ class CRFApiWrapper:
             print(f"Error converting JSON to CSV: {str(e)}")
             return None
 
-    def _publish_wear_notifications(self, results, module):
-        """Publish wear notifications using EventsProducer"""
+    def _create_notifications(self, results, original_data):
+        """Create notifications in the same format as input data for exceeded thresholds"""
+        from datetime import datetime
+
+        notifications = []
+
         # Find windows where threshold was exceeded
-        exceeded_count = 0
         for window in results.get('windows', []):
             if window['force']['exceeds_threshold']:
-                # Determine priority based on how much threshold is exceeded
-                force_ratio = window['force']['predicted'] / results['metadata']['threshold']
-                priority = "HIGH" if force_ratio > 1.5 else "MEDIUM" if force_ratio > 1.2 else "LOW"
+                # Find corresponding original data entries for this time window
+                # We'll use the insertions indices to map back to original data
+                first_idx = window['insertions']['first_index']
+                last_idx = window['insertions']['last_index']
 
-                # Create event data
+                # For now, we'll create one notification entry per exceeded window
+                # using the first insertion data from that window
+                if first_idx < len(original_data):
+                    base_data = original_data[first_idx].copy()
+
+                    # Remove Header byte field if present
+                    header_keys = [key for key in base_data.keys() if 'Header byte' in key]
+                    for key in header_keys:
+                        del base_data[key]
+
+                    # Modify the issue type to indicate wear notification (0x01)
+                    # Find the issue type column (could be different names)
+                    issue_type_keys = [key for key in base_data.keys() if
+                                       'Issue type' in key or 'Event Type' in key or 'Saw Event Type' in key]
+                    if issue_type_keys:
+                        base_data[issue_type_keys[0]] = 1  # Set to notification type
+
+                    # Convert Unix timestamp to readable datetime
+                    timestamp_keys = [key for key in base_data.keys() if
+                                      'Timestamp' in key or 'timestamp' in key.lower()]
+                    for ts_key in timestamp_keys:
+                        try:
+                            # Convert Unix timestamp to readable format
+                            unix_timestamp = int(base_data[ts_key])
+                            readable_datetime = datetime.fromtimestamp(unix_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+                            base_data[ts_key] = readable_datetime
+                        except (ValueError, TypeError):
+                            pass
+
+                    notifications.append(base_data)
+
+        return notifications
+
+    def _write_notifications_file(self, notifications, filename="notifications.csv"):
+        if not notifications:
+            return
+
+        try:
+            df = pd.DataFrame(notifications)
+            file_exists = os.path.exists(filename)
+            mode = 'a' if file_exists else 'w'
+            header = not file_exists
+
+            df.to_csv(filename, sep='\t', index=False, mode=mode, header=header)
+            print(f"{'Appended' if file_exists else 'Created'} {len(notifications)} notifications to {filename}")
+
+        except Exception as e:
+            print(f"Error writing notifications file: {str(e)}")
+
+    def _publish_wear_notifications(self, notifications, module):
+
+        for notification in notifications:
+            try:
+                # Create event data with same structure as JSON output
                 event_data = {
-                    "description": f"Tool wear threshold exceeded. Force: {window['force']['predicted']:.2f}",
-                    "module": module,
-                    "priority": priority,
-                    "eventType": "Tool Wear Alert",
+                    "description": f"Tool wear threshold exceeded",
+                    "moduleid": "xxx",
                     "pilot": "ILTAR-CRF",
-                    "timestamp": window['time_window'],
                     "topic": self.topic,
-                    "smartService": "Self-Awareness",
-                    "results": {
-                        "time_window": window['time_window'],
-                        "force": window['force']['predicted'],
-                        "threshold": results['metadata']['threshold'],
-                        "kh_info": window.get('kh', {})
-                    }
+                    "smartServiceid": "xxx",
+                    "results": notification
                 }
 
-                try:
-                    # Publish event
-                    self.events_producer.produce_event(self.topic, event_data)
-                    exceeded_count += 1
-                    print(f"Published wear notification event for window {window['time_window']}")
-                except Exception as e:
-                    print(f"Failed to publish event: {str(e)}")
+                self.events_producer.produce_event(self.topic, event_data)
+                print(f"Published wear notification event")
 
-        print(f"Published {exceeded_count} wear notification events")
+            except Exception as e:
+                print(f"Failed to publish event: {str(e)}")
+
+        print(f"Published {len(notifications)} wear notification events")
 
     def close(self):
-        """Close the events producer"""
         if hasattr(self, 'events_producer'):
             self.events_producer.close()
