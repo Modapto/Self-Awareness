@@ -4,7 +4,7 @@ import time
 import os
 import pandas as pd
 import csv
-from wear_monitor import predict_force, load_model
+from core.wear_monitor import predict_force, load_model
 import json
 import glob
 import re
@@ -25,8 +25,8 @@ class MESOrchestrator:
         self.current_chunk = 0
         self.total_insertions = 0
         self.server_process = None
-        self.notifications_file = "active_notifications.csv"
-        self.empty_notifications_file = "0notif.csv"
+        self.notifications_file = "../active_notifications.csv"
+        self.empty_notifications_file = "../data/notifications/0notif.csv"
 
         # Initialize database
         self.db_data = {

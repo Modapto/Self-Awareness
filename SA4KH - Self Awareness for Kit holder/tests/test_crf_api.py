@@ -1,5 +1,5 @@
 import json
-from crf_api_wrapper import CRFApiWrapper
+from api.crf_api_wrapper import CRFApiWrapper
 
 base_timestamp = 1743258259
 test_data = []

@@ -1,7 +1,7 @@
 import json
 import sys
 import argparse
-from crf_api_wrapper import CRFApiWrapper
+from api.crf_api_wrapper import CRFApiWrapper
 
 
 def main():

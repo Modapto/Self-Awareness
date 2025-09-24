@@ -1,7 +1,7 @@
 import pandas as pd
 import tempfile
 import os
-from wear_monitor import process_events, load_model
+from core.wear_monitor import process_events
 from EventsProducer import EventsProducer
 
 
