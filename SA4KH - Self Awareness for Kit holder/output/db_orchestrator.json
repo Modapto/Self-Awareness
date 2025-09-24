@@ -1,0 +1,1596 @@
+{
+    "metadata": {
+        "created_at": "2025-06-06T15:17:50.124840",
+        "threshold": 150.0,
+        "interval_minutes": 5,
+        "model_path": "quadratic_model.json",
+        "chunk_directory": "chunks",
+        "total_chunks_processed": 63,
+        "total_insertions": 945
+    },
+    "chunks": [
+        {
+            "chunk_index": 0,
+            "chunk_file": "chunks\\chunk_0000.csv",
+            "timestamp": "2025-06-06T15:17:54.032189",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 15,
+            "force": {
+                "predicted": 15.505043710073044,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 1,
+            "chunk_file": "chunks\\chunk_0001.csv",
+            "timestamp": "2025-06-06T15:17:58.662499",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 30,
+            "force": {
+                "predicted": 15.504350070329261,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 2,
+            "chunk_file": "chunks\\chunk_0002.csv",
+            "timestamp": "2025-06-06T15:18:03.276237",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 45,
+            "force": {
+                "predicted": 15.503656762994048,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 3,
+            "chunk_file": "chunks\\chunk_0003.csv",
+            "timestamp": "2025-06-06T15:18:07.886000",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 60,
+            "force": {
+                "predicted": 15.502963788067403,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 4,
+            "chunk_file": "chunks\\chunk_0004.csv",
+            "timestamp": "2025-06-06T15:18:12.493676",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 75,
+            "force": {
+                "predicted": 15.502271145549331,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 5,
+            "chunk_file": "chunks\\chunk_0005.csv",
+            "timestamp": "2025-06-06T15:18:17.125421",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 90,
+            "force": {
+                "predicted": 15.501578835439828,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 6,
+            "chunk_file": "chunks\\chunk_0006.csv",
+            "timestamp": "2025-06-06T15:18:21.747819",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 105,
+            "force": {
+                "predicted": 15.500886857738896,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 7,
+            "chunk_file": "chunks\\chunk_0007.csv",
+            "timestamp": "2025-06-06T15:18:26.343791",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 120,
+            "force": {
+                "predicted": 15.500195212446531,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 8,
+            "chunk_file": "chunks\\chunk_0008.csv",
+            "timestamp": "2025-06-06T15:18:30.954954",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 135,
+            "force": {
+                "predicted": 15.499503899562738,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 9,
+            "chunk_file": "chunks\\chunk_0009.csv",
+            "timestamp": "2025-06-06T15:18:35.584480",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 150,
+            "force": {
+                "predicted": 15.498812919087516,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 10,
+            "chunk_file": "chunks\\chunk_0010.csv",
+            "timestamp": "2025-06-06T15:18:40.197130",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 165,
+            "force": {
+                "predicted": 15.498122271020863,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 11,
+            "chunk_file": "chunks\\chunk_0011.csv",
+            "timestamp": "2025-06-06T15:18:44.833563",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 180,
+            "force": {
+                "predicted": 15.49743195536278,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 12,
+            "chunk_file": "chunks\\chunk_0012.csv",
+            "timestamp": "2025-06-06T15:18:49.455349",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 195,
+            "force": {
+                "predicted": 15.496741972113268,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 13,
+            "chunk_file": "chunks\\chunk_0013.csv",
+            "timestamp": "2025-06-06T15:18:54.090930",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 210,
+            "force": {
+                "predicted": 15.496052321272327,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 14,
+            "chunk_file": "chunks\\chunk_0014.csv",
+            "timestamp": "2025-06-06T15:18:58.695256",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 225,
+            "force": {
+                "predicted": 15.495363002839955,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 15,
+            "chunk_file": "chunks\\chunk_0015.csv",
+            "timestamp": "2025-06-06T15:19:03.306313",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 240,
+            "force": {
+                "predicted": 15.494674016816152,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 16,
+            "chunk_file": "chunks\\chunk_0016.csv",
+            "timestamp": "2025-06-06T15:19:07.914739",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 255,
+            "force": {
+                "predicted": 15.493985363200919,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 17,
+            "chunk_file": "chunks\\chunk_0017.csv",
+            "timestamp": "2025-06-06T15:19:12.562290",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 270,
+            "force": {
+                "predicted": 15.493297041994259,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 18,
+            "chunk_file": "chunks\\chunk_0018.csv",
+            "timestamp": "2025-06-06T15:19:17.184076",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 285,
+            "force": {
+                "predicted": 15.492609053196166,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 19,
+            "chunk_file": "chunks\\chunk_0019.csv",
+            "timestamp": "2025-06-06T15:19:21.812550",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 300,
+            "force": {
+                "predicted": 15.491921396806642,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 20,
+            "chunk_file": "chunks\\chunk_0020.csv",
+            "timestamp": "2025-06-06T15:19:26.453952",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 315,
+            "force": {
+                "predicted": 15.491234072825693,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 21,
+            "chunk_file": "chunks\\chunk_0021.csv",
+            "timestamp": "2025-06-06T15:19:31.093125",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 330,
+            "force": {
+                "predicted": 15.49054708125331,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 22,
+            "chunk_file": "chunks\\chunk_0022.csv",
+            "timestamp": "2025-06-06T15:19:35.706567",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 345,
+            "force": {
+                "predicted": 15.489860422089498,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 23,
+            "chunk_file": "chunks\\chunk_0023.csv",
+            "timestamp": "2025-06-06T15:19:40.365754",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 360,
+            "force": {
+                "predicted": 15.489174095334256,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 24,
+            "chunk_file": "chunks\\chunk_0024.csv",
+            "timestamp": "2025-06-06T15:19:44.999513",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 375,
+            "force": {
+                "predicted": 15.488488100987585,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 25,
+            "chunk_file": "chunks\\chunk_0025.csv",
+            "timestamp": "2025-06-06T15:19:49.663811",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 390,
+            "force": {
+                "predicted": 15.487802439049485,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 26,
+            "chunk_file": "chunks\\chunk_0026.csv",
+            "timestamp": "2025-06-06T15:19:54.323957",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 405,
+            "force": {
+                "predicted": 15.487117109519952,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 27,
+            "chunk_file": "chunks\\chunk_0027.csv",
+            "timestamp": "2025-06-06T15:19:58.949996",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 420,
+            "force": {
+                "predicted": 15.48643211239899,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 28,
+            "chunk_file": "chunks\\chunk_0028.csv",
+            "timestamp": "2025-06-06T15:20:03.568257",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 435,
+            "force": {
+                "predicted": 15.4857474476866,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 29,
+            "chunk_file": "chunks\\chunk_0029.csv",
+            "timestamp": "2025-06-06T15:20:08.181491",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 450,
+            "force": {
+                "predicted": 15.48506311538278,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 30,
+            "chunk_file": "chunks\\chunk_0030.csv",
+            "timestamp": "2025-06-06T15:20:12.782721",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 465,
+            "force": {
+                "predicted": 15.484379115487528,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 31,
+            "chunk_file": "chunks\\chunk_0031.csv",
+            "timestamp": "2025-06-06T15:20:17.419282",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 480,
+            "force": {
+                "predicted": 15.483695448000848,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 32,
+            "chunk_file": "chunks\\chunk_0032.csv",
+            "timestamp": "2025-06-06T15:20:22.077842",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 495,
+            "force": {
+                "predicted": 15.483012112922736,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 33,
+            "chunk_file": "chunks\\chunk_0033.csv",
+            "timestamp": "2025-06-06T15:20:26.696420",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 510,
+            "force": {
+                "predicted": 15.482329110253197,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 34,
+            "chunk_file": "chunks\\chunk_0034.csv",
+            "timestamp": "2025-06-06T15:20:31.332180",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 525,
+            "force": {
+                "predicted": 15.481646439992225,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 35,
+            "chunk_file": "chunks\\chunk_0035.csv",
+            "timestamp": "2025-06-06T15:20:35.932546",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 540,
+            "force": {
+                "predicted": 15.480964102139824,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 36,
+            "chunk_file": "chunks\\chunk_0036.csv",
+            "timestamp": "2025-06-06T15:20:40.560676",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 555,
+            "force": {
+                "predicted": 15.480282096695994,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 37,
+            "chunk_file": "chunks\\chunk_0037.csv",
+            "timestamp": "2025-06-06T15:20:45.192083",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 570,
+            "force": {
+                "predicted": 15.479600423660735,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 38,
+            "chunk_file": "chunks\\chunk_0038.csv",
+            "timestamp": "2025-06-06T15:20:49.813364",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 585,
+            "force": {
+                "predicted": 15.478919083034043,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 39,
+            "chunk_file": "chunks\\chunk_0039.csv",
+            "timestamp": "2025-06-06T15:20:54.452240",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 600,
+            "force": {
+                "predicted": 15.478238074815923,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 40,
+            "chunk_file": "chunks\\chunk_0040.csv",
+            "timestamp": "2025-06-06T15:20:59.101059",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 615,
+            "force": {
+                "predicted": 15.477557399006374,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 41,
+            "chunk_file": "chunks\\chunk_0041.csv",
+            "timestamp": "2025-06-06T15:21:03.740123",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 630,
+            "force": {
+                "predicted": 15.476877055605392,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 42,
+            "chunk_file": "chunks\\chunk_0042.csv",
+            "timestamp": "2025-06-06T15:21:08.362666",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 645,
+            "force": {
+                "predicted": 15.476197044612983,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 43,
+            "chunk_file": "chunks\\chunk_0043.csv",
+            "timestamp": "2025-06-06T15:21:13.014576",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 660,
+            "force": {
+                "predicted": 15.475517366029143,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 44,
+            "chunk_file": "chunks\\chunk_0044.csv",
+            "timestamp": "2025-06-06T15:21:17.675604",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 675,
+            "force": {
+                "predicted": 15.474838019853875,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 45,
+            "chunk_file": "chunks\\chunk_0045.csv",
+            "timestamp": "2025-06-06T15:21:22.296192",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 690,
+            "force": {
+                "predicted": 15.474159006087174,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 46,
+            "chunk_file": "chunks\\chunk_0046.csv",
+            "timestamp": "2025-06-06T15:21:26.964966",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 705,
+            "force": {
+                "predicted": 15.473480324729044,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 47,
+            "chunk_file": "chunks\\chunk_0047.csv",
+            "timestamp": "2025-06-06T15:21:31.595607",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 720,
+            "force": {
+                "predicted": 15.472801975779486,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 48,
+            "chunk_file": "chunks\\chunk_0048.csv",
+            "timestamp": "2025-06-06T15:21:36.239582",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 735,
+            "force": {
+                "predicted": 15.472123959238495,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 49,
+            "chunk_file": "chunks\\chunk_0049.csv",
+            "timestamp": "2025-06-06T15:21:40.845133",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 750,
+            "force": {
+                "predicted": 15.471446275106075,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 50,
+            "chunk_file": "chunks\\chunk_0050.csv",
+            "timestamp": "2025-06-06T15:21:45.499404",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 765,
+            "force": {
+                "predicted": 15.470768923382227,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 51,
+            "chunk_file": "chunks\\chunk_0051.csv",
+            "timestamp": "2025-06-06T15:21:50.151383",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 780,
+            "force": {
+                "predicted": 15.470091904066948,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 52,
+            "chunk_file": "chunks\\chunk_0052.csv",
+            "timestamp": "2025-06-06T15:21:54.770535",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 795,
+            "force": {
+                "predicted": 15.46941521716024,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 53,
+            "chunk_file": "chunks\\chunk_0053.csv",
+            "timestamp": "2025-06-06T15:21:59.385940",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 810,
+            "force": {
+                "predicted": 15.4687388626621,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 54,
+            "chunk_file": "chunks\\chunk_0054.csv",
+            "timestamp": "2025-06-06T15:22:04.022051",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 825,
+            "force": {
+                "predicted": 15.46806284057253,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 55,
+            "chunk_file": "chunks\\chunk_0055.csv",
+            "timestamp": "2025-06-06T15:22:08.652765",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 840,
+            "force": {
+                "predicted": 15.467387150891533,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 56,
+            "chunk_file": "chunks\\chunk_0056.csv",
+            "timestamp": "2025-06-06T15:22:13.266890",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 855,
+            "force": {
+                "predicted": 15.466711793619103,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 57,
+            "chunk_file": "chunks\\chunk_0057.csv",
+            "timestamp": "2025-06-06T15:22:17.899071",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 870,
+            "force": {
+                "predicted": 15.466036768755243,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 58,
+            "chunk_file": "chunks\\chunk_0058.csv",
+            "timestamp": "2025-06-06T15:22:22.532137",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 885,
+            "force": {
+                "predicted": 15.465362076299956,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 59,
+            "chunk_file": "chunks\\chunk_0059.csv",
+            "timestamp": "2025-06-06T15:22:27.169591",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 900,
+            "force": {
+                "predicted": 15.464687716253238,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 60,
+            "chunk_file": "chunks\\chunk_0060.csv",
+            "timestamp": "2025-06-06T15:22:31.794347",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 915,
+            "force": {
+                "predicted": 15.464013688615088,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 61,
+            "chunk_file": "chunks\\chunk_0061.csv",
+            "timestamp": "2025-06-06T15:22:36.418872",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 930,
+            "force": {
+                "predicted": 15.46333999338551,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        },
+        {
+            "chunk_index": 62,
+            "chunk_file": "chunks\\chunk_0062.csv",
+            "timestamp": "2025-06-06T15:22:41.057693",
+            "events": {
+                "total": 30,
+                "insertions": 15,
+                "extractions": 15
+            },
+            "insertions_cumulative": 945,
+            "force": {
+                "predicted": 15.462666630564502,
+                "exceeds_threshold": false
+            },
+            "kh_info": [
+                {
+                    "type": 3,
+                    "id": 3,
+                    "insertions": 15,
+                    "extractions": 15
+                }
+            ],
+            "threshold_exceeding_events": [],
+            "notifications_created": 0
+        }
+    ],
+    "summary": {
+        "total_events": 1890,
+        "total_insertions": 945,
+        "total_extractions": 945,
+        "chunks_with_threshold_exceeded": 0,
+        "notifications_created": 0,
+        "total_threshold_exceeding_events": 0
+    }
+}
