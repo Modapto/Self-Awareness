@@ -1,9 +1,32 @@
 import pandas as pd
+from datetime import datetime, timezone
 import tempfile
 import os
 from core.wear_monitor import process_events
-from EventsProducer import EventsProducer
+from api.EventsProducer import EventsProducer
+import logging
 
+# Configure logging (console only)
+def get_log_level():
+    """Get log level from environment variable, default to INFO"""
+    log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
+    level_mapping = {
+        'DEBUG': logging.DEBUG,
+        'INFO': logging.INFO,
+        'WARNING': logging.WARNING,
+        'ERROR': logging.ERROR,
+        'CRITICAL': logging.CRITICAL
+    }
+    return level_mapping.get(log_level, logging.INFO)
+
+logging.basicConfig(
+    level=get_log_level(),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 class CRFApiWrapper:
 
@@ -39,7 +62,20 @@ class CRFApiWrapper:
             threshold = params.get('threshold', 16.0)
             interval_minutes = params.get('interval_minutes', 5)
             model_path = params.get('model_path', 'quadratic_model.json')
-            module = params.get('module', 'CRF-ILTAR')
+            # Ensure model path is always in data/models directory
+            if not model_path.startswith('data/models/'):
+                model_path = f'data/models/{model_path}'
+            module = params.get('moduleId', 'xxx')
+            smart_service = params.get('smartServiceId', 'xxx')
+
+            logger.info(f"Processing CRF wear monitoring request")
+            logger.info(f"Parameters: threshold={threshold}, interval_minutes={interval_minutes}, model_path={model_path}")
+            logger.info(f"Module: {module}, SmartService: {smart_service}")
+            logger.info(f"Input data events count: {len(json_input.get('data', []))}")
+
+            if not os.path.exists(model_path):
+                logger.error(f"Model file not found: {model_path}")
+                return {"error": f"Model file not found: {model_path}"}
 
             # Convert JSON data to CSV
             temp_csv = None
@@ -47,21 +83,36 @@ class CRFApiWrapper:
                 temp_csv = self._json_to_csv(json_input['data'])
 
             if not temp_csv:
+                logger.error("No valid input data provided for processing")
                 return {"error": "No valid input data provided"}
 
-            # Process events using wear_monitor
-            results = process_events(
-                temp_csv,
-                model_path,
-                threshold,
-                interval_minutes
-            )
+            logger.info(f"Processing events with wear_monitor algorithm")
+            try:
+                # Process events using wear_monitor
+                results = process_events(
+                    temp_csv,
+                    model_path,
+                    threshold,
+                    interval_minutes
+                )
+                logger.info(f"Wear monitor algorithm completed successfully")
+            except Exception as e:
+                logger.error(f"Error in wear_monitor algorithm: {str(e)}")
+                logger.exception("Full traceback:")
+                return {"error": f"Wear monitor algorithm failed: {str(e)}"}
 
             notifications = self._create_notifications(results, json_input['data'])
 
+            logger.info(f"Processing results: {len(notifications)} notifications generated")
+            logger.debug(f"Notifications: {notifications}")
+
             if notifications:
+                logger.info(f"Writing {len(notifications)} notifications to file")
                 self._write_notifications_file(notifications)
-                self._publish_wear_notifications(notifications, module)
+
+            # Publish wear alert events only when thresholds are exceeded
+            logger.info("Publishing wear monitoring event to Kafka")
+            self._publish_wear_notifications(notifications, module, smart_service)
 
             # Clean up temporary file
             if os.path.exists(temp_csv):
@@ -95,13 +146,21 @@ class CRFApiWrapper:
 
     def _create_notifications(self, results, original_data):
         """Create notifications in the same format as input data for exceeded thresholds"""
-        from datetime import datetime
 
         notifications = []
 
+        logger.info(f"Creating notifications from algorithm results")
+        logger.debug(f"Algorithm results: {results}")
+        logger.info(f"Results contain {len(results.get('windows', []))} windows")
+
         # Find windows where threshold was exceeded
-        for window in results.get('windows', []):
-            if window['force']['exceeds_threshold']:
+        threshold_exceeded_count = 0
+        for i, window in enumerate(results.get('windows', [])):
+            exceeds_threshold = window.get('force', {}).get('exceeds_threshold', False)
+            logger.debug(f"Window {i}: exceeds_threshold = {exceeds_threshold}")
+
+            if exceeds_threshold:
+                threshold_exceeded_count += 1
                 # Find corresponding original data entries for this time window
                 # We'll use the insertions indices to map back to original data
                 first_idx = window['insertions']['first_index']
@@ -138,6 +197,8 @@ class CRFApiWrapper:
 
                     notifications.append(base_data)
 
+        logger.info(f"Found {threshold_exceeded_count} windows exceeding threshold")
+        logger.info(f"Created {len(notifications)} notifications")
         return notifications
 
     def _write_notifications_file(self, notifications, filename="notifications.csv"):
@@ -156,26 +217,38 @@ class CRFApiWrapper:
         except Exception as e:
             print(f"Error writing notifications file: {str(e)}")
 
-    def _publish_wear_notifications(self, notifications, module):
+    def _publish_wear_notifications(self, notifications, module, smart_service):
 
-        for notification in notifications:
-            try:
-                # Create event data with same structure as JSON output
-                event_data = {
-                    "description": f"Tool wear threshold exceeded",
-                    "moduleid": "xxx",
-                    "pilot": "ILTAR-CRF",
-                    "smartServiceid": "xxx",
-                    "results": notification
-                }
+        logger.info(f"Publishing wear notifications - count: {len(notifications) if notifications else 0}")
+        logger.debug(f"Notifications to publish: {notifications}")
 
-                self.events_producer.produce_event(self.topic, event_data)
-                print(f"Published wear notification event")
+        if not notifications:
+            logger.info("No notifications found - normal operation, no Kafka events sent")
+            return
+        else:
+            logger.info(f"Publishing {len(notifications)} wear alert notifications")
+            for i, notification in enumerate(notifications, 1):
+                try:
+                    event_data = {
+                        "description": f"Tool wear threshold exceeded in station {notification.get('RFID Station ID')}. Immediate attention required.",
+                        "module": module,
+                        "pilot": "CRF",
+                        "eventType": "Tool Wear Exceeded Threshold Alert",
+                        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+                        "topic": self.topic,
+                        "smartService": smart_service,
+                        "results": notification
+                    }
 
-            except Exception as e:
-                print(f"Failed to publish event: {str(e)}")
+                    logger.info(f"Publishing wear alert {i}/{len(notifications)} to topic: {self.topic}")
+                    logger.debug(f"Alert event data: {event_data}")
+                    self.events_producer.produce_event(self.topic, event_data)
+                    logger.info(f"Wear alert {i}/{len(notifications)} published successfully")
 
-        print(f"Published {len(notifications)} wear notification events")
+                except Exception as e:
+                    logger.error(f"Failed to publish wear alert {i}/{len(notifications)}: {str(e)}")
+
+            logger.info(f"Completed publishing {len(notifications)} wear notification events")
 
     def close(self):
         if hasattr(self, 'events_producer'):

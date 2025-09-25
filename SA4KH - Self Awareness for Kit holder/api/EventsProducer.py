@@ -1,7 +1,7 @@
 # EventsProducer.py
 import json
 from kafka import KafkaProducer
-from datetime import datetime
+from datetime import datetime,timezone
 
 
 class EventsProducer:
@@ -25,16 +25,13 @@ class EventsProducer:
         :param event_data: Dictionary containing event details
         :raises ValueError: If required fields are missing or invalid
         """
-        required_fields = ['moduleid', 'pilot', 'description', 'smartServiceid']
+        required_fields = ['module', 'pilot', 'description',
+                           'timestamp', 'topic', 'eventType', 'smartService']
 
         # Check required fields
         for field in required_fields:
             if field not in event_data or not event_data[field]:
                 raise ValueError(f"Missing required field: {field}")
-
-        # Validate priority
-        # if event_data.get('priority') not in ['LOW', 'MEDIUM', 'HIGH']:
-        #     raise ValueError("Invalid priority. Must be LOW, MEDIUM, or HIGH")
 
         return event_data
 
@@ -45,11 +42,11 @@ class EventsProducer:
         :param topic: Kafka topic to send the event to
         :param event_data: Dictionary containing event details
         """
+        # Add timestamp if not provided
+        if 'timestamp' not in event_data:
+            event_data['timestamp'] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
 
         # Make some fields uppercase
-        # if 'priority' in event_data:
-        #     event_data['priority'] = event_data['priority'].upper()
-
         if 'pilot' in event_data:
             event_data['pilot'] = event_data['pilot'].upper()
 

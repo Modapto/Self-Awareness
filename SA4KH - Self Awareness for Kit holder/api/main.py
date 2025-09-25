@@ -3,15 +3,14 @@ import sys
 import argparse
 from api.crf_api_wrapper import CRFApiWrapper
 
-
 def main():
     """
     Main entry point for CRF API
     Reads JSON from stdin and writes JSON to stdout
     """
     parser = argparse.ArgumentParser(description='CRF Wear Monitoring API')
-    parser.add_argument('--kafka-server', default='kafka.modapto.atc.gr:9092',
-                        help='Kafka server address (default: kafka.modapto.atc.gr:9092)')
+    parser.add_argument('--kafka-server', default='kafka:9092',
+                        help='Kafka server address (default: kafka:9092)')
     parser.add_argument('--input', '-i', type=argparse.FileType('r'), default=sys.stdin,
                         help='Input JSON file (default: stdin)')
     parser.add_argument('--output', '-o', type=argparse.FileType('w'), default=sys.stdout,
