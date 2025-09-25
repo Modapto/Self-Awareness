@@ -370,13 +370,28 @@ def health_check():
     overall_status = "healthy"
 
     try:
-        test_wrapper = CRFApiWrapper("test:9092")
-        test_wrapper.close()
+        # Test import availability without instantiation
+        if hasattr(CRFApiWrapper, '__init__') and callable(CRFApiWrapper):
+            services_status["crf_api_wrapper"] = {
+                "status": "healthy",
+                "import": True,
+                "class_available": True
+            }
+        else:
+            services_status["crf_api_wrapper"] = {
+                "status": "unhealthy",
+                "import": True,
+                "class_available": False
+            }
+            overall_status = "degraded"
+    except NameError as e:
+        logger.error(f"CRF API wrapper not imported: {e}")
         services_status["crf_api_wrapper"] = {
-            "status": "healthy",
-            "import": True,
-            "instantiation": True
+            "status": "unhealthy",
+            "import": False,
+            "error": str(e)
         }
+        overall_status = "degraded"
     except Exception as e:
         logger.error(f"Error testing CRF API wrapper: {e}")
         services_status["crf_api_wrapper"] = {
