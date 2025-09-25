@@ -1,12 +1,8 @@
-# JSON Histogram GUI with Filters, Stats, and Dynamic Legends
-
-# This script allows the user to compare two datasets from JSON files via a GUI.
-# It features histogram visualization, statistics display, max value filtering,
-# and full legends built from the selected input parameters.
-
+# JSON Histogram Analytics - Refactored for EDS Integration
+# Modified to accept JSON file paths list instead of directory scanning
+# Added Base64 conversion for matplotlib figures
 
 import os
-import sys
 import json
 import numpy as np
 import pandas as pd
@@ -14,14 +10,29 @@ import tkinter as tk
 from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import io
+import base64
 
 
-# Extract (Ligne, Component, Variable) info from filenames
-def extract_LCV(json_output_dir):
-    if not os.path.exists(json_output_dir):
-        sys.exit("Invalid path: directory does not exist.")
+# Extract (Ligne, Component, Variable) info from JSON file paths list
+def extract_LCV(json_file_paths):
+    """
+    Extract (Ligne, Component, Variable) combinations from JSON file paths
+
+    Args:
+        json_file_paths: List of JSON file paths
+
+    Returns:
+        pandas.DataFrame with columns: Ligne, Component, Variable
+    """
     data = []
-    for filename in os.listdir(json_output_dir):
+
+    for filepath in json_file_paths:
+        if not os.path.exists(filepath):
+            continue
+
+        filename = os.path.basename(filepath)
+
         if filename.startswith("HIST_data_") and filename.endswith(".json"):
             base = filename.replace("HIST_data_", "").replace(".json", "")
             parts = base.split("_")
@@ -35,11 +46,21 @@ def extract_LCV(json_output_dir):
                         "Component": component,
                         "Variable": variable
                     })
+
     return pd.DataFrame(data)
 
 
 # Read all unique Starting_date values from a given JSON file
 def extract_starting_dates(filepath):
+    """
+    Extract all unique Starting_date values from JSON file
+
+    Args:
+        filepath: Path to JSON file
+
+    Returns:
+        Sorted list of Starting_date strings
+    """
     starting_dates = set()
 
     try:
@@ -81,6 +102,16 @@ def extract_starting_dates(filepath):
 
 # Extract the Data_list for a selected Starting_date in a file
 def extract_data_list(filepath, selected_date):
+    """
+    Extract Data_list for a selected Starting_date from JSON file
+
+    Args:
+        filepath: Path to JSON file
+        selected_date: Target Starting_date to find
+
+    Returns:
+        numpy array of data values
+    """
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read().strip()
@@ -89,11 +120,11 @@ def extract_data_list(filepath, selected_date):
         try:
             data = json.loads(content)
             if isinstance(data, dict) and data.get("Starting_date") == selected_date:
-                return data.get("Data_list", [])
+                return np.array(data.get("Data_list", []))
             elif isinstance(data, list):
                 for entry in data:
                     if isinstance(entry, dict) and entry.get("Starting_date") == selected_date:
-                        return entry.get("Data_list", [])
+                        return np.array(entry.get("Data_list", []))
         except json.JSONDecodeError:
             pass
 
@@ -106,27 +137,146 @@ def extract_data_list(filepath, selected_date):
                 try:
                     entry = json.loads(line)
                     if isinstance(entry, dict) and entry.get("Starting_date") == selected_date:
-                        return entry.get("Data_list", [])
+                        return np.array(entry.get("Data_list", []))
                 except json.JSONDecodeError:
                     continue
 
     except Exception as e:
         print(f"Error reading file {filepath}: {e}")
 
-    return []
+    return np.array([])
 
 
-# Main GUI function
-def launch_gui_dual(df, json_output_dir):
+# Convert matplotlib figure to Base64 string
+def fig_to_base64(fig):
+    """
+    Convert matplotlib figure to Base64 encoded PNG string
+
+    Args:
+        fig: matplotlib Figure object
+
+    Returns:
+        Base64 encoded string of PNG image
+    """
+    buffer = io.BytesIO()
+    fig.savefig(buffer, format='png', bbox_inches='tight', dpi=100)
+    buffer.seek(0)
+    image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
+    buffer.close()
+    return image_base64
+
+
+# Generate histogram and return as Base64 string - Main API function for EDS
+def generate_histogram_base64(json_file_paths, params1, params2=None, max_filter=0):
+    """
+    Generate histogram from JSON files and return as Base64 string
+
+    Args:
+        json_file_paths: List of JSON file paths
+        params1: Dict with keys: ligne, component, variable, date
+        params2: Optional second dataset parameters for comparison
+        max_filter: Optional maximum value filter (0 = no filter)
+
+    Returns:
+        Base64 encoded PNG image string
+    """
+
     def get_file_data(ligne, comp, var, date):
         if not all([ligne, comp, var, date]):
             return np.array([])
-        filename = f"HIST_data_{ligne}_{comp}_{var}.json"
-        full_path = os.path.join(json_output_dir, filename)
-        if not os.path.exists(full_path):
+
+        # Find the matching file
+        target_filename = f"HIST_data_{ligne}_{comp}_{var}.json"
+
+        for filepath in json_file_paths:
+            if os.path.basename(filepath) == target_filename:
+                return extract_data_list(filepath, date)
+
+        return np.array([])
+
+    # Get data for both datasets
+    data1 = get_file_data(params1['ligne'], params1['component'], params1['variable'], params1['date'])
+    data2 = np.array([])
+
+    if params2:
+        data2 = get_file_data(params2['ligne'], params2['component'], params2['variable'], params2['date'])
+
+    # Apply max filter if specified
+    if max_filter > 0:
+        data1 = data1[data1 <= max_filter]
+        if len(data2) > 0:
+            data2 = data2[data2 <= max_filter]
+
+    # Create figure
+    fig = Figure(figsize=(8, 4), dpi=100)
+    ax = fig.add_subplot(111)
+
+    # Build legends
+    legend1 = f"Set 1: {params1['ligne']}, {params1['component']}, {params1['variable']}, {params1['date']}"
+
+    # Plot first dataset
+    if len(data1) > 0:
+        ax.hist(data1, bins=30, alpha=0.5, label=legend1, color='blue', edgecolor='black')
+        ax.axvline(data1.mean(), color='blue', linestyle='--', label=f"Mean 1: {data1.mean():.2f}")
+
+    # Plot second dataset if provided
+    if len(data2) > 0:
+        legend2 = f"Set 2: {params2['ligne']}, {params2['component']}, {params2['variable']}, {params2['date']}"
+        ax.hist(data2, bins=30, alpha=0.5, label=legend2, color='green', edgecolor='black')
+        ax.axvline(data2.mean(), color='green', linestyle='--', label=f"Mean 2: {data2.mean():.2f}")
+
+    ax.set_title("Combined Histogram")
+    ax.set_xlabel("Cycle time (s)")
+    ax.set_ylabel("Frequency")
+    ax.legend()
+    ax.grid(True)
+
+    # Convert to Base64 and cleanup
+    base64_image = fig_to_base64(fig)
+    fig.clear()
+    return base64_image
+
+
+# Get filtering options - Main API function for EDS
+def get_filtering_options(json_file_paths):
+    """
+    Get available filtering options from JSON files
+
+    Args:
+        json_file_paths: List of JSON file paths
+
+    Returns:
+        pandas.DataFrame with columns: Ligne, Component, Variable
+    """
+    return extract_LCV(json_file_paths)
+
+
+# Modified GUI function to work with file paths list instead of directory
+def launch_gui_dual(json_file_paths):
+    """
+    Launch GUI with JSON file paths list instead of directory
+
+    Args:
+        json_file_paths: List of JSON file paths
+    """
+    df = extract_LCV(json_file_paths)
+
+    if df.empty:
+        print("No valid JSON files found!")
+        return
+
+    def get_file_data(ligne, comp, var, date):
+        if not all([ligne, comp, var, date]):
             return np.array([])
-        data_list = extract_data_list(full_path, date)
-        return np.array(data_list)
+
+        # Find the matching file
+        target_filename = f"HIST_data_{ligne}_{comp}_{var}.json"
+
+        for filepath in json_file_paths:
+            if os.path.basename(filepath) == target_filename:
+                return extract_data_list(filepath, date)
+
+        return np.array([])
 
     def update_all(*args):
         for menu in ['1', '2']:
@@ -157,7 +307,7 @@ def launch_gui_dual(df, json_output_dir):
         filtered = df[
             (df["Ligne"] == ligne_vars[menu_id].get()) &
             (df["Component"] == component_vars[menu_id].get())
-        ]
+            ]
         variables = sorted(filtered["Variable"].unique())
         variable_menus[menu_id]['menu'].delete(0, 'end')
         if variables:
@@ -174,9 +324,19 @@ def launch_gui_dual(df, json_output_dir):
             date_menus[menu_id]['menu'].delete(0, 'end')
 
     def update_date(menu_id):
-        filename = f"HIST_data_{ligne_vars[menu_id].get()}_{component_vars[menu_id].get()}_{variable_vars[menu_id].get()}.json"
-        full_path = os.path.join(json_output_dir, filename)
-        dates = extract_starting_dates(full_path)
+        ligne = ligne_vars[menu_id].get()
+        comp = component_vars[menu_id].get()
+        var = variable_vars[menu_id].get()
+
+        # Find matching file to get dates
+        target_filename = f"HIST_data_{ligne}_{comp}_{var}.json"
+        dates = []
+
+        for filepath in json_file_paths:
+            if os.path.basename(filepath) == target_filename:
+                dates = extract_starting_dates(filepath)
+                break
+
         date_menus[menu_id]['menu'].delete(0, 'end')
         if dates:
             for d in dates:
@@ -202,8 +362,10 @@ def launch_gui_dual(df, json_output_dir):
         except ValueError:
             max_val = 0
 
-        data1 = get_file_data(ligne_vars['1'].get(), component_vars['1'].get(), variable_vars['1'].get(), date_vars['1'].get())
-        data2 = get_file_data(ligne_vars['2'].get(), component_vars['2'].get(), variable_vars['2'].get(), date_vars['2'].get())
+        data1 = get_file_data(ligne_vars['1'].get(), component_vars['1'].get(), variable_vars['1'].get(),
+                              date_vars['1'].get())
+        data2 = get_file_data(ligne_vars['2'].get(), component_vars['2'].get(), variable_vars['2'].get(),
+                              date_vars['2'].get())
 
         if max_val > 0:
             data1 = data1[data1 <= max_val]
@@ -244,8 +406,7 @@ def launch_gui_dual(df, json_output_dir):
                 )
                 tk.Label(stats_frame, text=stats_text, justify="left", anchor="nw").pack(fill="both", expand=True)
 
-
-# Initialize Tkinter GUI
+    # Initialize Tkinter GUI (same as before)
     root = tk.Tk()
     root.title("Compare Two Data Sets")
 
@@ -264,7 +425,8 @@ def launch_gui_dual(df, json_output_dir):
 
         ligne_vars[row] = tk.StringVar()
         tk.Label(root, text=f"Ligne {row}").grid(row=row_offset, column=0, sticky="w")
-        ligne_menus[row] = ttk.OptionMenu(root, ligne_vars[row], "", *sorted(df["Ligne"].unique()), command=lambda _, r=row: update_dependent_menus(r))
+        ligne_menus[row] = ttk.OptionMenu(root, ligne_vars[row], "", *sorted(df["Ligne"].unique()),
+                                          command=lambda _, r=row: update_dependent_menus(r))
         ligne_menus[row].grid(row=row_offset, column=1)
 
         component_vars[row] = tk.StringVar()
@@ -304,8 +466,19 @@ def launch_gui_dual(df, json_output_dir):
 # Run GUI if this script is executed directly
 if __name__ == "__main__":
     if not tk._default_root:
-        json_output_dir = os.path.join(
-            "./JSON_hist_data/"
-        )
-        df = extract_LCV(json_output_dir)
-        launch_gui_dual(df, json_output_dir)
+        # Convert from directory scanning to file list
+        json_output_dir = "./JSON_hist_data/"
+
+        if os.path.exists(json_output_dir):
+            # Get list of JSON files from directory
+            json_file_paths = []
+            for filename in os.listdir(json_output_dir):
+                if filename.startswith("HIST_data_") and filename.endswith(".json"):
+                    json_file_paths.append(os.path.join(json_output_dir, filename))
+
+            if json_file_paths:
+                launch_gui_dual(json_file_paths)
+            else:
+                print("No JSON files found in directory!")
+        else:
+            print("Directory not found!")
