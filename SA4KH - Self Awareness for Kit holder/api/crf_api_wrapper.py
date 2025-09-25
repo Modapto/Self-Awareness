@@ -81,14 +81,21 @@ class CRFApiWrapper:
                 return {"error": "No valid input data provided"}
 
             logger.info(f"Processing events with wear_monitor algorithm")
-            # Process events using wear_monitor
-            results = process_events(
-                temp_csv,
-                model_path,
-                threshold,
-                interval_minutes
-            )
-            logger.info(f"Wear monitor algorithm completed successfully")
+            try:
+                # Process events using wear_monitor
+                results = process_events(
+                    temp_csv,
+                    model_path,
+                    threshold,
+                    interval_minutes
+                )
+                logger.info(f"Wear monitor algorithm completed successfully")
+            except Exception as e:
+                logger.error(f"Error in wear_monitor algorithm: {str(e)}")
+                logger.exception("Full traceback:")
+                # Create empty results to continue with normal operation event
+                results = {'windows': []}
+                logger.info("Created empty results to publish normal operation event")
 
             notifications = self._create_notifications(results, json_input['data'])
 
