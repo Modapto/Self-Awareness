@@ -47,6 +47,9 @@ class EventsProducer:
             event_data['timestamp'] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
 
         # Make some fields uppercase
+        # if 'priority' in event_data:
+        #     event_data['priority'] = event_data['priority'].upper()
+
         if 'pilot' in event_data:
             event_data['pilot'] = event_data['pilot'].upper()
 
