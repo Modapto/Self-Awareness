@@ -1,6 +1,7 @@
 # EventsProducer.py
 import json
 from kafka import KafkaProducer
+from time import timezone
 from datetime import datetime
 
 
@@ -48,7 +49,7 @@ class EventsProducer:
         """
         # Add timestamp if not provided
         if 'timestamp' not in event_data:
-            event_data['timestamp'] = datetime.utcnow().isoformat()
+            event_data['timestamp'] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
 
         # Make some fields uppercase
         if 'priority' in event_data:

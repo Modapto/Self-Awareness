@@ -1,0 +1,71 @@
+name: Docker Image CI/CD - Self Awareness Monitoring KPIs (SA1 - SA2 / SEW case)
+
+env:
+  DOCKER_IMAGE_SA_1: self-awareness-1-monitor-kpis
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - './Self-Awareness-1/**'
+  workflow_dispatch:
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        driver: docker-container
+        buildkitd-config-inline: |
+          [registry."ghcr.io"]
+            mirrors = ["ghcr.io"]
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.CI_ORG_TOKEN }}
+
+    - name: Build and Push Image of SA1 with Cache
+      uses: docker/build-push-action@v6
+      with:
+        context: ./Self-Awareness-1
+        push: true
+        tags: ghcr.io/modapto/${{ env.DOCKER_IMAGE_SA_1 }}:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push-image
+    steps:      
+      - name: SSH into VM and Deploy new Image with Docker
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VM_HOST_IP }}
+          username:  ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            # Fail script on first error
+            set -e 
+            # Login to GitHub Container Registry
+            echo "${{ secrets.CI_ORG_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            
+            # Deploy new Image on Dev Environment
+            cd /root/modapto/system-deployment/smart-services
+            docker compose pull ${{ env.DOCKER_IMAGE_SA_1 }}
+            docker compose up -d --no-deps ${{ env.DOCKER_IMAGE_SA_1 }}
+
+            # Remove unused images
+            docker image prune -f
+            
+            # Logout
+            docker logout ghcr.io

@@ -1,4 +1,6 @@
+from time import timezone
 import pandas as pd
+from datetime import datetime
 import tempfile
 import os
 from core.wear_monitor import process_events
@@ -39,7 +41,8 @@ class CRFApiWrapper:
             threshold = params.get('threshold', 16.0)
             interval_minutes = params.get('interval_minutes', 5)
             model_path = params.get('model_path', 'quadratic_model.json')
-            module = params.get('module', 'CRF-ILTAR')
+            module = params.get('moduleId', 'xxx')
+            smart_service = params.get('smartServiceId', 'xxx')
 
             # Convert JSON data to CSV
             temp_csv = None
@@ -61,7 +64,7 @@ class CRFApiWrapper:
 
             if notifications:
                 self._write_notifications_file(notifications)
-                self._publish_wear_notifications(notifications, module)
+                self._publish_wear_notifications(notifications, module, smart_service)
 
             # Clean up temporary file
             if os.path.exists(temp_csv):
@@ -95,8 +98,6 @@ class CRFApiWrapper:
 
     def _create_notifications(self, results, original_data):
         """Create notifications in the same format as input data for exceeded thresholds"""
-        from datetime import datetime
-
         notifications = []
 
         # Find windows where threshold was exceeded
@@ -156,27 +157,51 @@ class CRFApiWrapper:
         except Exception as e:
             print(f"Error writing notifications file: {str(e)}")
 
-    def _publish_wear_notifications(self, notifications, module):
+    def _publish_wear_notifications(self, notifications, module, smart_service):
 
-        for notification in notifications:
+        if not notifications:
             try:
                 # Create event data with same structure as JSON output
                 event_data = {
-                    "description": f"Tool wear threshold exceeded",
-                    "moduleid": "xxx",
-                    "pilot": "ILTAR-CRF",
+                    "description": f"No tool wear threshold exceeded. System is operating normally.",
+                    "module": module,
+                    "pilot": "CRF",
                     "topic": self.topic,
-                    "smartServiceid": "xxx",
-                    "results": notification
+                    "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+                    "eventType": "Tool Wear Monitoring Normal Operation",
+                    "priority": "LOW",
+                    "smartService": smart_service,
+                    "results": None
                 }
 
                 self.events_producer.produce_event(self.topic, event_data)
-                print(f"Published wear notification event")
+                print(f"Event of normal operation published")
 
             except Exception as e:
                 print(f"Failed to publish event: {str(e)}")
+        else:
+            for notification in notifications:
+                try:
+                    # Create event data with same structure as JSON output
+                    event_data = {
+                        "description": f"Tool wear threshold exceeded in station {notification.get('RFID Station ID')}. Immediate attention required.",
+                        "module": module,
+                        "pilot": "CRF",
+                        "eventType": "Tool Wear Exceeded Threshold Alert",
+                        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+                        "priority": "HIGH",
+                        "topic": self.topic,
+                        "smartService": smart_service,
+                        "results": notification
+                    }
 
-        print(f"Published {len(notifications)} wear notification events")
+                    self.events_producer.produce_event(self.topic, event_data)
+                    print(f"Published wear notification event")
+
+                except Exception as e:
+                    print(f"Failed to publish event: {str(e)}")
+
+            print(f"Published {len(notifications)} wear notification events")
 
     def close(self):
         if hasattr(self, 'events_producer'):
