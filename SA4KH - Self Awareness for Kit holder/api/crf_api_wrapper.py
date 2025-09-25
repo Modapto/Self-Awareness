@@ -165,7 +165,6 @@ class CRFApiWrapper:
                     "description": f"Tool wear threshold exceeded",
                     "moduleid": "xxx",
                     "pilot": "ILTAR-CRF",
-                    "topic": self.topic,
                     "smartServiceid": "xxx",
                     "results": notification
                 }
