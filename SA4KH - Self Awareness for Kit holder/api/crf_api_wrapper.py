@@ -1,6 +1,5 @@
-from time import timezone
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 import tempfile
 import os
 from core.wear_monitor import process_events
