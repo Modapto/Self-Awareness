@@ -62,6 +62,9 @@ class CRFApiWrapper:
             threshold = params.get('threshold', 16.0)
             interval_minutes = params.get('interval_minutes', 5)
             model_path = params.get('model_path', 'quadratic_model.json')
+            # Ensure model path is always in data/models directory
+            if not model_path.startswith('data/models/'):
+                model_path = f'data/models/{model_path}'
             module = params.get('moduleId', 'xxx')
             smart_service = params.get('smartServiceId', 'xxx')
 
@@ -69,6 +72,27 @@ class CRFApiWrapper:
             logger.info(f"Parameters: threshold={threshold}, interval_minutes={interval_minutes}, model_path={model_path}")
             logger.info(f"Module: {module}, SmartService: {smart_service}")
             logger.info(f"Input data events count: {len(json_input.get('data', []))}")
+
+            # Check if model file exists
+            if not os.path.exists(model_path):
+                logger.error(f"Model file not found: {model_path}")
+                logger.info(f"Current working directory: {os.getcwd()}")
+                try:
+                    logger.info(f"Available files in current directory: {os.listdir('.')}")
+                    if os.path.exists('data'):
+                        logger.info(f"Files in data directory: {os.listdir('data')}")
+                        if os.path.exists('data/models'):
+                            logger.info(f"Files in data/models directory: {os.listdir('data/models')}")
+                except Exception as e:
+                    logger.error(f"Error listing directories: {e}")
+
+                logger.warning("Model file missing - will publish normal operation event without algorithm processing")
+                # Create empty results and continue to publish normal operation event
+                results = {'windows': []}
+                notifications = []
+                logger.info("Publishing normal operation event due to missing model file")
+                self._publish_wear_notifications(notifications, module, smart_service)
+                return None
 
             # Convert JSON data to CSV
             temp_csv = None
