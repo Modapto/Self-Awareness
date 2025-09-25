@@ -1,19 +1,17 @@
-name: Docker Image CI/CD - Self Awareness
+name: Docker Image CI/CD - Self Awareness Wear Monitoring (SA wear)
 
 env:
-  DOCKER_IMAGE_SA_1: self-awareness-1-monitor-kpis
+  DOCKER_IMAGE: self-awareness-wear-monitoring
 
 on:
   push:
     branches: [ "main" ]
-    paths-ignore:
-      - '**/README.md'
-      - '*.github/workflows/**'
+    paths:
+      - 'SA4KH - Self Awareness for Kit holder/**'
   pull_request:
     branches: [ "main" ]
-    paths-ignore:
-      - '**/README.md'
-      - '*.github/workflows/**'
+    paths:
+      - 'SA4KH - Self Awareness for Kit holder/**'
   workflow_dispatch:
 
 jobs:
@@ -38,12 +36,12 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.CI_ORG_TOKEN }}
 
-    - name: Build and Push Image of SA1 with Cache
+    - name: Build and Push Image of SA Wear Algorithm with Cache
       uses: docker/build-push-action@v6
       with:
-        context: ./Self-Awareness-1
+        context: ./SA4KH - Self Awareness for Kit holder
         push: true
-        tags: ghcr.io/modapto/${{ env.DOCKER_IMAGE_SA_1 }}:latest
+        tags: ghcr.io/modapto/${{ env.DOCKER_IMAGE }}:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
         build-args: |
@@ -67,8 +65,8 @@ jobs:
             
             # Deploy new Image on Dev Environment
             cd /root/modapto/system-deployment/smart-services
-            docker compose pull ${{ env.DOCKER_IMAGE_SA_1 }}
-            docker compose up -d --no-deps ${{ env.DOCKER_IMAGE_SA_1 }}
+            docker compose pull ${{ env.DOCKER_IMAGE }}
+            docker compose up -d --no-deps ${{ env.DOCKER_IMAGE }}
 
             # Remove unused images
             docker image prune -f
