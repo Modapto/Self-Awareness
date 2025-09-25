@@ -66,14 +66,21 @@ class CRFApiWrapper:
             module = params.get('moduleId', 'xxx')
             smart_service = params.get('smartServiceId', 'xxx')
 
+            logger.info(f"Processing CRF wear monitoring request")
+            logger.info(f"Parameters: threshold={threshold}, interval_minutes={interval_minutes}, model_path={model_path}")
+            logger.info(f"Module: {module}, SmartService: {smart_service}")
+            logger.info(f"Input data events count: {len(json_input.get('data', []))}")
+
             # Convert JSON data to CSV
             temp_csv = None
             if 'data' in json_input and json_input['data']:
                 temp_csv = self._json_to_csv(json_input['data'])
 
             if not temp_csv:
+                logger.error("No valid input data provided for processing")
                 return {"error": "No valid input data provided"}
 
+            logger.info(f"Processing events with wear_monitor algorithm")
             # Process events using wear_monitor
             results = process_events(
                 temp_csv,
@@ -81,12 +88,20 @@ class CRFApiWrapper:
                 threshold,
                 interval_minutes
             )
+            logger.info(f"Wear monitor algorithm completed successfully")
 
             notifications = self._create_notifications(results, json_input['data'])
 
+            logger.info(f"Processing results: {len(notifications)} notifications generated")
+            logger.debug(f"Notifications: {notifications}")
+
             if notifications:
+                logger.info(f"Writing {len(notifications)} notifications to file")
                 self._write_notifications_file(notifications)
-                self._publish_wear_notifications(notifications, module, smart_service)
+
+            # Always publish event - either wear alerts or success message
+            logger.info("Publishing wear monitoring event to Kafka")
+            self._publish_wear_notifications(notifications, module, smart_service)
 
             # Clean up temporary file
             if os.path.exists(temp_csv):
@@ -122,9 +137,18 @@ class CRFApiWrapper:
         """Create notifications in the same format as input data for exceeded thresholds"""
         notifications = []
 
+        logger.info(f"Creating notifications from algorithm results")
+        logger.debug(f"Algorithm results: {results}")
+        logger.info(f"Results contain {len(results.get('windows', []))} windows")
+
         # Find windows where threshold was exceeded
-        for window in results.get('windows', []):
-            if window['force']['exceeds_threshold']:
+        threshold_exceeded_count = 0
+        for i, window in enumerate(results.get('windows', [])):
+            exceeds_threshold = window.get('force', {}).get('exceeds_threshold', False)
+            logger.debug(f"Window {i}: exceeds_threshold = {exceeds_threshold}")
+
+            if exceeds_threshold:
+                threshold_exceeded_count += 1
                 # Find corresponding original data entries for this time window
                 # We'll use the insertions indices to map back to original data
                 first_idx = window['insertions']['first_index']
@@ -161,6 +185,8 @@ class CRFApiWrapper:
 
                     notifications.append(base_data)
 
+        logger.info(f"Found {threshold_exceeded_count} windows exceeding threshold")
+        logger.info(f"Created {len(notifications)} notifications")
         return notifications
 
     def _write_notifications_file(self, notifications, filename="notifications.csv"):
@@ -181,10 +207,12 @@ class CRFApiWrapper:
 
     def _publish_wear_notifications(self, notifications, module, smart_service):
 
-        logger.info("Notifications to publish: {notifications}", notifications=notifications)
+        logger.info(f"Publishing wear notifications - count: {len(notifications) if notifications else 0}")
+        logger.debug(f"Notifications to publish: {notifications}")
+
         if not notifications:
             try:
-                # Create event data with same structure as JSON output
+                logger.info("No notifications found - publishing normal operation event")
                 event_data = {
                     "description": f"No tool wear threshold exceeded. System is operating normally.",
                     "module": module,
@@ -197,15 +225,17 @@ class CRFApiWrapper:
                     "results": None
                 }
 
+                logger.info(f"Publishing normal operation event to topic: {self.topic}")
+                logger.debug(f"Event data: {event_data}")
                 self.events_producer.produce_event(self.topic, event_data)
-                print(f"Event of normal operation published")
+                logger.info("Normal operation event published successfully")
 
             except Exception as e:
-                print(f"Failed to publish event: {str(e)}")
+                logger.error(f"Failed to publish normal operation event: {str(e)}")
         else:
-            for notification in notifications:
+            logger.info(f"Publishing {len(notifications)} wear alert notifications")
+            for i, notification in enumerate(notifications, 1):
                 try:
-                    # Create event data with same structure as JSON output
                     event_data = {
                         "description": f"Tool wear threshold exceeded in station {notification.get('RFID Station ID')}. Immediate attention required.",
                         "module": module,
@@ -218,13 +248,15 @@ class CRFApiWrapper:
                         "results": notification
                     }
 
+                    logger.info(f"Publishing wear alert {i}/{len(notifications)} to topic: {self.topic}")
+                    logger.debug(f"Alert event data: {event_data}")
                     self.events_producer.produce_event(self.topic, event_data)
-                    print(f"Published wear notification event")
+                    logger.info(f"Wear alert {i}/{len(notifications)} published successfully")
 
                 except Exception as e:
-                    print(f"Failed to publish event: {str(e)}")
+                    logger.error(f"Failed to publish wear alert {i}/{len(notifications)}: {str(e)}")
 
-            print(f"Published {len(notifications)} wear notification events")
+            logger.info(f"Completed publishing {len(notifications)} wear notification events")
 
     def close(self):
         if hasattr(self, 'events_producer'):
