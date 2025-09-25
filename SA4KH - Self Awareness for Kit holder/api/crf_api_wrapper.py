@@ -5,7 +5,29 @@ import tempfile
 import os
 from core.wear_monitor import process_events
 from api.EventsProducer import EventsProducer
+import logging
 
+# Configure logging (console only)
+def get_log_level():
+    """Get log level from environment variable, default to INFO"""
+    log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
+    level_mapping = {
+        'DEBUG': logging.DEBUG,
+        'INFO': logging.INFO,
+        'WARNING': logging.WARNING,
+        'ERROR': logging.ERROR,
+        'CRITICAL': logging.CRITICAL
+    }
+    return level_mapping.get(log_level, logging.INFO)
+
+logging.basicConfig(
+    level=get_log_level(),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 class CRFApiWrapper:
 
@@ -159,6 +181,7 @@ class CRFApiWrapper:
 
     def _publish_wear_notifications(self, notifications, module, smart_service):
 
+        logger.info("Notifications to publish: {notifications}", notifications=notifications)
         if not notifications:
             try:
                 # Create event data with same structure as JSON output
