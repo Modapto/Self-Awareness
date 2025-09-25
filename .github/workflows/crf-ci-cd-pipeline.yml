@@ -32,7 +32,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.CI_ORG_TOKEN }}
 
-    - name: Build and Push Image of SA1 with Cache
+    - name: Build and Push Image of SA Wear Algorithm with Cache
       uses: docker/build-push-action@v6
       with:
         context: ./SA4KH - Self Awareness for Kit holder

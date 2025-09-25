@@ -4,7 +4,7 @@ from datetime import datetime
 import tempfile
 import os
 from core.wear_monitor import process_events
-from EventsProducer import EventsProducer
+from api.EventsProducer import EventsProducer
 
 
 class CRFApiWrapper:
