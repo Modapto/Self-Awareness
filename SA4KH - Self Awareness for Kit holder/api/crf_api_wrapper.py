@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 class CRFApiWrapper:
 
-    def __init__(self, kafka_server="kafka.modapto.atc.gr:9092"):
+    def __init__(self, kafka_server="kafka:9092"):
         """Initialize the API wrapper with Kafka connection"""
         self.events_producer = EventsProducer(kafka_server)
         self.topic = 'self-awareness-wear-detection'
@@ -233,6 +233,7 @@ class CRFApiWrapper:
                         "description": f"Tool wear threshold exceeded in station {notification.get('RFID Station ID')}. Immediate attention required.",
                         "module": module,
                         "pilot": "CRF",
+                        "priority": "HIGH",
                         "eventType": "Tool Wear Exceeded Threshold Alert",
                         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
                         "topic": self.topic,

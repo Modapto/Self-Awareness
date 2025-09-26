@@ -30,7 +30,8 @@ def main():
             result = api.process_request(input_json)
 
             # Write output JSON
-            json.dump(result, args.output, indent=2)
+            if result is not None:
+                json.dump(result, args.output, indent=2)
 
         finally:
             api.close()

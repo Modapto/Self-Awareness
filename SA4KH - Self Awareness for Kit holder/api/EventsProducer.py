@@ -25,7 +25,7 @@ class EventsProducer:
         :param event_data: Dictionary containing event details
         :raises ValueError: If required fields are missing or invalid
         """
-        required_fields = ['module', 'pilot', 'description',
+        required_fields = ['module', 'pilot', 'priority', 'description',
                            'timestamp', 'topic', 'eventType', 'smartService']
 
         # Check required fields
@@ -33,6 +33,9 @@ class EventsProducer:
             if field not in event_data or not event_data[field]:
                 raise ValueError(f"Missing required field: {field}")
 
+        # Validate priority
+        if event_data.get('priority') not in ['LOW', 'MID', 'HIGH']:
+            raise ValueError("Invalid priority. Must be LOW, MID, or HIGH")
         return event_data
 
     def produce_event(self, topic, event_data):
@@ -47,8 +50,8 @@ class EventsProducer:
             event_data['timestamp'] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
 
         # Make some fields uppercase
-        # if 'priority' in event_data:
-        #     event_data['priority'] = event_data['priority'].upper()
+        if 'priority' in event_data:
+            event_data['priority'] = event_data['priority'].upper()
 
         if 'pilot' in event_data:
             event_data['pilot'] = event_data['pilot'].upper()
