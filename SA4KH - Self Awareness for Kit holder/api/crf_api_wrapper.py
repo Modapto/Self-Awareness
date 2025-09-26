@@ -145,7 +145,7 @@ class CRFApiWrapper:
             return None
 
     def _create_notifications(self, results, original_data):
-        """Create notifications in the same format as input data for exceeded thresholds"""
+        """Create notifications in the requested format for exceeded thresholds"""
 
         notifications = []
 
@@ -162,51 +162,60 @@ class CRFApiWrapper:
             if exceeds_threshold:
                 threshold_exceeded_count += 1
                 # Find corresponding original data entries for this time window
-                # We'll use the insertions indices to map back to original data
                 first_idx = window['insertions']['first_index']
                 last_idx = window['insertions']['last_index']
 
-                # For now, we'll create one notification entry per exceeded window
-                # using the first insertion data from that window
+                # Create notification entry per exceeded window using the first insertion data
                 if first_idx < len(original_data):
-                    base_data = original_data[first_idx].copy()
+                    base_data = original_data[first_idx]
 
-                    # Remove Header byte field if present
-                    header_keys = [key for key in base_data.keys() if 'Header byte' in key]
-                    for key in header_keys:
-                        del base_data[key]
+                    # Convert to the requested structure
+                    notification = {
+                        "eventType": 1,  # Set to notification type (0x01)
+                        "rfidStation": base_data.get("RFID Station ID [1..9]"),
+                        "timestamp": self._format_timestamp(base_data.get("Timestamp 8bytes")),
+                        "khType": base_data.get("KH Type [1..3]"),
+                        "khId": base_data.get("KH Unique ID [1..5]")
+                    }
 
-                    # Modify the issue type to indicate wear notification (0x01)
-                    # Find the issue type column (could be different names)
-                    issue_type_keys = [key for key in base_data.keys() if
-                                       'Issue type' in key or 'Event Type' in key or 'Saw Event Type' in key]
-                    if issue_type_keys:
-                        base_data[issue_type_keys[0]] = 1  # Set to notification type
-
-                    # Convert Unix timestamp to readable datetime
-                    timestamp_keys = [key for key in base_data.keys() if
-                                      'Timestamp' in key or 'timestamp' in key.lower()]
-                    for ts_key in timestamp_keys:
-                        try:
-                            # Convert Unix timestamp to readable format
-                            unix_timestamp = int(base_data[ts_key])
-                            readable_datetime = datetime.fromtimestamp(unix_timestamp).strftime('%Y-%m-%d %H:%M:%S')
-                            base_data[ts_key] = readable_datetime
-                        except (ValueError, TypeError):
-                            pass
-
-                    notifications.append(base_data)
+                    notifications.append(notification)
 
         logger.info(f"Found {threshold_exceeded_count} windows exceeding threshold")
         logger.info(f"Created {len(notifications)} notifications")
         return notifications
+
+    def _format_timestamp(self, unix_timestamp):
+        """Convert Unix timestamp to requested format YYYY-MM-DD'T'hh:mm:ss"""
+        try:
+            if unix_timestamp:
+                # Convert Unix timestamp to the requested ISO format
+                readable_datetime = datetime.fromtimestamp(int(unix_timestamp)).strftime('%Y-%m-%dT%H:%M:%S')
+                return readable_datetime
+        except (ValueError, TypeError):
+            pass
+        return None
 
     def _write_notifications_file(self, notifications, filename="notifications.csv"):
         if not notifications:
             return
 
         try:
-            df = pd.DataFrame(notifications)
+            # Convert the new structure back to original field names for the file
+            # since the file format should match the original structure
+            file_notifications = []
+
+            for notification in notifications:
+                # Map back to original field names for file output
+                file_entry = {
+                    "Saw Event Type (1 Insertion - 2 Extraction)": notification.get("eventType"),
+                    "RFID Station ID [1..9]": notification.get("rfidStation"),
+                    "Timestamp 8bytes": notification.get("timestamp"),
+                    "KH Type [1..3]": notification.get("khType"),
+                    "KH Unique ID [1..5]": notification.get("khId")
+                }
+                file_notifications.append(file_entry)
+
+            df = pd.DataFrame(file_notifications)
             file_exists = os.path.exists(filename)
             mode = 'a' if file_exists else 'w'
             header = not file_exists
