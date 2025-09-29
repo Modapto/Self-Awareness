@@ -12,6 +12,10 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import io
 import base64
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 # Extract (Ligne, Component, Variable) info from JSON file paths list
@@ -25,10 +29,12 @@ def extract_LCV(json_file_paths):
     Returns:
         pandas.DataFrame with columns: Ligne, Component, Variable
     """
+    logger.info(f"Extracting LCV from {len(json_file_paths)} JSON file paths")
     data = []
 
     for filepath in json_file_paths:
         if not os.path.exists(filepath):
+            logger.warning(f"File does not exist: {filepath}")
             continue
 
         filename = os.path.basename(filepath)
@@ -46,7 +52,9 @@ def extract_LCV(json_file_paths):
                         "Component": component,
                         "Variable": variable
                     })
+                    logger.debug(f"Extracted: Ligne={ligne}, Component={component}, Variable={variable}")
 
+    logger.info(f"Successfully extracted {len(data)} LCV combinations")
     return pd.DataFrame(data)
 
 
@@ -61,6 +69,7 @@ def extract_starting_dates(filepath):
     Returns:
         Sorted list of Starting_date strings
     """
+    logger.debug(f"Extracting starting dates from: {filepath}")
     starting_dates = set()
 
     try:
@@ -72,14 +81,16 @@ def extract_starting_dates(filepath):
             data = json.loads(content)
             if isinstance(data, dict) and "Starting_date" in data:
                 starting_dates.add(data["Starting_date"])
+                logger.debug(f"Found single JSON with date: {data['Starting_date']}")
                 return sorted(starting_dates)
             elif isinstance(data, list):
                 for entry in data:
                     if isinstance(entry, dict) and "Starting_date" in entry:
                         starting_dates.add(entry["Starting_date"])
+                logger.debug(f"Found JSON array with {len(starting_dates)} unique dates")
                 return sorted(starting_dates)
         except json.JSONDecodeError:
-            pass
+            logger.debug("Standard JSON parsing failed, trying JSONL format")
 
         # If standard JSON parsing fails, try JSONL format (line by line)
         with open(filepath, 'r', encoding='utf-8') as f:
@@ -94,8 +105,10 @@ def extract_starting_dates(filepath):
                 except json.JSONDecodeError:
                     continue
 
+        logger.debug(f"Found {len(starting_dates)} unique starting dates in JSONL format")
+
     except Exception as e:
-        print(f"Error reading file {filepath}: {e}")
+        logger.error(f"Error reading file {filepath}: {e}")
 
     return sorted(starting_dates)
 
@@ -112,6 +125,7 @@ def extract_data_list(filepath, selected_date):
     Returns:
         numpy array of data values
     """
+    logger.debug(f"Extracting data list from {filepath} for date: {selected_date}")
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read().strip()
@@ -120,13 +134,17 @@ def extract_data_list(filepath, selected_date):
         try:
             data = json.loads(content)
             if isinstance(data, dict) and data.get("Starting_date") == selected_date:
-                return np.array(data.get("Data_list", []))
+                data_list = np.array(data.get("Data_list", []))
+                logger.debug(f"Found data list with {len(data_list)} values")
+                return data_list
             elif isinstance(data, list):
                 for entry in data:
                     if isinstance(entry, dict) and entry.get("Starting_date") == selected_date:
-                        return np.array(entry.get("Data_list", []))
+                        data_list = np.array(entry.get("Data_list", []))
+                        logger.debug(f"Found data list with {len(data_list)} values in array")
+                        return data_list
         except json.JSONDecodeError:
-            pass
+            logger.debug("Standard JSON parsing failed, trying JSONL format")
 
         # If standard JSON parsing fails, try JSONL format (line by line)
         with open(filepath, 'r', encoding='utf-8') as f:
@@ -137,13 +155,16 @@ def extract_data_list(filepath, selected_date):
                 try:
                     entry = json.loads(line)
                     if isinstance(entry, dict) and entry.get("Starting_date") == selected_date:
-                        return np.array(entry.get("Data_list", []))
+                        data_list = np.array(entry.get("Data_list", []))
+                        logger.debug(f"Found data list with {len(data_list)} values in JSONL")
+                        return data_list
                 except json.JSONDecodeError:
                     continue
 
     except Exception as e:
-        print(f"Error reading file {filepath}: {e}")
+        logger.error(f"Error reading file {filepath}: {e}")
 
+    logger.warning(f"No data found for date {selected_date} in {filepath}")
     return np.array([])
 
 
@@ -180,34 +201,56 @@ def generate_histogram_base64(json_file_paths, params1, params2=None, max_filter
     Returns:
         Base64 encoded PNG image string
     """
+    logger.info(f"Generating histogram with {len(json_file_paths)} JSON files")
+    logger.info(f"Params1: {params1}")
+    if params2:
+        logger.info(f"Params2: {params2}")
+    logger.info(f"Max filter: {max_filter}")
 
     def get_file_data(ligne, comp, var, date):
         if not all([ligne, comp, var, date]):
+            logger.warning(f"Missing parameters - ligne:{ligne}, comp:{comp}, var:{var}, date:{date}")
             return np.array([])
 
         # Find the matching file
         target_filename = f"HIST_data_{ligne}_{comp}_{var}.json"
+        logger.debug(f"Looking for file: {target_filename}")
 
         for filepath in json_file_paths:
             if os.path.basename(filepath) == target_filename:
-                return extract_data_list(filepath, date)
+                logger.info(f"Found matching file: {filepath}")
+                data = extract_data_list(filepath, date)
+                logger.info(f"Extracted {len(data)} data points")
+                return data
 
+        logger.warning(f"No matching file found for: {target_filename}")
         return np.array([])
 
     # Get data for both datasets
+    logger.info("Getting data for first dataset...")
     data1 = get_file_data(params1['ligne'], params1['component'], params1['variable'], params1['date'])
     data2 = np.array([])
 
     if params2:
+        logger.info("Getting data for second dataset...")
         data2 = get_file_data(params2['ligne'], params2['component'], params2['variable'], params2['date'])
+
+    logger.info(f"Dataset 1 size: {len(data1)}, Dataset 2 size: {len(data2)}")
 
     # Apply max filter if specified
     if max_filter > 0:
+        logger.info(f"Applying max filter: {max_filter}")
+        original_size1 = len(data1)
         data1 = data1[data1 <= max_filter]
+        logger.info(f"Dataset 1 filtered: {original_size1} -> {len(data1)} values")
+
         if len(data2) > 0:
+            original_size2 = len(data2)
             data2 = data2[data2 <= max_filter]
+            logger.info(f"Dataset 2 filtered: {original_size2} -> {len(data2)} values")
 
     # Create figure
+    logger.info("Creating histogram figure...")
     fig = Figure(figsize=(8, 4), dpi=100)
     ax = fig.add_subplot(111)
 
@@ -216,12 +259,16 @@ def generate_histogram_base64(json_file_paths, params1, params2=None, max_filter
 
     # Plot first dataset
     if len(data1) > 0:
+        logger.info(f"Plotting first dataset - {len(data1)} values, mean: {data1.mean():.2f}")
         ax.hist(data1, bins=30, alpha=0.5, label=legend1, color='blue', edgecolor='black')
         ax.axvline(data1.mean(), color='blue', linestyle='--', label=f"Mean 1: {data1.mean():.2f}")
+    else:
+        logger.warning("First dataset is empty - no data to plot")
 
     # Plot second dataset if provided
     if len(data2) > 0:
         legend2 = f"Set 2: {params2['ligne']}, {params2['component']}, {params2['variable']}, {params2['date']}"
+        logger.info(f"Plotting second dataset - {len(data2)} values, mean: {data2.mean():.2f}")
         ax.hist(data2, bins=30, alpha=0.5, label=legend2, color='green', edgecolor='black')
         ax.axvline(data2.mean(), color='green', linestyle='--', label=f"Mean 2: {data2.mean():.2f}")
 
@@ -232,8 +279,10 @@ def generate_histogram_base64(json_file_paths, params1, params2=None, max_filter
     ax.grid(True)
 
     # Convert to Base64 and cleanup
+    logger.info("Converting figure to Base64...")
     base64_image = fig_to_base64(fig)
     fig.clear()
+    logger.info(f"✓ Successfully generated histogram Base64 string (length: {len(base64_image)})")
     return base64_image
 
 
@@ -248,7 +297,10 @@ def get_filtering_options(json_file_paths):
     Returns:
         pandas.DataFrame with columns: Ligne, Component, Variable
     """
-    return extract_LCV(json_file_paths)
+    logger.info(f"Getting filtering options from {len(json_file_paths)} JSON files")
+    result = extract_LCV(json_file_paths)
+    logger.info(f"✓ Successfully retrieved {len(result)} filtering options")
+    return result
 
 
 # Modified GUI function to work with file paths list instead of directory
