@@ -1,184 +1,165 @@
-# JSON Histogram Analytics - Refactored for EDS Integration
-# Modified to accept JSON file paths list instead of directory scanning
-# Added Base64 conversion for matplotlib figures
+# JSON Histogram Analytics - Refactored for Direct JSON Data Processing
+# Modified to accept JSON data objects directly instead of file paths
+# Works entirely in-memory without file I/O
 
-import os
-import json
 import numpy as np
 import pandas as pd
-# Configure matplotlib to use non-GUI backend for server environments
 import matplotlib
+
 matplotlib.use('Agg')  # Use non-interactive backend
 from matplotlib.figure import Figure
 import io
 import base64
 import logging
+from typing import List, Dict, Optional
+from datetime import datetime
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Conditional imports for GUI functionality (only needed for standalone GUI mode)
+# Conditional imports for GUI functionality
 try:
     import tkinter as tk
     from tkinter import ttk
     from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
     TKINTER_AVAILABLE = True
 except ImportError:
     TKINTER_AVAILABLE = False
     logger.info("Tkinter not available - GUI functionality disabled (API mode only)")
 
 
-# Extract (Ligne, Component, Variable) info from JSON file paths list
-def extract_LCV(json_file_paths):
+# ============================================================================
+# DATA PROCESSING FUNCTIONS - Work with in-memory data objects
+# ============================================================================
+
+def extract_LCV_from_data(histogram_data_list):
     """
-    Extract (Ligne, Component, Variable) combinations from JSON file paths
+    Extract (Ligne, Component, Variable) combinations from histogram data objects
 
     Args:
-        json_file_paths: List of JSON file paths
+        histogram_data_list: List of histogram data objects (MonitorKpisResults)
 
     Returns:
         pandas.DataFrame with columns: Ligne, Component, Variable
     """
-    logger.info(f"Extracting LCV from {len(json_file_paths)} JSON file paths")
+    logger.info(f"Extracting LCV from {len(histogram_data_list)} histogram data objects")
     data = []
 
-    for filepath in json_file_paths:
-        if not os.path.exists(filepath):
-            logger.warning(f"File does not exist: {filepath}")
-            continue
+    seen_combinations = set()
 
-        filename = os.path.basename(filepath)
+    for hist_obj in histogram_data_list:
+        # Extract attributes from the object
+        # Handle both dict and object access patterns
+        if isinstance(hist_obj, dict):
+            ligne = hist_obj.get('ligne') or hist_obj.get('Ligne', '')
+            component = hist_obj.get('component') or hist_obj.get('Component', '')
+            variable = hist_obj.get('variable') or hist_obj.get('Variable', '')
+        else:
+            ligne = getattr(hist_obj, 'ligne', '') or getattr(hist_obj, 'Ligne', '')
+            component = getattr(hist_obj, 'component', '') or getattr(hist_obj, 'Component', '')
+            variable = getattr(hist_obj, 'variable', '') or getattr(hist_obj, 'Variable', '')
 
-        if filename.startswith("HIST_data_") and filename.endswith(".json"):
-            base = filename.replace("HIST_data_", "").replace(".json", "")
-            parts = base.split("_")
-            if len(parts) >= 3:
-                ligne = "_".join(parts[:2])
-                variable = parts[-1]
-                component = "_".join(parts[2:-1])
-                if ligne.startswith("plc_"):
-                    data.append({
-                        "Ligne": ligne,
-                        "Component": component,
-                        "Variable": variable
-                    })
-                    logger.debug(f"Extracted: Ligne={ligne}, Component={component}, Variable={variable}")
+        # Only process valid PLC lines
+        if ligne.startswith("plc_"):
+            combination = (ligne, component, variable)
+            if combination not in seen_combinations:
+                seen_combinations.add(combination)
+                data.append({
+                    "Ligne": ligne,
+                    "Component": component,
+                    "Variable": variable
+                })
+                logger.debug(f"Extracted: Ligne={ligne}, Component={component}, Variable={variable}")
 
-    logger.info(f"Successfully extracted {len(data)} LCV combinations")
+    logger.info(f"Successfully extracted {len(data)} unique LCV combinations")
     return pd.DataFrame(data)
 
 
-# Read all unique Starting_date values from a given JSON file
-def extract_starting_dates(filepath):
+def extract_starting_dates_from_data(histogram_data_list, ligne, component, variable):
     """
-    Extract all unique Starting_date values from JSON file
+    Extract all unique Starting_date values for a specific ligne/component/variable
 
     Args:
-        filepath: Path to JSON file
+        histogram_data_list: List of histogram data objects
+        ligne: Target ligne
+        component: Target component
+        variable: Target variable
 
     Returns:
         Sorted list of Starting_date strings
     """
-    logger.debug(f"Extracting starting dates from: {filepath}")
+    logger.debug(f"Extracting dates for: {ligne}/{component}/{variable}")
     starting_dates = set()
 
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read().strip()
+    for hist_obj in histogram_data_list:
+        # Handle both dict and object access
+        if isinstance(hist_obj, dict):
+            obj_ligne = hist_obj.get('ligne') or hist_obj.get('Ligne', '')
+            obj_component = hist_obj.get('component') or hist_obj.get('Component', '')
+            obj_variable = hist_obj.get('variable') or hist_obj.get('Variable', '')
+            obj_date = hist_obj.get('starting_date') or hist_obj.get('Starting_date', '')
+        else:
+            obj_ligne = getattr(hist_obj, 'ligne', '') or getattr(hist_obj, 'Ligne', '')
+            obj_component = getattr(hist_obj, 'component', '') or getattr(hist_obj, 'Component', '')
+            obj_variable = getattr(hist_obj, 'variable', '') or getattr(hist_obj, 'Variable', '')
+            obj_date = getattr(hist_obj, 'starting_date', '') or getattr(hist_obj, 'Starting_date', '')
 
-        # Try to parse as standard JSON first
-        try:
-            data = json.loads(content)
-            if isinstance(data, dict) and "Starting_date" in data:
-                starting_dates.add(data["Starting_date"])
-                logger.debug(f"Found single JSON with date: {data['Starting_date']}")
-                return sorted(starting_dates)
-            elif isinstance(data, list):
-                for entry in data:
-                    if isinstance(entry, dict) and "Starting_date" in entry:
-                        starting_dates.add(entry["Starting_date"])
-                logger.debug(f"Found JSON array with {len(starting_dates)} unique dates")
-                return sorted(starting_dates)
-        except json.JSONDecodeError:
-            logger.debug("Standard JSON parsing failed, trying JSONL format")
+        # Match the target combination
+        if obj_ligne == ligne and obj_component == component and obj_variable == variable:
+            if obj_date:
+                starting_dates.add(obj_date)
 
-        # If standard JSON parsing fails, try JSONL format (line by line)
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    entry = json.loads(line)
-                    if isinstance(entry, dict) and "Starting_date" in entry:
-                        starting_dates.add(entry["Starting_date"])
-                except json.JSONDecodeError:
-                    continue
-
-        logger.debug(f"Found {len(starting_dates)} unique starting dates in JSONL format")
-
-    except Exception as e:
-        logger.error(f"Error reading file {filepath}: {e}")
-
+    logger.debug(f"Found {len(starting_dates)} unique starting dates")
     return sorted(starting_dates)
 
 
-# Extract the Data_list for a selected Starting_date in a file
-def extract_data_list(filepath, selected_date):
+def extract_data_list_from_data(histogram_data_list, ligne, component, variable, selected_date):
     """
-    Extract Data_list for a selected Starting_date from JSON file
+    Extract Data list for a specific combination and date
 
     Args:
-        filepath: Path to JSON file
-        selected_date: Target Starting_date to find
+        histogram_data_list: List of histogram data objects
+        ligne: Target ligne
+        component: Target component
+        variable: Target variable
+        selected_date: Target Starting_date
 
     Returns:
         numpy array of data values
     """
-    logger.debug(f"Extracting data list from {filepath} for date: {selected_date}")
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read().strip()
+    logger.debug(f"Extracting data for: {ligne}/{component}/{variable} on {selected_date}")
 
-        # Try to parse as standard JSON first
-        try:
-            data = json.loads(content)
-            if isinstance(data, dict) and data.get("Starting_date") == selected_date:
-                data_list = np.array(data.get("Data_list", []))
-                logger.debug(f"Found data list with {len(data_list)} values")
-                return data_list
-            elif isinstance(data, list):
-                for entry in data:
-                    if isinstance(entry, dict) and entry.get("Starting_date") == selected_date:
-                        data_list = np.array(entry.get("Data_list", []))
-                        logger.debug(f"Found data list with {len(data_list)} values in array")
-                        return data_list
-        except json.JSONDecodeError:
-            logger.debug("Standard JSON parsing failed, trying JSONL format")
+    for hist_obj in histogram_data_list:
+        # Handle both dict and object access
+        if isinstance(hist_obj, dict):
+            obj_ligne = hist_obj.get('ligne') or hist_obj.get('Ligne', '')
+            obj_component = hist_obj.get('component') or hist_obj.get('Component', '')
+            obj_variable = hist_obj.get('variable') or hist_obj.get('Variable', '')
+            obj_date = hist_obj.get('starting_date') or hist_obj.get('Starting_date', '')
+            obj_data = hist_obj.get('data') or hist_obj.get('Data', [])
+        else:
+            obj_ligne = getattr(hist_obj, 'ligne', '') or getattr(hist_obj, 'Ligne', '')
+            obj_component = getattr(hist_obj, 'component', '') or getattr(hist_obj, 'Component', '')
+            obj_variable = getattr(hist_obj, 'variable', '') or getattr(hist_obj, 'Variable', '')
+            obj_date = getattr(hist_obj, 'starting_date', '') or getattr(hist_obj, 'Starting_date', '')
+            obj_data = getattr(hist_obj, 'data', []) or getattr(hist_obj, 'Data', [])
 
-        # If standard JSON parsing fails, try JSONL format (line by line)
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    entry = json.loads(line)
-                    if isinstance(entry, dict) and entry.get("Starting_date") == selected_date:
-                        data_list = np.array(entry.get("Data_list", []))
-                        logger.debug(f"Found data list with {len(data_list)} values in JSONL")
-                        return data_list
-                except json.JSONDecodeError:
-                    continue
+        # Match the target combination and date
+        if (obj_ligne == ligne and obj_component == component and
+                obj_variable == variable and obj_date == selected_date):
+            data_array = np.array(obj_data)
+            logger.debug(f"Found data list with {len(data_array)} values")
+            return data_array
 
-    except Exception as e:
-        logger.error(f"Error reading file {filepath}: {e}")
-
-    logger.warning(f"No data found for date {selected_date} in {filepath}")
+    logger.warning(f"No data found for {ligne}/{component}/{variable} on {selected_date}")
     return np.array([])
 
 
-# Convert matplotlib figure to Base64 string
+# ============================================================================
+# UTILITY FUNCTIONS
+# ============================================================================
+
 def fig_to_base64(fig):
     """
     Convert matplotlib figure to Base64 encoded PNG string
@@ -197,13 +178,16 @@ def fig_to_base64(fig):
     return image_base64
 
 
-# Generate histogram and return as Base64 string - Main API function for EDS
-def generate_histogram_base64(json_file_paths, params1, params2=None, max_filter=0):
+# ============================================================================
+# MAIN API FUNCTIONS
+# ============================================================================
+
+def generate_histogram_base64(histogram_data_list, params1, params2=None, max_filter=0):
     """
-    Generate histogram from JSON files and return as Base64 string
+    Generate histogram from histogram data objects and return as Base64 string
 
     Args:
-        json_file_paths: List of JSON file paths
+        histogram_data_list: List of histogram data objects (MonitorKpisResults)
         params1: Dict with keys: ligne, component, variable, date
         params2: Optional second dataset parameters for comparison
         max_filter: Optional maximum value filter (0 = no filter)
@@ -211,39 +195,35 @@ def generate_histogram_base64(json_file_paths, params1, params2=None, max_filter
     Returns:
         Base64 encoded PNG image string
     """
-    logger.info(f"Generating histogram with {len(json_file_paths)} JSON files")
+    logger.info(f"Generating histogram with {len(histogram_data_list)} histogram data objects")
     logger.info(f"Params1: {params1}")
     if params2:
         logger.info(f"Params2: {params2}")
     logger.info(f"Max filter: {max_filter}")
 
-    def get_file_data(ligne, comp, var, date):
+    def get_data(ligne, comp, var, date):
         if not all([ligne, comp, var, date]):
             logger.warning(f"Missing parameters - ligne:{ligne}, comp:{comp}, var:{var}, date:{date}")
             return np.array([])
 
-        # Find the matching file
-        target_filename = f"HIST_data_{ligne}_{comp}_{var}.json"
-        logger.debug(f"Looking for file: {target_filename}")
+        data = extract_data_list_from_data(histogram_data_list, ligne, comp, var, date)
+        logger.info(f"Extracted {len(data)} data points for {ligne}/{comp}/{var}")
+        return data
 
-        for filepath in json_file_paths:
-            if os.path.basename(filepath) == target_filename:
-                logger.info(f"Found matching file: {filepath}")
-                data = extract_data_list(filepath, date)
-                logger.info(f"Extracted {len(data)} data points")
-                return data
-
-        logger.warning(f"No matching file found for: {target_filename}")
-        return np.array([])
+    # Convert params to dict if they're Pydantic models
+    if hasattr(params1, 'dict'):
+        params1 = params1.dict()
+    if params2 and hasattr(params2, 'dict'):
+        params2 = params2.dict()
 
     # Get data for both datasets
     logger.info("Getting data for first dataset...")
-    data1 = get_file_data(params1['ligne'], params1['component'], params1['variable'], params1['date'])
+    data1 = get_data(params1['ligne'], params1['component'], params1['variable'], params1['date'])
     data2 = np.array([])
 
     if params2:
         logger.info("Getting data for second dataset...")
-        data2 = get_file_data(params2['ligne'], params2['component'], params2['variable'], params2['date'])
+        data2 = get_data(params2['ligne'], params2['component'], params2['variable'], params2['date'])
 
     logger.info(f"Dataset 1 size: {len(data1)}, Dataset 2 size: {len(data2)}")
 
@@ -292,34 +272,36 @@ def generate_histogram_base64(json_file_paths, params1, params2=None, max_filter
     logger.info("Converting figure to Base64...")
     base64_image = fig_to_base64(fig)
     fig.clear()
-    logger.info(f"✓ Successfully generated histogram Base64 string (length: {len(base64_image)})")
+    logger.info(f"Successfully generated histogram Base64 string (length: {len(base64_image)})")
     return base64_image
 
 
-# Get filtering options - Main API function for EDS
-def get_filtering_options(json_file_paths):
+def get_filtering_options(histogram_data_list):
     """
-    Get available filtering options from JSON files
+    Get available filtering options from histogram data objects
 
     Args:
-        json_file_paths: List of JSON file paths
+        histogram_data_list: List of histogram data objects (MonitorKpisResults)
 
     Returns:
         pandas.DataFrame with columns: Ligne, Component, Variable
     """
-    logger.info(f"Getting filtering options from {len(json_file_paths)} JSON files")
-    result = extract_LCV(json_file_paths)
-    logger.info(f"✓ Successfully retrieved {len(result)} filtering options")
+    logger.info(f"Getting filtering options from {len(histogram_data_list)} histogram data objects")
+    result = extract_LCV_from_data(histogram_data_list)
+    logger.info(f"Successfully retrieved {len(result)} filtering options")
     return result
 
 
-# Modified GUI function to work with file paths list instead of directory
-def launch_gui_dual(json_file_paths):
+# ============================================================================
+# GUI FUNCTIONALITY (Optional - requires tkinter)
+# ============================================================================
+
+def launch_gui_dual(histogram_data_list):
     """
-    Launch GUI with JSON file paths list instead of directory
+    Launch GUI with histogram data objects (in-memory)
 
     Args:
-        json_file_paths: List of JSON file paths
+        histogram_data_list: List of histogram data objects
     """
     if not TKINTER_AVAILABLE:
         logger.error("Cannot launch GUI - tkinter is not available in this environment")
@@ -327,24 +309,16 @@ def launch_gui_dual(json_file_paths):
         print("This is expected in Docker/server environments. Use the API endpoints instead.")
         return
 
-    df = extract_LCV(json_file_paths)
+    df = extract_LCV_from_data(histogram_data_list)
 
     if df.empty:
-        print("No valid JSON files found!")
+        print("No valid histogram data found!")
         return
 
-    def get_file_data(ligne, comp, var, date):
+    def get_data(ligne, comp, var, date):
         if not all([ligne, comp, var, date]):
             return np.array([])
-
-        # Find the matching file
-        target_filename = f"HIST_data_{ligne}_{comp}_{var}.json"
-
-        for filepath in json_file_paths:
-            if os.path.basename(filepath) == target_filename:
-                return extract_data_list(filepath, date)
-
-        return np.array([])
+        return extract_data_list_from_data(histogram_data_list, ligne, comp, var, date)
 
     def update_all(*args):
         for menu in ['1', '2']:
@@ -396,14 +370,7 @@ def launch_gui_dual(json_file_paths):
         comp = component_vars[menu_id].get()
         var = variable_vars[menu_id].get()
 
-        # Find matching file to get dates
-        target_filename = f"HIST_data_{ligne}_{comp}_{var}.json"
-        dates = []
-
-        for filepath in json_file_paths:
-            if os.path.basename(filepath) == target_filename:
-                dates = extract_starting_dates(filepath)
-                break
+        dates = extract_starting_dates_from_data(histogram_data_list, ligne, comp, var)
 
         date_menus[menu_id]['menu'].delete(0, 'end')
         if dates:
@@ -430,10 +397,10 @@ def launch_gui_dual(json_file_paths):
         except ValueError:
             max_val = 0
 
-        data1 = get_file_data(ligne_vars['1'].get(), component_vars['1'].get(), variable_vars['1'].get(),
-                              date_vars['1'].get())
-        data2 = get_file_data(ligne_vars['2'].get(), component_vars['2'].get(), variable_vars['2'].get(),
-                              date_vars['2'].get())
+        data1 = get_data(ligne_vars['1'].get(), component_vars['1'].get(),
+                         variable_vars['1'].get(), date_vars['1'].get())
+        data2 = get_data(ligne_vars['2'].get(), component_vars['2'].get(),
+                         variable_vars['2'].get(), date_vars['2'].get())
 
         if max_val > 0:
             data1 = data1[data1 <= max_val]
@@ -474,7 +441,7 @@ def launch_gui_dual(json_file_paths):
                 )
                 tk.Label(stats_frame, text=stats_text, justify="left", anchor="nw").pack(fill="both", expand=True)
 
-    # Initialize Tkinter GUI (same as before)
+    # Initialize Tkinter GUI
     root = tk.Tk()
     root.title("Compare Two Data Sets")
 
@@ -535,22 +502,7 @@ def launch_gui_dual(json_file_paths):
 if __name__ == "__main__":
     if not TKINTER_AVAILABLE:
         print("ERROR: Cannot run GUI mode - tkinter is not available in this environment")
-        print("This module is designed to be imported by the FastAPI server in Docker environments.")
-        print("For standalone GUI usage, ensure tkinter is installed on your system.")
-    elif tk._default_root is None:
-        # Convert from directory scanning to file list
-        json_output_dir = "./JSON_hist_data/"
-
-        if os.path.exists(json_output_dir):
-            # Get list of JSON files from directory
-            json_file_paths = []
-            for filename in os.listdir(json_output_dir):
-                if filename.startswith("HIST_data_") and filename.endswith(".json"):
-                    json_file_paths.append(os.path.join(json_output_dir, filename))
-
-            if json_file_paths:
-                launch_gui_dual(json_file_paths)
-            else:
-                print("No JSON files found in directory!")
-        else:
-            print("Directory not found!")
+        print("This module is designed to be imported by the FastAPI server.")
+    else:
+        print("This module is designed to be imported by the FastAPI server.")
+        print("To use the GUI, load histogram data objects and call launch_gui_dual(histogram_data_list)")
