@@ -154,7 +154,7 @@ class MonitorKpisResults(BaseModel):
     ending_date: str = Field(..., description="Ending date - supports DD-MM-YYYY HH:MM:SS or ISO format", alias="Ending_date")
     data_source: str = Field(..., description="Data source (e.g., InfluxDB)", alias="Data_source")
     bucket: str = Field(..., description="Data bucket name", alias="Bucket")
-    data_list: List[float] = Field(..., description="List of data values", alias="Data_list")
+    data: List[float] = Field(..., description="List of data values", alias="Data")
 
     model_config = {"populate_by_name": True}
 
@@ -235,7 +235,7 @@ async def get_analytics_filtering_options(base64_data: Base64Request):
         try:
             logger.info("Parsing decoded data into FilteringOptionsRequest model")
             filtering_request = FilteringOptionsRequest(**decoded_data)
-            logger.info(f"Successfully parsed request with {len(filtering_request.histogram_data)} histogram objects")
+            logger.info(f"Successfully parsed request with {len(filtering_request.filtering_options)} histogram objects")
         except Exception as e:
             logger.error(f"Failed to parse filtering options request: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Filtering options request validation failed: {str(e)}")
