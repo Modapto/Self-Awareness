@@ -175,7 +175,7 @@ class MonitorKpisResults(BaseModel):
 # ---- Request Models for Local Analytics ----
 class FilteringOptionsRequest(BaseModel):
     """Request model for filtering options - expects list of JSON histogram data"""
-    histogram_data: List[MonitorKpisResults] = Field(..., description="List of histogram JSON data objects")
+    filtering_options: List[MonitorKpisResults] = Field(..., description="List of histogram JSON data objects")
 
 class HistogramParams(BaseModel):
     """Parameters for histogram generation"""
@@ -241,7 +241,7 @@ async def get_analytics_filtering_options(base64_data: Base64Request):
             raise HTTPException(status_code=422, detail=f"Filtering options request validation failed: {str(e)}")
 
         # Extract filtering options from provided data
-        filtering_options_df = get_filtering_options(filtering_request.histogram_data)
+        filtering_options_df = get_filtering_options(filtering_request.filtering_options)
         logger.info(f"Found {len(filtering_options_df)} filtering options")
 
         # Convert DataFrame to Base64 encoded JSON

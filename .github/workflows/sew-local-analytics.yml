@@ -39,7 +39,7 @@ jobs:
     - name: Build and Push Image of Local Analytics with Cache
       uses: docker/build-push-action@v6
       with:
-        context: ./Self-Awareness-1
+        context: ./Local-Analytics
         push: true
         tags: ghcr.io/modapto/${{ env.DOCKER_IMAGE}}:latest
         cache-from: type=gha
