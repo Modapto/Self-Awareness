@@ -6,16 +6,26 @@ import os
 import json
 import numpy as np
 import pandas as pd
-import tkinter as tk
-from tkinter import ttk
+# Configure matplotlib to use non-GUI backend for server environments
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import io
 import base64
 import logging
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+# Conditional imports for GUI functionality (only needed for standalone GUI mode)
+try:
+    import tkinter as tk
+    from tkinter import ttk
+    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+    TKINTER_AVAILABLE = True
+except ImportError:
+    TKINTER_AVAILABLE = False
+    logger.info("Tkinter not available - GUI functionality disabled (API mode only)")
 
 
 # Extract (Ligne, Component, Variable) info from JSON file paths list
@@ -311,6 +321,12 @@ def launch_gui_dual(json_file_paths):
     Args:
         json_file_paths: List of JSON file paths
     """
+    if not TKINTER_AVAILABLE:
+        logger.error("Cannot launch GUI - tkinter is not available in this environment")
+        print("ERROR: GUI functionality requires tkinter, which is not available.")
+        print("This is expected in Docker/server environments. Use the API endpoints instead.")
+        return
+
     df = extract_LCV(json_file_paths)
 
     if df.empty:
@@ -517,7 +533,11 @@ def launch_gui_dual(json_file_paths):
 
 # Run GUI if this script is executed directly
 if __name__ == "__main__":
-    if not tk._default_root:
+    if not TKINTER_AVAILABLE:
+        print("ERROR: Cannot run GUI mode - tkinter is not available in this environment")
+        print("This module is designed to be imported by the FastAPI server in Docker environments.")
+        print("For standalone GUI usage, ensure tkinter is installed on your system.")
+    elif tk._default_root is None:
         # Convert from directory scanning to file list
         json_output_dir = "./JSON_hist_data/"
 
