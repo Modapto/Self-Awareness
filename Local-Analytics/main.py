@@ -53,7 +53,7 @@ async def lifespan(app: FastAPI):
     logger.info("Application shutdown complete")
 
 app = FastAPI(
-    title="Self Awareness Local Analytics API",
+    title="Local Analytics API",
     description="Generation of filtering options and histograms from JSON Self Awareness Monitoring and Storing KPIs results",
     version="1.0.0",
     lifespan=lifespan
