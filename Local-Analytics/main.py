@@ -179,10 +179,10 @@ class FilteringOptionsRequest(BaseModel):
 
 class HistogramParams(BaseModel):
     """Parameters for histogram generation"""
-    ligne: str = Field(..., description="PLC line identifier")
-    component: str = Field(..., description="Component name")
-    variable: str = Field(..., description="Variable name")
-    date: str = Field(..., description="Starting date in format 'DD-MM-YYYY HH:MM:SS'")
+    Ligne: str = Field(..., description="PLC line identifier")
+    Component: str = Field(..., description="Component name")
+    Variable: str = Field(..., description="Variable name")s
+    Date: str = Field(..., description="Starting date in format 'DD-MM-YYYY HH:MM:SS'")
 
 class HistogramRequest(BaseModel):
     """Request model for histogram generation"""
