@@ -124,9 +124,9 @@ def encode_output_to_base64(output: Dict[str, Any]) -> str:
     json_bytes = json.dumps(output, default=str).encode("utf-8")
     return base64.b64encode(json_bytes).decode("utf-8")
 
-def decode_base64_to_dict(base64_string: str) -> Dict[str, Any]:
+def decode_base64_to_dict(base64_string: str):
     """
-    Decode a Base64 string to a dictionary.
+    Decode a Base64 string to a dictionary or list.
     """
     try:
         json_bytes = base64.b64decode(base64_string.encode("utf-8"))
@@ -156,7 +156,10 @@ class MonitorKpisResults(BaseModel):
     bucket: str = Field(..., description="Data bucket name", alias="Bucket")
     data: List[float] = Field(..., description="List of data values", alias="Data_list")
 
-    model_config = {"populate_by_name": True}
+    model_config = {
+        "populate_by_name": True,
+        "extra": "ignore"
+    }
 
     def get_iso_timestamp(self, date_str: str) -> str:
         """Convert date string to ISO format timestamp: YYYY-MM-DDTHH:MM:SS"""
