@@ -154,7 +154,7 @@ class MonitorKpisResults(BaseModel):
     ending_date: str = Field(..., description="Ending date - supports DD-MM-YYYY HH:MM:SS or ISO format", alias="Ending_date")
     data_source: str = Field(..., description="Data source (e.g., InfluxDB)", alias="Data_source")
     bucket: str = Field(..., description="Data bucket name", alias="Bucket")
-    data: List[float] = Field(..., description="List of data values", alias="Data")
+    data: List[float] = Field(..., description="List of data values", alias="Data_list")
 
     model_config = {"populate_by_name": True}
 
@@ -241,7 +241,8 @@ async def get_analytics_filtering_options(base64_data: Base64Request):
             raise HTTPException(status_code=422, detail=f"Filtering options request validation failed: {str(e)}")
 
         # Extract filtering options from provided data
-        filtering_options_df = get_filtering_options(filtering_request.filtering_options)
+        filtering_options_dicts = [item.model_dump(by_alias=True) for item in filtering_request.filtering_options]
+        filtering_options_df = get_filtering_options(filtering_options_dicts)
         logger.info(f"Found {len(filtering_options_df)} filtering options")
 
         # Convert DataFrame to Base64 encoded JSON
