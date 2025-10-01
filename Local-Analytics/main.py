@@ -231,17 +231,23 @@ async def get_analytics_filtering_options(base64_data: Base64Request):
             logger.error(f"Failed to decode Base64 request: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Invalid Base64 request: {str(e)}")
 
-        # Parse decoded data into FilteringOptionsRequest model
+        # Parse decoded data directly as List[MonitorKpisResults]
         try:
-            logger.info("Parsing decoded data into FilteringOptionsRequest model")
-            filtering_request = FilteringOptionsRequest(**decoded_data)
-            logger.info(f"Successfully parsed request with {len(filtering_request.filtering_options)} histogram objects")
+            logger.info("Parsing decoded data into List[MonitorKpisResults]")
+            # Decoded data should be a list of histogram objects
+            if not isinstance(decoded_data, list):
+                raise ValueError("Decoded data must be a list of histogram objects")
+
+            filtering_options_list = [MonitorKpisResults(**item) for item in decoded_data]
+            logger.info(f"Successfully parsed request with {len(filtering_options_list)} histogram objects")
         except Exception as e:
             logger.error(f"Failed to parse filtering options request: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Filtering options request validation failed: {str(e)}")
 
+        # Convert to dictionaries with alias names (Ligne, Component, Variable, etc.)
+        filtering_options_dicts = [item.model_dump(by_alias=True) for item in filtering_options_list]
+
         # Extract filtering options from provided data
-        filtering_options_dicts = [item.model_dump(by_alias=True) for item in filtering_request.filtering_options]
         filtering_options_df = get_filtering_options(filtering_options_dicts)
         logger.info(f"Found {len(filtering_options_df)} filtering options")
 
