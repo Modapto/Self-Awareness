@@ -152,8 +152,6 @@ class MonitorKpisResults(BaseModel):
     variable: str = Field(..., description="Variable name", alias="Variable")
     starting_date: str = Field(..., description="Starting date - supports DD-MM-YYYY HH:MM:SS or ISO format", alias="Starting_date")
     ending_date: str = Field(..., description="Ending date - supports DD-MM-YYYY HH:MM:SS or ISO format", alias="Ending_date")
-    data_source: str = Field(..., description="Data source (e.g., InfluxDB)", alias="Data_source")
-    bucket: str = Field(..., description="Data bucket name", alias="Bucket")
     data: List[float] = Field(..., description="List of data values", alias="Data_list")
 
     model_config = {
