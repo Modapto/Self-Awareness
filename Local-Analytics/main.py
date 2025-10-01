@@ -229,7 +229,12 @@ async def get_analytics_filtering_options(base64_data: Base64Request):
         try:
             decoded_data = decode_base64_to_dict(base64_data.request)
             logger.info("Successfully decoded Base64 request")
-            logger.info(f"Decoded data keys: {list(decoded_data.keys()) if decoded_data else 'None'}")
+            if isinstance(decoded_data, dict):
+                logger.info(f"Decoded data keys: {list(decoded_data.keys())}")
+            elif isinstance(decoded_data, list):
+                logger.info(f"Decoded data is a list with {len(decoded_data)} items")
+            else:
+                logger.info(f"Decoded data type: {type(decoded_data)}")
         except Exception as e:
             logger.error(f"Failed to decode Base64 request: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Invalid Base64 request: {str(e)}")
@@ -293,7 +298,12 @@ async def generate_analytics_histogram(base64_data: Base64Request):
         try:
             decoded_data = decode_base64_to_dict(base64_data.request)
             logger.info("Successfully decoded Base64 request")
-            logger.info(f"Decoded data keys: {list(decoded_data.keys()) if decoded_data else 'None'}")
+            if isinstance(decoded_data, dict):
+                logger.info(f"Decoded data keys: {list(decoded_data.keys())}")
+            elif isinstance(decoded_data, list):
+                logger.info(f"Decoded data is a list with {len(decoded_data)} items")
+            else:
+                logger.info(f"Decoded data type: {type(decoded_data)}")
         except Exception as e:
             logger.error(f"Failed to decode Base64 request: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Invalid Base64 request: {str(e)}")
