@@ -108,7 +108,7 @@ def send_kafka_alert(anomaly_info):
         # Construct event data according to the schema
         event_data = {
             "module": anomaly_info.get('module', 'UNKNOWN'),
-            "pilot": "REDG",  # Production line identifier
+            "pilot": "sew",
             "priority": priority,
             "description": f"Anomaly detected: {anomaly_info['component']}.{anomaly_info['property']} = {anomaly_info['value']:.2f} (Expected range: [{anomaly_info['low']:.2f}, {anomaly_info['high']:.2f}])",
             "timestamp": anomaly_info['timestamp'],
@@ -121,7 +121,6 @@ def send_kafka_alert(anomaly_info):
                 "value": anomaly_info['value'],
                 "low_threshold": anomaly_info['low'],
                 "high_threshold": anomaly_info['high'],
-                "subElement": anomaly_info.get('subElement', 'N/A'),
                 "deviation_percentage": round(deviation_pct, 2)
             }
         }
@@ -253,6 +252,7 @@ def main():
         print(f" Initializing Kafka producer ({KAFKA_BOOTSTRAP_SERVERS})...")
         kafka_producer = EventsProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
         print(" Kafka producer initialized successfully!")
+    except Exception as e:
     except Exception as e:
         print(f"  Warning: Could not initialize Kafka producer: {e}")
         print("  Continuing without Kafka integration...")
