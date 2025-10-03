@@ -15,7 +15,7 @@ KAFKA_BOOTSTRAP_SERVERS = "localhost:9092"  # Update with your Kafka broker addr
 KAFKA_TOPIC = "modapto-anomaly-alerts"
 
 # --- Configuration ---
-CONFIG_FILE = "components_list_redg05.json"
+CONFIG_FILE = "../config/components_list_redg05.json"
 
 # Threshold map and anomaly storage
 threshold_map = {}

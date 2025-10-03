@@ -4,7 +4,7 @@ from datetime import datetime
 import pandas as pd
 
 # --- Configuration ---
-CONFIG_FILE = "components_list_redg05.json"
+CONFIG_FILE = "../config/components_list_redg05.json"
 MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
 MQTT_USERNAME = ""
