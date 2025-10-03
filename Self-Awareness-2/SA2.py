@@ -23,12 +23,12 @@ MQTT_TOPICS = [
 
 def load_configuration(file_path):
     """Load the JSON configuration and create threshold map."""
-    print(f"⚙️  Loading configuration from {file_path}...")
+    print(f"Loading configuration from {file_path}...")
     try:
         with open(file_path, 'r') as f:
             config_data = json.load(f)
     except Exception as e:
-        print(f"❌ ERROR loading configuration: {e}")
+        print(f"ERROR loading configuration: {e}")
         return False
 
     for item in config_data:
@@ -51,7 +51,7 @@ def load_configuration(file_path):
                     "property": prop_name
                 }
 
-    print(f"✅ Configuration loaded. {len(threshold_map)} variables configured.")
+    print(f"Configuration loaded. {len(threshold_map)} variables configured.")
     return True
 
 
@@ -96,7 +96,7 @@ def check_anomaly(component, prop_name, value, timestamp):
 
             # Print alert
             print("=" * 60)
-            print(f"🚨 ANOMALY DETECTED at {timestamp} 🚨")
+            print(f"ANOMALY DETECTED at {timestamp}")
             print(f"   Component: {component}")
             print(f"   Property: {prop_name}")
             print(f"   Value: {value:.2f}")
@@ -109,12 +109,12 @@ def check_anomaly(component, prop_name, value, timestamp):
 def on_connect(client, userdata, flags, rc):
     """Callback when connected to MQTT broker."""
     if rc == 0:
-        print("✅ Connected to MQTT broker successfully!")
+        print("Connected to MQTT broker successfully!")
         for topic in MQTT_TOPICS:
             client.subscribe(topic)
             print(f"📡 Subscribed to: {topic}")
     else:
-        print(f"❌ Failed to connect to MQTT broker. Return code: {rc}")
+        print(f" Failed to connect to MQTT broker. Return code: {rc}")
 
 
 def on_message(client, userdata, msg):
@@ -148,7 +148,7 @@ def on_message(client, userdata, msg):
             check_anomaly(component, prop_name, value, timestamp)
 
     except Exception as e:
-        print(f"⚠️  Error processing message: {e}")
+        print(f"Error processing message: {e}")
 
 
 def save_anomalies_report():
@@ -161,13 +161,13 @@ def save_anomalies_report():
     df = pd.DataFrame(anomalies_list)
     filename = f"anomalies_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
     df.to_csv(filename, index=False)
-    print(f"📄 Anomalies saved to: {filename}")
-    print(f"📊 Total anomalies detected: {len(anomalies_list)}")
+    print(f"Anomalies saved to: {filename}")
+    print(f"Total anomalies detected: {len(anomalies_list)}")
 
 
 def main():
     """Main function to run MQTT anomaly detection."""
-    print("🚀 Starting MQTT Anomaly Detection System...")
+    print("Starting MQTT Anomaly Detection System...")
 
     # Load configuration
     if not load_configuration(CONFIG_FILE):
@@ -181,7 +181,7 @@ def main():
     # Set authentication if needed
     if MQTT_USERNAME and MQTT_PASSWORD:
         client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
-        print(f"🔐 Using authentication with username: {MQTT_USERNAME}")
+        print(f"Using authentication with username: {MQTT_USERNAME}")
 
     try:
         # Connect to broker
@@ -189,17 +189,17 @@ def main():
         client.connect(MQTT_BROKER, MQTT_PORT, 60)
 
         # Start the loop
-        print("👂 Listening for MQTT messages... (Press Ctrl+C to stop)")
+        print("Listening for MQTT messages... (Press Ctrl+C to stop)")
         client.loop_forever()
 
     except KeyboardInterrupt:
-        print("\n\n⏹️  Stopping MQTT client...")
+        print("\n\nStopping MQTT client...")
         save_anomalies_report()
         client.disconnect()
-        print(f"✅ Disconnected. Total anomalies detected: {len(anomalies_list)}")
+        print(f"Disconnected. Total anomalies detected: {len(anomalies_list)}")
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
 
 
 if __name__ == "__main__":
