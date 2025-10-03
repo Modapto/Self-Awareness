@@ -1,0 +1,317 @@
+[
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A21",
+    "subElement": "ROOT",
+    "Component": "Ecr_A21_3_L_LOOP_OUT",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 213.504118,
+        "High_thre": 224.7105161
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -500.5399339,
+        "High_thre": 890.6959729
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A22",
+    "subElement": "Conveyor",
+    "Component": "Ecr_A22_L_R02",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 2.80623662,
+        "High_thre": 384.0821461
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -193.3881306,
+        "High_thre": 661.837706
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A22",
+    "subElement": "ROOT",
+    "Component": "Ecr_A22_R_LOOP6",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 215.2732709,
+        "High_thre": 224.9892291
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -275.8321339,
+        "High_thre": 430.2896372
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A23",
+    "subElement": "ROOT",
+    "Component": "Ecr_A23_L_R03",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 141.7360674,
+        "High_thre": 286.1170132
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -202.3874553,
+        "High_thre": 691.7565374
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A23",
+    "subElement": "ROOT",
+    "Component": "Ecr_A23_R_LOOP5",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 215.1160955,
+        "High_thre": 224.2318497
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -156.3867566,
+        "High_thre": 603.5599849
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A24",
+    "subElement": "ROOT",
+    "Component": "Ecr_A24_L_R04",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 180.7062695,
+        "High_thre": 255.2049577
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -97.43071567,
+        "High_thre": 672.7571222
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A24",
+    "subElement": "ROOT",
+    "Component": "Ecr_A24_R_LOOP4",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 215.2344669,
+        "High_thre": 224.3283471
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -59.31897554,
+        "High_thre": 607.6703594
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A25",
+    "subElement": "Conveyor",
+    "Component": "Ecr_A25_L_R05",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": -40.87152834,
+        "High_thre": 401.02847
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -233.520774,
+        "High_thre": 489.9655982
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A25",
+    "subElement": "ROOT",
+    "Component": "Ecr_A25_R_LOOP3",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 214.1490507,
+        "High_thre": 225.4194772
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -152.7899977,
+        "High_thre": 516.8811889
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A26",
+    "subElement": "ROOT",
+    "Component": "Ecr_A26_L_R06",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 143.5418756,
+        "High_thre": 288.6904895
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -6.367356927,
+        "High_thre": 726.8114644
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A26",
+    "subElement": "ROOT",
+    "Component": "Ecr_A26_R_LOOP2",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 214.0541873,
+        "High_thre": 224.1944003
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -182.234731,
+        "High_thre": 728.5004763
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A27",
+    "subElement": "ROOT",
+    "Component": "Ecr_A27_2_L_LOOP_IN",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": 212.6541783,
+        "High_thre": 226.493549
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -333.5148293,
+        "High_thre": 515.8387368
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A21",
+    "subElement": "ROOT",
+    "Component": "Var_A21",
+    "Property": [
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -6.729353759,
+        "High_thre": 45.33280204
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A22",
+    "subElement": "Z_Axis",
+    "Component": "Var_A22",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": -28.56751772,
+        "High_thre": 22.4982398
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -30.51010445,
+        "High_thre": 37.41618512
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A25",
+    "subElement": "Z-Axis",
+    "Component": "Var_A25",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": -39.40184608,
+        "High_thre": 32.65404035
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -17.6716962,
+        "High_thre": 22.9669709
+      }
+    ]
+  },
+  {
+    "Stage": "CELL_05",
+    "Cell": "Ligne réducteur REDG",
+    "Plc": "plc_100",
+    "Module": "A28",
+    "subElement": "ROOT",
+    "Component": "Var_A28",
+    "Property": [
+      {
+        "Name": "diActualVitesse",
+        "Low_thre": -80.64033058,
+        "High_thre": 79.13108491
+      },
+      {
+        "Name": "iActualCurrent",
+        "Low_thre": -25.68051937,
+        "High_thre": 58.8727456
+      }
+    ]
+  }
+]
