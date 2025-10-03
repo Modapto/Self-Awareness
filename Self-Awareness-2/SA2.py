@@ -7,8 +7,8 @@ import pandas as pd
 CONFIG_FILE = "components_list_redg05.json"
 MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
-MQTT_USERNAME = "sew"
-MQTT_PASSWORD = "sewmodapto!"
+MQTT_USERNAME = ""
+MQTT_PASSWORD = "!"
 
 # Threshold map and anomaly storage
 threshold_map = {}
