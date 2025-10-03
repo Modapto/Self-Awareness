@@ -44,7 +44,6 @@ def load_configuration(file_path):
     for item in config_data:
         component = item.get("Component")
         module = item.get("Module")
-        sub_element = item.get("subElement")
         
         for prop in item.get("Property", []):
             prop_name = prop.get("Name")
@@ -59,8 +58,7 @@ def load_configuration(file_path):
                     "high": float(high_thre),
                     "component": component,
                     "property": prop_name,
-                    "module": module,
-                    "subElement": sub_element
+                    "module": module
                 }
 
     print(f" Configuration loaded. {len(threshold_map)} variables configured.")
@@ -157,7 +155,6 @@ def check_anomaly(component, prop_name, value, timestamp):
                 'low': limits['low'],
                 'high': limits['high'],
                 'module': limits.get('module', 'UNKNOWN'),
-                'subElement': limits.get('subElement', 'N/A'),
                 'expected_value': (limits['low'] + limits['high']) / 2  # Middle of range
             }
             anomalies_list.append(anomaly_info)
@@ -253,7 +250,6 @@ def main():
         kafka_producer = EventsProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS)
         print(" Kafka producer initialized successfully!")
     except Exception as e:
-    except Exception as e:
         print(f"  Warning: Could not initialize Kafka producer: {e}")
         print("  Continuing without Kafka integration...")
     
@@ -269,7 +265,7 @@ def main():
     
     try:
         # Connect to broker
-        print(f"🔌 Connecting to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}...")
+        print(f" Connecting to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}...")
         client.connect(MQTT_BROKER, MQTT_PORT, 60)
         
         # Start the loop
