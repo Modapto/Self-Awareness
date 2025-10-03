@@ -124,9 +124,9 @@ def encode_output_to_base64(output: Dict[str, Any]) -> str:
     json_bytes = json.dumps(output, default=str).encode("utf-8")
     return base64.b64encode(json_bytes).decode("utf-8")
 
-def decode_base64_to_dict(base64_string: str) -> Dict[str, Any]:
+def decode_base64_to_dict(base64_string: str):
     """
-    Decode a Base64 string to a dictionary.
+    Decode a Base64 string to a dictionary or list.
     """
     try:
         json_bytes = base64.b64decode(base64_string.encode("utf-8"))
@@ -152,11 +152,12 @@ class MonitorKpisResults(BaseModel):
     variable: str = Field(..., description="Variable name", alias="Variable")
     starting_date: str = Field(..., description="Starting date - supports DD-MM-YYYY HH:MM:SS or ISO format", alias="Starting_date")
     ending_date: str = Field(..., description="Ending date - supports DD-MM-YYYY HH:MM:SS or ISO format", alias="Ending_date")
-    data_source: str = Field(..., description="Data source (e.g., InfluxDB)", alias="Data_source")
-    bucket: str = Field(..., description="Data bucket name", alias="Bucket")
-    data: List[float] = Field(..., description="List of data values", alias="Data")
+    data: List[float] = Field(..., description="List of data values", alias="Data_list")
 
-    model_config = {"populate_by_name": True}
+    model_config = {
+        "populate_by_name": True,
+        "extra": "ignore"
+    }
 
     def get_iso_timestamp(self, date_str: str) -> str:
         """Convert date string to ISO format timestamp: YYYY-MM-DDTHH:MM:SS"""
@@ -179,10 +180,10 @@ class FilteringOptionsRequest(BaseModel):
 
 class HistogramParams(BaseModel):
     """Parameters for histogram generation"""
-    ligne: str = Field(..., description="PLC line identifier")
-    component: str = Field(..., description="Component name")
-    variable: str = Field(..., description="Variable name")
-    date: str = Field(..., description="Starting date in format 'DD-MM-YYYY HH:MM:SS'")
+    Ligne: str = Field(..., description="PLC line identifier")
+    Component: str = Field(..., description="Component name")
+    Variable: str = Field(..., description="Variable name")
+    Date: str = Field(..., description="Starting date in format 'DD-MM-YYYY HH:MM:SS'")
 
 class HistogramRequest(BaseModel):
     """Request model for histogram generation"""
@@ -226,22 +227,34 @@ async def get_analytics_filtering_options(base64_data: Base64Request):
         try:
             decoded_data = decode_base64_to_dict(base64_data.request)
             logger.info("Successfully decoded Base64 request")
-            logger.info(f"Decoded data keys: {list(decoded_data.keys()) if decoded_data else 'None'}")
+            if isinstance(decoded_data, dict):
+                logger.info(f"Decoded data keys: {list(decoded_data.keys())}")
+            elif isinstance(decoded_data, list):
+                logger.info(f"Decoded data is a list with {len(decoded_data)} items")
+            else:
+                logger.info(f"Decoded data type: {type(decoded_data)}")
         except Exception as e:
             logger.error(f"Failed to decode Base64 request: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Invalid Base64 request: {str(e)}")
 
-        # Parse decoded data into FilteringOptionsRequest model
+        # Parse decoded data directly as List[MonitorKpisResults]
         try:
-            logger.info("Parsing decoded data into FilteringOptionsRequest model")
-            filtering_request = FilteringOptionsRequest(**decoded_data)
-            logger.info(f"Successfully parsed request with {len(filtering_request.filtering_options)} histogram objects")
+            logger.info("Parsing decoded data into List[MonitorKpisResults]")
+            # Decoded data should be a list of histogram objects
+            if not isinstance(decoded_data, list):
+                raise ValueError("Decoded data must be a list of histogram objects")
+
+            filtering_options_list = [MonitorKpisResults(**item) for item in decoded_data]
+            logger.info(f"Successfully parsed request with {len(filtering_options_list)} histogram objects")
         except Exception as e:
             logger.error(f"Failed to parse filtering options request: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Filtering options request validation failed: {str(e)}")
 
+        # Convert to dictionaries with alias names (Ligne, Component, Variable, etc.)
+        filtering_options_dicts = [item.model_dump(by_alias=True) for item in filtering_options_list]
+
         # Extract filtering options from provided data
-        filtering_options_df = get_filtering_options(filtering_request.filtering_options)
+        filtering_options_df = get_filtering_options(filtering_options_dicts)
         logger.info(f"Found {len(filtering_options_df)} filtering options")
 
         # Convert DataFrame to Base64 encoded JSON
@@ -283,7 +296,12 @@ async def generate_analytics_histogram(base64_data: Base64Request):
         try:
             decoded_data = decode_base64_to_dict(base64_data.request)
             logger.info("Successfully decoded Base64 request")
-            logger.info(f"Decoded data keys: {list(decoded_data.keys()) if decoded_data else 'None'}")
+            if isinstance(decoded_data, dict):
+                logger.info(f"Decoded data keys: {list(decoded_data.keys())}")
+            elif isinstance(decoded_data, list):
+                logger.info(f"Decoded data is a list with {len(decoded_data)} items")
+            else:
+                logger.info(f"Decoded data type: {type(decoded_data)}")
         except Exception as e:
             logger.error(f"Failed to decode Base64 request: {str(e)}")
             raise HTTPException(status_code=422, detail=f"Invalid Base64 request: {str(e)}")

@@ -218,12 +218,12 @@ def generate_histogram_base64(histogram_data_list, params1, params2=None, max_fi
 
     # Get data for both datasets
     logger.info("Getting data for first dataset...")
-    data1 = get_data(params1['ligne'], params1['component'], params1['variable'], params1['date'])
+    data1 = get_data(params1['Ligne'], params1['Component'], params1['Variable'], params1['Date'])
     data2 = np.array([])
 
     if params2:
         logger.info("Getting data for second dataset...")
-        data2 = get_data(params2['ligne'], params2['component'], params2['variable'], params2['date'])
+        data2 = get_data(params2['Ligne'], params2['Component'], params2['Variable'], params2['Date'])
 
     logger.info(f"Dataset 1 size: {len(data1)}, Dataset 2 size: {len(data2)}")
 
@@ -245,7 +245,7 @@ def generate_histogram_base64(histogram_data_list, params1, params2=None, max_fi
     ax = fig.add_subplot(111)
 
     # Build legends
-    legend1 = f"Set 1: {params1['ligne']}, {params1['component']}, {params1['variable']}, {params1['date']}"
+    legend1 = f"Set 1: {params1['Ligne']}, {params1['Component']}, {params1['Variable']}, {params1['Date']}"
 
     # Plot first dataset
     if len(data1) > 0:
@@ -257,7 +257,7 @@ def generate_histogram_base64(histogram_data_list, params1, params2=None, max_fi
 
     # Plot second dataset if provided
     if len(data2) > 0:
-        legend2 = f"Set 2: {params2['ligne']}, {params2['component']}, {params2['variable']}, {params2['date']}"
+        legend2 = f"Set 2: {params2['Ligne']}, {params2['Component']}, {params2['Variable']}, {params2['Date']}"
         logger.info(f"Plotting second dataset - {len(data2)} values, mean: {data2.mean():.2f}")
         ax.hist(data2, bins=30, alpha=0.5, label=legend2, color='green', edgecolor='black')
         ax.axvline(data2.mean(), color='green', linestyle='--', label=f"Mean 2: {data2.mean():.2f}")
