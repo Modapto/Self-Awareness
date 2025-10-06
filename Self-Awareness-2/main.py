@@ -1,20 +1,26 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Header
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from pydantic import BaseModel, Field, field_validator
-from typing import Dict, List, Any
+from pydantic import BaseModel, Field
+from typing import Dict, List, Any, Optional
 from datetime import datetime
 from fastapi.openapi.utils import get_openapi
 import os
-import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from functools import partial
 import base64
 import json
 import logging
 import sys
+import uuid
+from multiprocessing import Process
 
-KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+from SA2_kafka import (
+    test_mqtt_connection,
+    test_kafka_connection,
+    process_mqtt_data_with_config
+)
+
+active_processes = {}
 
 # Configure logging
 def get_log_level():
@@ -40,9 +46,6 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# Import algorithm
-from SA1 import EventsProducer, async_self_awareness_monitoring_kpis, test_influxdb_connection, test_kafka_connection
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
@@ -57,9 +60,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Self Awareness API",
-    description="Monitoring and storing capabilities of KPIs",
+    description="Real-time monitoring and storing capabilities of KPIs",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    docs_url="/real-time/docs",
+    redoc_url="/real-time/redoc"
 )
 
 # Set the origins for CORS
@@ -142,15 +147,25 @@ class Base64Request(BaseModel):
     """Unified input model for Base64 encoded requests"""
     request: str = Field(..., description="Base64 encoded JSON request data")
 
-class Base64Response(BaseModel):
-    """Unified response model for Base64 encoded results"""
-    response: str = Field(..., description="Base64 encoded JSON result")    
-    
+class ResponseMessage(BaseModel):
+    """Unified response model for successful operations"""
+    message: str = Field(..., description="Success or Error message")
+
+class ProcessStartResponse(BaseModel):
+    message: str
+
+class ProcessInfoResponse(BaseModel):
+    process_id: str
+    smart_service_id: str
+    module_id: str
+    started_at: str
+    status: str
+
 # ---- Input Models ----
 class PropertyData(BaseModel):
     Name: str = Field(..., description="Property name")
-    Low_thre: int = Field(..., description="Lower threshold value for property")
-    High_thre: int = Field(..., description="Upper threshold value for property")
+    Low_thre: float = Field(..., description="Lower threshold value for property")
+    High_thre: float = Field(..., description="Upper threshold value for property")
 
     model_config = {"populate_by_name": True}
     
@@ -167,221 +182,219 @@ class ComponentData(BaseModel):
     
 class SelfAwarenessKPIInput(BaseModel):
     components: List[ComponentData] = Field(..., description="List of components with properties and thresholds")
-    start_date: datetime = Field(..., description='Analysis period start time in format "DD-MM-YYYY HH:MM:SS"')
-    end_date: datetime = Field(..., description='Analysis period end time in format "DD-MM-YYYY HH:MM:SS"')
     smartServiceId: str = Field(..., description="Smart Service ID")
     moduleId: str = Field(..., description="Module ID")
 
     model_config = {"populate_by_name": True}
-    
-    @field_validator("start_date", "end_date", mode="before")
-    def validate_datetime_format(cls, value):
-        if isinstance(value, datetime):
-            return value
-        try:
-            return datetime.strptime(value, "%d-%m-%Y %H:%M:%S")
-        except ValueError:
-            raise ValueError(
-                f"Datetime must be in format 'DD-MM-YYYY HH:MM:SS', got '{value}'"
-            )
-
-# ---- Output Models ----
-
 
 # --- Utility Functions ---
-# Async function to process grouping maintenance and publish to Kafka
-async def process_self_awareness_monitoring_kpis(
-    components: List[ComponentData],
-    smart_service: str,
-    module: str,
-    start_date: datetime,
-    end_date: datetime):
-    """
-    Process grouping maintenance request asynchronously and publish results to Kafka.
-    """
-    try:
-        # Convert ComponentData objects to simple list for the algorithm
-        component_list = [component.model_dump() for component in components]
-        
-        # Log component structure after model_dump for debugging
-        if component_list:
-            logger.info(f"First component keys after model_dump: {list(component_list[0].keys())}")
-            logger.debug(f"First component data: {component_list[0]}")
-        
-        # Run the CPU-intensive algorithm in thread pool
-        loop = asyncio.get_event_loop()
-        event_data = await loop.run_in_executor(
-            None,  # Use default thread pool
-            partial(
-                async_self_awareness_monitoring_kpis,
-                component_list,
-                smart_service,
-                module,
-                start_date,
-                end_date
-            )
-        )
-        
-        # Get Kafka broker from environment variable and publish event
-        producer = EventsProducer(KAFKA_BOOTSTRAP_SERVERS)
-        
-        # Publish event (success or error) to Kafka topic
-        producer.produce_event("smart-service-event", event_data)
-        
-        # Log appropriate message based on event type
-        if 'Error' in event_data.get('eventType', ''):
-            logger.error("Error event regarding self-awareness monitoring and storing KPIs published successfully!")
-        else:
-            logger.info("Event regarding self-awareness monitoring and storing KPIs published successfully!")
-        
-        producer.close()
-        
-    except Exception as e:
-        logger.error(f"Critical error in async self-awareness monitoring and storing KPIs processing: {str(e)}")
-        
-        # Last resort: create and publish a critical error event
-        try:
-            producer = EventsProducer(KAFKA_BOOTSTRAP_SERVERS)
-            
-            critical_error_event = {
-                "description": f"Critical error in Self-Awareness 1 API processing: {str(e)}",
-                "module": module,
-                "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
-                "priority": "HIGH",
-                "eventType": "Critical Processing Error",
-                "sourceComponent": "Self-Awareness Monitoring KPIs",
-                "smartService": smart_service,
-                "topic": "smart-service-event",
-                "results": None
-            }
-            
-            producer.produce_event("smart-service-event", critical_error_event)
-            producer.close()
-            logger.info("Critical error event published to Kafka!")
-        except Exception as kafka_error:
-            logger.error(f"Failed to publish critical error event to Kafka: {str(kafka_error)}")
-            
+def run_monitoring_process(component_list, smart_service_id, module_id):
+    process_mqtt_data_with_config(component_list, smart_service_id, module_id)
+
 # --- API Endpoints ---
-@app.post("/monitor/kpis", response_model=Base64Response, tags=["Self Awareness monitoring and storing KPIs"])
+@app.post("/real-time/monitor/kpis", response_model=ProcessStartResponse, tags=["Self Awareness Real-time monitoring and storing KPIs"])
 async def self_awareness_monitor_kpis(base64_data: Base64Request):
     """
-    Self-Awareness monitoring and storing KPIs for SEW Plant
+    Self-Awareness real-time monitoring and storing KPIs for SEW Plant
     This endpoint accepts a Base64 encoded JSON request, initializes the Self-Awareness monitoring process and returns the results via Kafka event.
-    
+
     Request format: {"request": "base64_encoded_json_data"}
     """
-    # Log raw incoming request FIRST - before any validation
-    logger.info("=== RAW SELF AWARENESS 1 - MONITOR AND STORING KPIS REQUEST ===")
-    logger.info(f"Request type: {type(base64_data)}")
-    logger.info(f"Request attributes: {dir(base64_data)}")
-    
-    if hasattr(base64_data, 'request'):
-        logger.info(f"request.request exists: {base64_data.request is not None}")
-        logger.info(f"request.request type: {type(base64_data.request)}")
-        logger.info(f"request.request length: {len(base64_data.request) if base64_data.request else 'None'}")
-        if base64_data.request:
-            logger.info(f"Base64 request preview (first 100 chars): {base64_data.request[:100]}")
-    else:
-        logger.error("request.request attribute missing!")
-    
-    # Log the entire raw request object
     try:
         logger.info(f"Raw request object: {base64_data}")
         logger.info(f"Raw request dict: {base64_data.model_dump() if hasattr(base64_data, 'model_dump') else 'No model_dump method'}")
     except Exception as e:
         logger.error(f"Error logging raw request: {str(e)}")
-        
+
     try:
         logger.info("=== STARTING REQUEST PROCESSING ===")
-        
-        # Validate base64_data.request exists before proceeding
+
         if not hasattr(base64_data, 'request') or base64_data.request is None:
             logger.error("Request validation failed: base64_data.request is missing or None")
             raise HTTPException(status_code=400, detail="Missing 'request' field in Base64Request")
-        
-        # Decode Base64 request
+
         decoded_data = decode_base64_to_dict(base64_data.request)
         logger.info("Successfully decoded Base64 request")
         logger.info(f"Decoded data keys: {list(decoded_data.keys()) if decoded_data else 'None'}")
         logger.debug(f"Decoded data structure: {json.dumps(decoded_data, indent=2, default=str)}")
-        
-        # Parse decoded data into SelfAwarenessKPIInput model
+
         try:
             logger.info("Attempting to parse decoded data into SelfAwarenessKPIInput model")
             data = SelfAwarenessKPIInput(**decoded_data)
-            logger.info("✓ Successfully parsed request data")
+            logger.info("Successfully parsed request data")
         except Exception as e:
-            logger.error("✗ Failed to parse decoded data into model")
+            logger.error("Failed to parse decoded data into model")
             logger.error(f"Validation error details: {str(e)}")
             logger.error(f"Validation error type: {type(e).__name__}")
-            
-            # Log specific field validation issues if it's a Pydantic validation error
+
             if hasattr(e, 'errors'):
                 logger.error("Detailed validation errors:")
                 for error in e.errors():
                     logger.error(f"  Field: {error.get('loc', 'unknown')}")
                     logger.error(f"  Error: {error.get('msg', 'unknown')}")
                     logger.error(f"  Input: {error.get('input', 'unknown')}")
-            
+
             raise HTTPException(status_code=422, detail=f"Request validation failed: {str(e)}")
-            
-        # Start the async algorithm processing
-        asyncio.create_task(
-            process_self_awareness_monitoring_kpis(
-                data.components,
-                data.smartServiceId,
-                data.moduleId,
-                data.start_date,
-                data.end_date
-            )
+
+        process_id = str(uuid.uuid4())
+        component_list = [component.model_dump() for component in data.components]
+
+        process = Process(
+            target=run_monitoring_process,
+            args=(component_list, data.smartServiceId, data.moduleId)
         )
-        
-        logger.info("Successfully initialized self-awareness monitoring task")
-        
-        # Return Base64 encoded response
-        response_data = {"message": "Self-awareness monitoring task started successfully"}
-        encoded_response = encode_output_to_base64(response_data)
-        return Base64Response(response=encoded_response)
+        process.start()
+
+        active_processes[process_id] = {
+            "process": process,
+            "smart_service_id": data.smartServiceId,
+            "module_id": data.moduleId,
+            "started_at": datetime.now().isoformat(),
+            "status": "running"
+        }
+
+        logger.info(f"Successfully started monitoring process: {process_id}")
+
+        return ProcessStartResponse(
+            message=f"Self-awareness real-time monitoring task started successfully. Process ID: {process_id}"
+        )
+
     except HTTPException:
-        # Re-raise HTTP exceptions (400, 503)
         raise
     except Exception as e:
         logger.error(f"Error in self-awareness monitoring task: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error while initializing the self-awareness monitoring kpis algorithm: {str(e)}")
-    
-@app.get("/health", tags=["Health Check"])
+
+@app.get("/real-time/processes/{process_id}", response_model=ProcessInfoResponse, tags=["Process Management"])
+async def get_process_info(process_id: str, x_api_key: Optional[str] = Header(None)):
+    """
+    Get information about a specific monitoring process.
+    Requires API key authentication via X-API-Key header.
+    """
+    api_key = os.getenv("PROCESS_MANAGEMENT_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="API key not configured on server")
+
+    if not x_api_key or x_api_key != api_key:
+        raise HTTPException(status_code=403, detail="Invalid or missing API key")
+
+    if process_id not in active_processes:
+        raise HTTPException(status_code=404, detail=f"Process {process_id} not found")
+
+    process_info = active_processes[process_id]
+    process = process_info["process"]
+
+    if process.is_alive():
+        status = "running"
+    else:
+        status = "stopped"
+        process_info["status"] = status
+
+    return ProcessInfoResponse(
+        process_id=process_id,
+        smart_service_id=process_info["smart_service_id"],
+        module_id=process_info["module_id"],
+        started_at=process_info["started_at"],
+        status=status
+    )
+
+@app.delete("/real-time/processes/{process_id}", tags=["Process Management"])
+async def stop_process(process_id: str, x_api_key: Optional[str] = Header(None)):
+    """
+    Stop a specific monitoring process.
+    Requires API key authentication via X-API-Key header.
+    """
+    api_key = os.getenv("PROCESS_MANAGEMENT_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="API key not configured on server")
+
+    if not x_api_key or x_api_key != api_key:
+        raise HTTPException(status_code=403, detail="Invalid or missing API key")
+
+    if process_id not in active_processes:
+        raise HTTPException(status_code=404, detail=f"Process {process_id} not found")
+
+    process_info = active_processes[process_id]
+    process = process_info["process"]
+
+    if process.is_alive():
+        process.terminate()
+        process.join(timeout=5)
+        if process.is_alive():
+            process.kill()
+        logger.info(f"Process {process_id} terminated")
+
+    process_info["status"] = "stopped"
+
+    return {
+        "message": f"Process {process_id} stopped successfully",
+        "process_id": process_id,
+        "smart_service_id": process_info["smart_service_id"],
+        "module_id": process_info["module_id"]
+    }
+
+@app.get("/real-time/processes", tags=["Process Management"])
+async def list_all_processes(x_api_key: Optional[str] = Header(None)):
+    """
+    List all monitoring processes.
+    Requires API key authentication via X-API-Key header.
+    """
+    api_key = os.getenv("PROCESS_MANAGEMENT_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="API key not configured on server")
+
+    if not x_api_key or x_api_key != api_key:
+        raise HTTPException(status_code=403, detail="Invalid or missing API key")
+
+    processes_list = []
+    for process_id, process_info in active_processes.items():
+        process = process_info["process"]
+        status = "running" if process.is_alive() else "stopped"
+        process_info["status"] = status
+
+        processes_list.append({
+            "process_id": process_id,
+            "smart_service_id": process_info["smart_service_id"],
+            "module_id": process_info["module_id"],
+            "started_at": process_info["started_at"],
+            "status": status
+        })
+
+    return {
+        "total_processes": len(processes_list),
+        "processes": processes_list
+    }
+
+@app.get("/real-time/health", tags=["Health Check"])
 def health_check():
     """
-    Health check endpoint for the API.
-    Tests connections to InfluxDB and Kafka services, and verifies SA1 module imports.
+    Health check endpoint for SA2 API.
+    Tests connections to MQTT and Kafka services.
     """
     logger.info("Health check requested")
-    
-    # Test service connections
+
     services_status = {}
     overall_status = "healthy"
-    
+
     try:
-        # Test InfluxDB connection
-        influxdb_status = test_influxdb_connection()
-        services_status["influxdb"] = {
-            "status": "healthy" if influxdb_status else "unhealthy",
-            "connection": influxdb_status
+        mqtt_status = test_mqtt_connection()
+        services_status["mqtt"] = {
+            "status": "healthy" if mqtt_status else "unhealthy",
+            "connection": mqtt_status
         }
-        if not influxdb_status:
+        if not mqtt_status:
             overall_status = "degraded"
-            
+
     except Exception as e:
-        logger.error(f"Error testing InfluxDB connection: {e}")
-        services_status["influxdb"] = {
+        logger.error(f"Error testing MQTT connection: {e}")
+        services_status["mqtt"] = {
             "status": "unhealthy",
             "connection": False,
             "error": str(e)
         }
         overall_status = "degraded"
-    
+
     try:
-        # Test Kafka connection
         kafka_status = test_kafka_connection()
         services_status["kafka"] = {
             "status": "healthy" if kafka_status else "unhealthy",
@@ -389,7 +402,7 @@ def health_check():
         }
         if not kafka_status:
             overall_status = "degraded"
-            
+
     except Exception as e:
         logger.error(f"Error testing Kafka connection: {e}")
         services_status["kafka"] = {
@@ -398,85 +411,50 @@ def health_check():
             "error": str(e)
         }
         overall_status = "degraded"
-    
-    # Test SA1 module and async function import
+
     try:
-        # Verify that the async function is properly imported and callable
-        if callable(async_self_awareness_monitoring_kpis):
-            services_status["sa1_algorithm"] = {
+        if callable(process_mqtt_data_with_config):
+            services_status["sa2_algorithm"] = {
                 "status": "healthy",
                 "import": True,
                 "callable": True
             }
         else:
-            services_status["sa1_algorithm"] = {
+            services_status["sa2_algorithm"] = {
                 "status": "unhealthy",
                 "import": True,
                 "callable": False
             }
             overall_status = "degraded"
-            
+
     except NameError as e:
-        logger.error(f"SA1 async function not imported: {e}")
-        services_status["sa1_algorithm"] = {
+        logger.error(f"SA2 function not imported: {e}")
+        services_status["sa2_algorithm"] = {
             "status": "unhealthy",
             "import": False,
             "error": str(e)
         }
         overall_status = "degraded"
     except Exception as e:
-        logger.error(f"Error checking SA1 async function: {e}")
-        services_status["sa1_algorithm"] = {
+        logger.error(f"Error checking SA2 function: {e}")
+        services_status["sa2_algorithm"] = {
             "status": "unhealthy",
             "import": False,
             "error": str(e)
         }
         overall_status = "degraded"
-    
-    # Test EventsProducer class import
-    try:
-        if hasattr(EventsProducer, '__init__'):
-            services_status["events_producer"] = {
-                "status": "healthy",
-                "import": True,
-                "class_available": True
-            }
-        else:
-            services_status["events_producer"] = {
-                "status": "unhealthy", 
-                "import": True,
-                "class_available": False
-            }
-            overall_status = "degraded"
-            
-    except NameError as e:
-        logger.error(f"EventsProducer class not imported: {e}")
-        services_status["events_producer"] = {
-            "status": "unhealthy",
-            "import": False,
-            "error": str(e)
-        }
-        overall_status = "degraded"
-    except Exception as e:
-        logger.error(f"Error checking EventsProducer class: {e}")
-        services_status["events_producer"] = {
-            "status": "unhealthy",
-            "import": False,
-            "error": str(e)
-        }
-        overall_status = "degraded"
-    
+
     services_status["api"] = {
         "status": "healthy",
         "connection": True
     }
-    
+
     response = {
         "status": overall_status,
         "services": services_status,
-        "message": f"Self Awareness 1 API is running - Status: {overall_status}",
+        "message": f"Self Awareness 2 API is running - Status: {overall_status}",
         "timestamp": datetime.now().isoformat()
     }
-    
+
     logger.info(f"Health check completed - Overall status: {overall_status}")
     return response

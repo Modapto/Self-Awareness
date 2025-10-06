@@ -97,45 +97,111 @@ Ligne_reducteur_REDG_CELL_05/A25_R05_Presse_arbre_de_sortie/ZnegAxis/Var_A25/FLO
 
 ## Running the System
 
-### Start Self Awareness 2 with Kafka Integration
+### Start Self Awareness 2 API
 ```bash
-python SA2-kafka.py
+uvicorn main:app --reload --port 8000
 ```
 
-### Stop the System
-Press `Ctrl+C` to stop and generate CSV report.
+or run as Docker Container with the specified ENV variables.
 
-## Functions & API
+The API will be available at `http://localhost:8000` with interactive documentation at `http://localhost:8000/real-time/docs`
 
-### Main Function: `check_anomaly(component, prop_name, value, timestamp)`
-**Purpose**: Validates sensor values against configured thresholds
+## API Documentation
 
-**Input Parameters**:
-- `component` (str): Component name (e.g., "Ecr_A25_L_R05")
-- `prop_name` (str): Property name (e.g., "iActualCurrent")
-- `value` (float): Measured value
-- `timestamp` (str): ISO format timestamp
+### Public Endpoints
 
-**Logic**:
-1. Filters out system codes (value >= 16000)
-2. Filters out idle states (value == 0)
-3. Compares value against configured low/high thresholds
-4. If anomaly detected → Triggers alerts
+#### Start Real-Time Monitoring
+**POST** `/real-time/monitor/kpis`
 
-**Output**: Boolean (True if anomaly detected, False otherwise)
+Starts a new real-time anomaly detection process that continuously monitors MQTT data streams and publishes anomaly alerts to Kafka.
+
+**Request**: Base64-encoded JSON containing component configurations with thresholds, smart service ID, and module ID.
+
+**Response**: Returns aconfirmation message with the unique process ID
+
+**What it does**: Creates an isolated monitoring process that subscribes to configured MQTT topics, analyzes incoming sensor data against defined thresholds, and automatically sends Kafka events when anomalies are detected.
 
 ---
 
-### Data Loading: `load_configuration(file_path)`
-**Purpose**: Loads component thresholds from JSON configuration
+#### Check System Health
+**GET** `/real-time/health`
 
-**Input**: Path to `components_list_redg05.json`
+Provides health status of all system components and dependencies.
 
-**Output**: Populates `threshold_map` dictionary with component thresholds
+**Response**: Returns the operational status of MQTT connection, Kafka connection, and the SA2 algorithm module, along with an overall system health indicator.
+
+**What it does**: Tests connectivity to MQTT broker and Kafka cluster, verifies module imports, and reports if the system is ready to process monitoring requests.
 
 ---
 
-### Kafka Integration: `send_kafka_alert(anomaly_info)`
-**Purpose**: Publishes anomaly alerts to Kafka topic
+### Protected Endpoints (Requires API Key)
 
-**Kafka Event Schema**: See "Algorithm Output" section above
+All process management endpoints require authentication via the `X-API-Key` header. The API key must be configured in your environment variables as `PROCESS_MANAGEMENT_API_KEY`.
+
+#### Get Process Information
+**GET** `/real-time/processes/{process_id}`
+
+Retrieves detailed information about a specific monitoring process.
+
+**Authentication**: Requires `X-API-Key` header with valid API key.
+
+**Parameters**: Process ID obtained from the start monitoring endpoint.
+
+**Response**: Returns process metadata including smart service ID, module ID, start time, and current status (running or stopped).
+
+**What it does**: Checks if the specified process is still active and provides its configuration details and runtime information.
+
+---
+
+#### Stop Monitoring Process
+**DELETE** `/real-time/processes/{process_id}`
+
+Gracefully terminates a running monitoring process.
+
+**Authentication**: Requires `X-API-Key` header with valid API key.
+
+**Parameters**: Process ID of the monitoring session to stop.
+
+**Response**: Confirms the process was stopped and returns its metadata.
+
+**What it does**: Sends a termination signal to the monitoring process, waits for graceful shutdown (up to 5 seconds), and forcefully kills it if necessary. The process stops listening to MQTT and closes Kafka connections.
+
+---
+
+#### List All Processes
+**GET** `/real-time/processes`
+
+Retrieves information about all monitoring processes managed by the API.
+
+**Authentication**: Requires `X-API-Key` header with valid API key.
+
+**Response**: Returns total count and detailed list of all processes with their metadata and current status.
+
+**What it does**: Scans all active and stopped monitoring processes, checks their current state, and provides a comprehensive overview of all sessions.
+
+---
+
+## Environment Variables
+
+Set these variables in your `.env` file or system environment:
+
+- **PROCESS_MANAGEMENT_API_KEY**: API key for process management endpoints
+- **SWAGGER_SERVER_URL**: Swagger UI URL Endpoint
+- **MQTT_BROKER**: MQTT broker address (default: `localhost`)
+- **MQTT_PORT**: MQTT broker port (default: `1883`)
+- **MQTT_USERNAME**: MQTT authentication username
+- **MQTT_PASSWORD**: MQTT authentication password
+- **KAFKA_BOOTSTRAP_SERVERS**: Kafka broker addresses (default: `localhost:9092`)
+- **KAFKA_TOPIC**: Kafka topic for anomaly events (default: `anomalies_topic`)
+- **LOG_LEVEL**: Logging level (default: `INFO`)
+- **CORS_DOMAINS**: Allowed CORS origins (default: `http://localhost:8094`)
+
+## Monitoring Workflow
+
+1. **Start**: Call the monitoring endpoint with your component configuration
+2. **Monitor**: The system runs continuously, analyzing MQTT data in real-time
+3. **Detect**: When anomalies are found, Kafka events are automatically published
+4. **Manage**: Use the process ID to check status or stop the monitoring session
+5. **Stop**: Call the stop endpoint when monitoring is no longer needed
+
+Each monitoring process is isolated and can run independently with its own configuration, making it possible to monitor multiple systems or production lines simultaneously.
