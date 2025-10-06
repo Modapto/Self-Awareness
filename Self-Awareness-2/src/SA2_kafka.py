@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")
-MQTT_PORT = os.getenv("MQTT_BROKER", "1883")
+MQTT_PORT = os.getenv("MQTT_PORT", "1883")
 MQTT_USERNAME = os.getenv("MQTT_USERNAME", "")
 MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "")
 
