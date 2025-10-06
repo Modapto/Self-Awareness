@@ -65,8 +65,8 @@ app = FastAPI(
     description="Real-time monitoring and storing capabilities of KPIs",
     version="1.0.0",
     lifespan=lifespan,
-    docs_url="/real-time/docs",
-    redoc_url="/real-time/redoc"
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
 # Set the origins for CORS
@@ -169,7 +169,7 @@ def run_monitoring_process(component_list, smart_service_id, module_id):
     process_mqtt_data_with_config(component_list, smart_service_id, module_id)
 
 # --- API Endpoints ---
-@app.post("/real-time/monitor/kpis", response_model=ProcessStartResponse, tags=["Self Awareness Real-time monitoring and storing KPIs"])
+@app.post("/monitor/kpis", response_model=ProcessStartResponse, tags=["Self Awareness monitoring and storing KPIs"])
 async def self_awareness_monitor_kpis(base64_data: Base64Request):
     """
     Self-Awareness real-time monitoring and storing KPIs for SEW Plant
@@ -242,7 +242,7 @@ async def self_awareness_monitor_kpis(base64_data: Base64Request):
         logger.error(f"Error in self-awareness monitoring task: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error while initializing the self-awareness monitoring kpis algorithm: {str(e)}")
 
-@app.get("/real-time/processes/{process_id}", response_model=ProcessInfoResponse, tags=["Process Management"])
+@app.get("/processes/{process_id}", response_model=ProcessInfoResponse, tags=["Process Management"])
 async def get_process_info(process_id: str, x_api_key: Optional[str] = Header(None)):
     """
     Get information about a specific monitoring process.
@@ -275,7 +275,7 @@ async def get_process_info(process_id: str, x_api_key: Optional[str] = Header(No
         status=status
     )
 
-@app.delete("/real-time/processes/{process_id}", tags=["Process Management"])
+@app.delete("/processes/{process_id}", tags=["Process Management"])
 async def stop_process(process_id: str, x_api_key: Optional[str] = Header(None)):
     """
     Stop a specific monitoring process.
@@ -310,7 +310,7 @@ async def stop_process(process_id: str, x_api_key: Optional[str] = Header(None))
         "module_id": process_info["module_id"]
     }
 
-@app.get("/real-time/processes", tags=["Process Management"])
+@app.get("/processes", tags=["Process Management"])
 async def list_all_processes(x_api_key: Optional[str] = Header(None)):
     """
     List all monitoring processes.
@@ -342,7 +342,7 @@ async def list_all_processes(x_api_key: Optional[str] = Header(None)):
         "processes": processes_list
     }
 
-@app.get("/real-time/health", tags=["Health Check"])
+@app.get("/health", tags=["Health Check"])
 def health_check():
     """
     Health check endpoint for SA2 API.

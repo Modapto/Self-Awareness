@@ -104,14 +104,14 @@ uvicorn main:app --reload --port 8000
 
 or run as Docker Container with the specified ENV variables.
 
-The API will be available at `http://localhost:8000` with interactive documentation at `http://localhost:8000/real-time/docs`
+The API will be available at `http://localhost:8000` with interactive documentation at `http://localhost:8000/docs`
 
 ## API Documentation
 
 ### Public Endpoints
 
-#### Start Real-Time Monitoring
-**POST** `/real-time/monitor/kpis`
+#### Start Monitoring
+**POST** `/monitor/kpis`
 
 Starts a new real-time anomaly detection process that continuously monitors MQTT data streams and publishes anomaly alerts to Kafka.
 
@@ -124,7 +124,7 @@ Starts a new real-time anomaly detection process that continuously monitors MQTT
 ---
 
 #### Check System Health
-**GET** `/real-time/health`
+**GET** `/health`
 
 Provides health status of all system components and dependencies.
 
@@ -139,7 +139,7 @@ Provides health status of all system components and dependencies.
 All process management endpoints require authentication via the `X-API-Key` header. The API key must be configured in your environment variables as `PROCESS_MANAGEMENT_API_KEY`.
 
 #### Get Process Information
-**GET** `/real-time/processes/{process_id}`
+**GET** `/processes/{process_id}`
 
 Retrieves detailed information about a specific monitoring process.
 
@@ -154,7 +154,7 @@ Retrieves detailed information about a specific monitoring process.
 ---
 
 #### Stop Monitoring Process
-**DELETE** `/real-time/processes/{process_id}`
+**DELETE** `/processes/{process_id}`
 
 Gracefully terminates a running monitoring process.
 
@@ -169,7 +169,7 @@ Gracefully terminates a running monitoring process.
 ---
 
 #### List All Processes
-**GET** `/real-time/processes`
+**GET** `/processes`
 
 Retrieves information about all monitoring processes managed by the API.
 
