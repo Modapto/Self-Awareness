@@ -1,4 +1,4 @@
-name: Docker Image CI/CD - Self Awareness Monitoring KPIs (SA1 - SA2 / SEW case)
+name: Docker Image CI/CD - Self Awareness Monitoring KPIs (SA1 / SEW case)
 
 env:
   DOCKER_IMAGE_SA_1: self-awareness-1-monitor-kpis
