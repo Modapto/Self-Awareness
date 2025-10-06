@@ -323,7 +323,7 @@ def save_anomalies_report():
     print(f" Total anomalies detected: {len(anomalies_list)}")
 
 
-def process_mqtt_data_with_config(config_data, smart_service_id="SA2", module_id="UNKNOWN"):
+def process_mqtt_data_with_config(config_data, smart_service_id="SA2", module_id="UNKNOWN", stop_event=None):
     """
     Process MQTT data for anomaly detection with provided configuration dictionary.
     This function is designed to be called concurrently for multiple requests.
@@ -332,8 +332,11 @@ def process_mqtt_data_with_config(config_data, smart_service_id="SA2", module_id
     :param config_data: List of component dictionaries (from ComponentData model)
     :param smart_service_id: Smart Service ID for Kafka events (default: "SA2")
     :param module_id: Module ID for Kafka events (default: "UNKNOWN")
+    :param stop_event: Threading event to signal when to stop the monitoring
     :return: Dictionary with status and results
     """
+    import time
+
     logger.info(f" Starting MQTT Anomaly Detection with dictionary configuration...")
     logger.info(f" Smart Service: {smart_service_id}, Module: {module_id}")
 
@@ -417,31 +420,34 @@ def process_mqtt_data_with_config(config_data, smart_service_id="SA2", module_id
         logger.info(f" Using authentication with username: {MQTT_USERNAME}")
 
     try:
-        # Connect to broker
         logger.info(f" Connecting to MQTT broker at {MQTT_BROKER}:{MQTT_PORT}...")
         client.connect(MQTT_BROKER, int(MQTT_PORT), 60)
 
-        # Start the loop
-        logger.info(" Listening for MQTT messages... (Press Ctrl+C to stop)")
-        client.loop_forever()
+        logger.info(" Listening for MQTT messages...")
+        client.loop_start()
+
+        if stop_event:
+            while not stop_event.is_set():
+                time.sleep(1)
+            logger.info(" Stop event received, shutting down...")
+        else:
+            while True:
+                time.sleep(1)
 
     except KeyboardInterrupt:
         logger.info("\n\n  Stopping MQTT client...")
+    except Exception as e:
+        logger.error(f" Error: {e}")
+    finally:
+        client.loop_stop()
         client.disconnect()
 
-        # Close Kafka producer
         if kafka_producer_local:
             kafka_producer_local.close()
             logger.info(" Kafka producer closed.")
 
         logger.info(f" Disconnected. Total anomalies detected: {len(anomalies_local)}")
         return {"status": "success", "anomalies_count": len(anomalies_local), "anomalies": anomalies_local}
-
-    except Exception as e:
-        logger.error(f" Error: {e}")
-        if kafka_producer_local:
-            kafka_producer_local.close()
-        return {"status": "error", "message": str(e)}
 
 
 def main():

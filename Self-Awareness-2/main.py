@@ -12,7 +12,7 @@ import json
 import logging
 import sys
 import uuid
-from multiprocessing import Process
+import threading
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
@@ -23,6 +23,7 @@ from SA2_kafka import (
 )
 
 active_processes = {}
+process_stop_events = {}
 
 # Configure logging
 def get_log_level():
@@ -165,8 +166,8 @@ class SelfAwarenessKPIInput(BaseModel):
     model_config = {"populate_by_name": True}
 
 # --- Utility Functions ---
-def run_monitoring_process(component_list, smart_service_id, module_id):
-    process_mqtt_data_with_config(component_list, smart_service_id, module_id)
+def run_monitoring_process(component_list, smart_service_id, module_id, stop_event):
+    process_mqtt_data_with_config(component_list, smart_service_id, module_id, stop_event)
 
 # --- API Endpoints ---
 @app.post("/monitor/kpis", response_model=ProcessStartResponse, tags=["Self Awareness monitoring and storing KPIs"])
@@ -216,24 +217,28 @@ async def self_awareness_monitor_kpis(base64_data: Base64Request):
         process_id = str(uuid.uuid4())
         component_list = [component.model_dump() for component in data.components]
 
-        process = Process(
+        stop_event = threading.Event()
+        process_stop_events[process_id] = stop_event
+
+        thread = threading.Thread(
             target=run_monitoring_process,
-            args=(component_list, data.smartServiceId, data.moduleId)
+            args=(component_list, data.smartServiceId, data.moduleId, stop_event),
+            daemon=True
         )
-        process.start()
+        thread.start()
 
         active_processes[process_id] = {
-            "process": process,
+            "thread": thread,
             "smart_service_id": data.smartServiceId,
             "module_id": data.moduleId,
             "started_at": datetime.now().isoformat(),
             "status": "running"
         }
 
-        logger.info(f"Successfully started monitoring process: {process_id}")
+        logger.info(f"Successfully started monitoring thread: {process_id}")
 
         return ProcessStartResponse(
-            message=f"Self-awareness real-time monitoring task started successfully. Process ID: {process_id}"
+            message=f"Self-awareness monitoring task started successfully. Process ID: {process_id}"
         )
 
     except HTTPException:
@@ -259,9 +264,9 @@ async def get_process_info(process_id: str, x_api_key: Optional[str] = Header(No
         raise HTTPException(status_code=404, detail=f"Process {process_id} not found")
 
     process_info = active_processes[process_id]
-    process = process_info["process"]
+    thread = process_info["thread"]
 
-    if process.is_alive():
+    if thread.is_alive():
         status = "running"
     else:
         status = "stopped"
@@ -291,15 +296,17 @@ async def stop_process(process_id: str, x_api_key: Optional[str] = Header(None))
     if process_id not in active_processes:
         raise HTTPException(status_code=404, detail=f"Process {process_id} not found")
 
-    process_info = active_processes[process_id]
-    process = process_info["process"]
+    if process_id not in process_stop_events:
+        raise HTTPException(status_code=404, detail=f"Stop event for process {process_id} not found")
 
-    if process.is_alive():
-        process.terminate()
-        process.join(timeout=5)
-        if process.is_alive():
-            process.kill()
-        logger.info(f"Process {process_id} terminated")
+    process_info = active_processes[process_id]
+    stop_event = process_stop_events[process_id]
+    thread = process_info["thread"]
+
+    if thread.is_alive():
+        stop_event.set()
+        thread.join(timeout=5)
+        logger.info(f"Thread {process_id} stopped")
 
     process_info["status"] = "stopped"
 
@@ -325,8 +332,8 @@ async def list_all_processes(x_api_key: Optional[str] = Header(None)):
 
     processes_list = []
     for process_id, process_info in active_processes.items():
-        process = process_info["process"]
-        status = "running" if process.is_alive() else "stopped"
+        thread = process_info["thread"]
+        status = "running" if thread.is_alive() else "stopped"
         process_info["status"] = status
 
         processes_list.append({
