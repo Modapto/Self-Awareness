@@ -308,10 +308,11 @@ async def stop_process(process_id: str, x_api_key: Optional[str] = Header(None))
         thread.join(timeout=5)
         logger.info(f"Thread {process_id} stopped")
 
-    process_info["status"] = "stopped"
+    del active_processes[process_id]
+    del process_stop_events[process_id]
 
     return {
-        "message": f"Process {process_id} stopped successfully",
+        "message": f"Process {process_id} stopped and removed successfully",
         "process_id": process_id,
         "smart_service_id": process_info["smart_service_id"],
         "module_id": process_info["module_id"]
