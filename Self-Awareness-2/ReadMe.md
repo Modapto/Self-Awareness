@@ -77,14 +77,14 @@ Ligne_reducteur_REDG_CELL_05/A25_R05_Presse_arbre_de_sortie/ZnegAxis/Var_A25/FLO
 ```json
 {
   "module": "A25",
-  "pilot": "sew",
+  "pilot": "SEW",
   "priority": "HIGH",
   "description": "Anomaly detected: Var_A25.iActualCurrent = 28.00 (Expected range: [-17.67, 22.97])",
-  "timestamp": "2025-10-03T13:38:10.573165",
+  "timestamp": "2025-10-03T13:38:10",
   "topic": "modapto-anomaly-alerts",
   "eventType": "ANOMALY_DETECTION",
   "smartService": "SA2",
-  "metadata": {
+  "results": {
     "component": "Var_A25",
     "property": "iActualCurrent",
     "value": 28.0,
