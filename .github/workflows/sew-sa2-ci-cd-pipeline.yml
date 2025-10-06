@@ -41,7 +41,7 @@ jobs:
       with:
         context: ./Self-Awareness-2
         push: true
-        tags: ghcr.io/modapto/${{ env.DOCKER_IMAGE_SA_1 }}:latest
+        tags: ghcr.io/modapto/${{ env.DOCKER_IMAGE_SA_2 }}:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
         build-args: |

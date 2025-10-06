@@ -92,33 +92,7 @@ def custom_openapi():
 
 app.openapi = custom_openapi
 
-# Add request logging middleware
-@app.middleware("http")
-async def log_requests(request: Request, call_next):
-    # Log basic request info
-    logger.info(f"=== INCOMING HTTP REQUEST ===")
-    logger.info(f"Method: {request.method}")
-    logger.info(f"URL: {request.url}")
-    logger.info(f"Headers: {dict(request.headers)}")
-    
-    # Log raw request body for POST requests to our endpoints
-    if request.method == "POST" and any(path in str(request.url) for path in ["/monitor/kpis"]):
-        body = await request.body()
-        logger.info(f"Raw request body length: {len(body)}")
-        logger.info(f"Raw request body (first 500 chars): {body[:500].decode('utf-8', errors='ignore')}")
-        
-        # FastAPI consumes the request body, so we need to set it back for the actual handler
-        async def receive():
-            return {"type": "http.request", "body": body}
-        
-        request._receive = receive
-    
-    response = await call_next(request)
-    logger.info(f"Response status code: {response.status_code}")
-    return response
-
 app.add_middleware(
-    CORSMiddleware,
     allow_origins=get_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
