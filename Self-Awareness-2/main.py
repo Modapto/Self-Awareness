@@ -14,7 +14,9 @@ import sys
 import uuid
 from multiprocessing import Process
 
-from src.SA2_kafka import (
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
+from SA2_kafka import (
     test_mqtt_connection,
     test_kafka_connection,
     process_mqtt_data_with_config
