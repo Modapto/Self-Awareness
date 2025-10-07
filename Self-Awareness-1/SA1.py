@@ -44,7 +44,7 @@ SEUIL_DURATION = 15  # Threshold in seconds to filter out long durations
 
 # Kafka Configuration
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
-KAFKA_TOPIC = "smart-service-event"
+KAFKA_TOPIC = "self-awareness-monitor-kpis"
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -629,7 +629,7 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
                 "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Error",
                 "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
                 "smartService": smart_service,
-                "topic": "smart-service-event",
+                "topic": "self-awareness-monitor-kpis",
                 "results": None
             }
 
@@ -739,7 +739,7 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
             "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Success",
             "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
             "smartService": smart_service,
-            "topic": "smart-service-event",
+            "topic": "self-awareness-monitor-kpis",
             "results": {
                 "processed_count": processed_count,
                 "total_tags": len(tags),
@@ -764,7 +764,7 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
             "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Error",
             "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
             "smartService": smart_service,
-            "topic": "smart-service-event",
+            "topic": "self-awareness-monitor-kpis",
             "results": None
         }
 

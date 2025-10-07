@@ -186,14 +186,15 @@ def send_kafka_alert(anomaly_info, kafka_producer_param=None, smart_service_id="
             "eventType": "Anomaly detected",
             "smartService": smart_service_id,
             "results": {
+                "module": anomaly_info.get('module', 'UNKNOWN'),  # Keep component's module as metadata
                 "component": anomaly_info['component'],
                 "property": anomaly_info['property'],
                 "value": anomaly_info['value'],
                 "low_threshold": anomaly_info['low'],
                 "high_threshold": anomaly_info['high'],
                 "deviation_percentage": round(deviation_pct, 2),
-                "component_module": anomaly_info.get('module', 'UNKNOWN')  # Keep component's module as metadata
             }
+                
         }
 
         # Send to Kafka
