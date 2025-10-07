@@ -226,7 +226,7 @@ async def process_self_awareness_monitoring_kpis(
         producer = EventsProducer(KAFKA_BOOTSTRAP_SERVERS)
         
         # Publish event (success or error) to Kafka topic
-        producer.produce_event("smart-service-event", event_data)
+        producer.produce_event("self-awareness-monitor-kpis", event_data)
         
         # Log appropriate message based on event type
         if 'Error' in event_data.get('eventType', ''):
@@ -251,11 +251,11 @@ async def process_self_awareness_monitoring_kpis(
                 "eventType": "Critical Processing Error",
                 "sourceComponent": "Self-Awareness Monitoring KPIs",
                 "smartService": smart_service,
-                "topic": "smart-service-event",
+                "topic": "self-awareness-monitor-kpis",
                 "results": None
             }
             
-            producer.produce_event("smart-service-event", critical_error_event)
+            producer.produce_event("self-awareness-monitor-kpis", critical_error_event)
             producer.close()
             logger.info("Critical error event published to Kafka!")
         except Exception as kafka_error:
