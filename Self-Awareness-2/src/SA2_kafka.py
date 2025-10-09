@@ -280,7 +280,7 @@ def on_message(client, userdata, msg):
     """Callback when MQTT message is received."""
     try:
         topic = msg.topic
-        timestamp = datetime.now(timezone.utc).isoformat()
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
         
         # Parse the payload (assuming JSON format)
         payload = json.loads(msg.payload.decode())
@@ -375,7 +375,7 @@ def process_mqtt_data_with_config(config_data, smart_service_id="SA2", module_id
         """Callback when MQTT message is received."""
         try:
             topic = msg.topic
-            timestamp = datetime.now(timezone.utc).isoformat()
+            timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
 
             # Parse the payload (assuming JSON format)
             payload = json.loads(msg.payload.decode())

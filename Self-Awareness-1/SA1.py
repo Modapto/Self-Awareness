@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 import requests
 import urllib3
@@ -92,7 +92,7 @@ class EventsProducer:
         """
         # Add timestamp if not provided
         if 'timestamp' not in event_data:
-            event_data['timestamp'] = datetime.now(datetime.timezone.utc).isoformat()
+            event_data['timestamp'] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
 
         # Make priority uppercase
         if 'priority' in event_data:
@@ -215,7 +215,7 @@ def send_components_config_to_pkb(producer, components_data, start_date, end_dat
         "description": "Self-Awareness Monitoring and Storing KPIs components configuration for monitoring",
         "module": input_module,
         "priority": "MID",
-        "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
         "eventType": "Self-Awareness Monitoring and Storing KPIs Input Configuration",
         "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
         "smartService": smart_service_id,
@@ -257,7 +257,7 @@ def send_sa1_results_to_pkb(producer, hierarchy, record, input_module, smart_ser
         "description": f"Self-Awareness Monitoring and Storing KPIs execution time KPI computed for {record['Component']}",
         "module": pkb_name,
         "priority": "MID",
-        "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
         "eventType": "Self-Awareness Monitoring and Storing KPIs KPI Results",
         "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
         "smartService": smart_service_id,
@@ -625,7 +625,7 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
                 "description": f"Self-Awareness Monitoring and Storing KPIs processing failed: {error_msg}",
                 "module": module,
                 "priority": "HIGH",
-                "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+                "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
                 "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Error",
                 "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
                 "smartService": smart_service,
@@ -735,7 +735,7 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
             "description": f"Self-Awareness Monitoring and Storing KPIs KPI processing completed successfully. Processed {processed_count} tags.",
             "module": module,
             "priority": "MID",
-            "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
             "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Success",
             "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
             "smartService": smart_service,
@@ -760,7 +760,7 @@ def async_self_awareness_monitoring_kpis(components, smart_service, module, star
             "description": error_msg,
             "module": module,
             "priority": "HIGH",
-            "timestamp": datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S"),
             "eventType": "Self-Awareness Monitoring and Storing KPIs Processing Error",
             "sourceComponent": "Self-Awareness Monitoring and Storing KPIs",
             "smartService": smart_service,
