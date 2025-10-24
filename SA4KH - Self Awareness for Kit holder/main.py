@@ -150,10 +150,10 @@ class ResponseMessage(BaseModel):
 # ---- Input Models ----
 class Parameters(BaseModel):
     threshold: float = Field(..., description="Property name")
-    intervalMinutes: int = Field(..., description="Lower threshold value for property")
-    modelPath: str = Field(..., description="Path to the trained model file")
-    moduleId: str = Field(..., description="Module ID")
-    smartServiceId: str = Field(..., description="Smart Service ID")
+    intervalMinutes: int = Field(..., description="Lower threshold value for property", alias="interval_minutes")
+    modelPath: str = Field(..., description="Path to the trained model file", alias="model_path")
+    moduleId: str = Field(..., description="Module ID", alias="module_id")
+    smartServiceId: str = Field(..., description="Smart Service ID", alias="smart_service_id")
 
     model_config = {"populate_by_name": True}
     
