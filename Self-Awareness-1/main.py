@@ -149,8 +149,8 @@ class Base64Response(BaseModel):
 # ---- Input Models ----
 class PropertyData(BaseModel):
     Name: str = Field(..., description="Property name")
-    Low_thre: int = Field(..., description="Lower threshold value for property")
-    High_thre: int = Field(..., description="Upper threshold value for property")
+    Low_thre: float = Field(..., description="Lower threshold value for property")
+    High_thre: float = Field(..., description="Upper threshold value for property")
 
     model_config = {"populate_by_name": True}
     
