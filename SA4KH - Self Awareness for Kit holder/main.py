@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from pydantic import BaseModel, Field, field_validator
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Union
 from datetime import datetime
 from fastapi.openapi.utils import get_openapi
 from api.EventsProducer import EventsProducer
@@ -160,20 +160,35 @@ class Parameters(BaseModel):
 class EventData(BaseModel):
     eventType: int = Field(..., description="Saw Event Type", alias="Saw Event Type (1 Insertion - 2 Extraction)")
     rfidStation: int = Field(..., description="RFID Station ID", alias="RFID Station ID [1..9]")
-    timestamp: int = Field(..., description="Timestamp of the event", alias="Timestamp 8bytes")  # Changed from datetime to int
+    timestamp: Union[int, str] = Field(..., description="Timestamp of the event (Unix timestamp or ISO format string)", alias="Timestamp 8bytes")
     khType: int = Field(..., description="Kit Holder Type", alias="KH Type [1..3]")
     khId: int = Field(..., description="Kit Holder ID", alias="KH Unique ID [1..5]")
 
     model_config = {"populate_by_name": True}
 
+    @field_validator('timestamp', mode='before')
+    @classmethod
+    def convert_timestamp_to_unix(cls, v):
+        """Convert ISO format string timestamp to Unix timestamp integer"""
+        if isinstance(v, str):
+            try:
+                # Parse ISO format string to Unix timestamp
+                dt = datetime.fromisoformat(v)
+                return int(dt.timestamp())
+            except (ValueError, TypeError) as e:
+                raise ValueError(f"Invalid timestamp format: {v}. Expected Unix timestamp (int) or ISO format string (YYYY-MM-DDTHH:MM:SS)")
+        elif isinstance(v, int):
+            return v
+        else:
+            raise ValueError(f"Timestamp must be either an integer (Unix timestamp) or string (ISO format), got {type(v)}")
+
     def to_algorithm_format(self) -> dict:
         """Convert EventData to algorithm expected format with proper field names"""
-        timestamp_unix = int(self.timestamp.timestamp()) if isinstance(self.timestamp, datetime) else self.timestamp
-
+        # timestamp is already converted to Unix int by the validator
         return {
             "Saw Event Type": self.eventType,
             "RFID Station ID": self.rfidStation,
-            "Timestamp": timestamp_unix,
+            "Timestamp": self.timestamp,
             "KH Type": self.khType,
             "KH ID": self.khId
         }
