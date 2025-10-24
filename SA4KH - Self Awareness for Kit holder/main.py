@@ -158,11 +158,11 @@ class Parameters(BaseModel):
     model_config = {"populate_by_name": True}
     
 class EventData(BaseModel):
-    eventType: int = Field(..., description="Saw Event Type", alias="Saw Event Type")
-    rfidStation: int = Field(..., description="RFID Station ID", alias="RFID Station ID")
-    timestamp: datetime = Field(..., description="Timestamp of the event", alias="Timestamp")
-    khType: int = Field(..., description="Kit Holder Type", alias="KH Type")
-    khId: int = Field(..., description="Kit Holder ID", alias="KH ID")
+    eventType: int = Field(..., description="Saw Event Type", alias="Saw Event Type (1 Insertion - 2 Extraction)")
+    rfidStation: int = Field(..., description="RFID Station ID", alias="RFID Station ID [1..9]")
+    timestamp: int = Field(..., description="Timestamp of the event", alias="Timestamp 8bytes")  # Changed from datetime to int
+    khType: int = Field(..., description="Kit Holder Type", alias="KH Type [1..3]")
+    khId: int = Field(..., description="Kit Holder ID", alias="KH Unique ID [1..5]")
 
     model_config = {"populate_by_name": True}
 
