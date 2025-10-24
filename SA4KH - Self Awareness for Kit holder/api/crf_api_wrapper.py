@@ -77,10 +77,13 @@ class CRFApiWrapper:
                 logger.error(f"Model file not found: {model_path}")
                 return {"error": f"Model file not found: {model_path}"}
 
-            # Convert JSON data to CSV
+            # Transform and convert JSON data to CSV
             temp_csv = None
             if 'data' in json_input and json_input['data']:
-                temp_csv = self._json_to_csv(json_input['data'])
+                # Transform field names first
+                transformed_data = self._transform_data_fields(json_input['data'])
+                # Then convert to CSV
+                temp_csv = self._json_to_csv(transformed_data)
 
             if not temp_csv:
                 logger.error("No valid input data provided for processing")
@@ -143,6 +146,22 @@ class CRFApiWrapper:
         except Exception as e:
             print(f"Error converting JSON to CSV: {str(e)}")
             return None
+
+    def _transform_data_fields(self, data):
+        """Transform input data field names to match expected format"""
+        transformed = []
+        for item in data:
+            transformed_item = {
+                "Header byte (0xfe)": item.get("headerByte") or item.get("Header byte (0xfe)"),
+                "Saw Event Type (1 Insertion - 2 Extraction)": item.get("sawEventType") or item.get(
+                    "Saw Event Type (1 Insertion - 2 Extraction)"),
+                "RFID Station ID [1..9]": item.get("rfidStationId") or item.get("RFID Station ID [1..9]"),
+                "Timestamp 8bytes": item.get("timestamp") or item.get("Timestamp 8bytes"),
+                "KH Type [1..3]": item.get("khType") or item.get("KH Type [1..3]"),
+                "KH Unique ID [1..5]": item.get("khId") or item.get("KH Unique ID [1..5]")
+            }
+            transformed.append(transformed_item)
+        return transformed
 
     def _create_notifications(self, results, original_data):
         """Create notifications in the requested format for exceeded thresholds"""
