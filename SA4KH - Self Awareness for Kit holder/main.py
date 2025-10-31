@@ -186,11 +186,11 @@ class EventData(BaseModel):
         """Convert EventData to algorithm expected format with proper field names"""
         # timestamp is already converted to Unix int by the validator
         return {
-            "Saw Event Type": self.eventType,
-            "RFID Station ID": self.rfidStation,
-            "Timestamp": self.timestamp,
-            "KH Type": self.khType,
-            "KH ID": self.khId
+            "sawEventType": self.eventType,
+            "rfidStationId": self.rfidStation,
+            "timestamp": self.timestamp,
+            "khType": self.khType,
+            "khId": self.khId
         }
     
 class SelfAwarenessWearInput(BaseModel):
